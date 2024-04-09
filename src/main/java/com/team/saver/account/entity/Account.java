@@ -1,10 +1,7 @@
 package com.team.saver.account.entity;
 
 import com.team.saver.account.dto.SignUpRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,12 +28,14 @@ public class Account implements UserDetails {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public static Account createAccount(SignUpRequest request) {
+    public static Account createAccount(SignUpRequest request, String encodePassword) {
         return Account.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(encodePassword)
+                .role(UserRole.NORMAL)
                 .build();
     }
 
@@ -57,21 +56,21 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
