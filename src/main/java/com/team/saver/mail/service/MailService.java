@@ -21,21 +21,14 @@ public class MailService {
 
     private final MailUtil mailUtil;
     private final MailRepository mailRepository;
-    private final AccountRepository accountRepository;
 
     @Transactional
     public void sendMail(MailRequest request) {
-        Account account = findUserByEmail(request.getEmail());
         Mail mailCert = createVerification(request.getEmail());
 
-        if (!mailUtil.sendMail(account.getEmail(), mailCert.getVerificationCode())) {
+        if (!mailUtil.sendMail(request.getEmail(), mailCert.getVerificationCode())) {
             throw new RuntimeException(SMTP_SERVER_ERROR.getMessage());
         }
-    }
-
-    private Account findUserByEmail(String email) {
-        return accountRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(NOT_FOUNT_USER.getMessage()));
     }
 
     private Mail createVerification(String id) {

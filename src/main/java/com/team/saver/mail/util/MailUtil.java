@@ -36,7 +36,7 @@ public class MailUtil {
                             "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"470px;\">\n" +
                             "                    <tr><td style=\"height: 60px;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 18px;\"></td></tr>\n" +
-                            "                    <tr><td><span style=\"font-size: 32px; font-weight: bold;\">MyStory 이메일 인증 안내</span></td></tr>\n" +
+                            "                    <tr><td><span style=\"font-size: 32px; font-weight: bold;\">Leaf-Between 이메일 인증 안내</span></td></tr>\n" +
                             "                    <tr><td style=\"height: 34px;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 1px; background: #eaeaea;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 30px;\"></td></tr>\n" +
