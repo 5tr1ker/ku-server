@@ -36,7 +36,7 @@ public class MailUtil {
                             "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"470px;\">\n" +
                             "                    <tr><td style=\"height: 60px;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 18px;\"></td></tr>\n" +
-                            "                    <tr><td><span style=\"font-size: 32px; font-weight: bold;\">Leaf-Between 이메일 인증 안내</span></td></tr>\n" +
+                            "                    <tr><td><span style=\"font-size: 32px; font-weight: bold;\">이메일 인증 안내</span></td></tr>\n" +
                             "                    <tr><td style=\"height: 34px;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 1px; background: #eaeaea;\"></td></tr>\n" +
                             "                    <tr><td style=\"height: 30px;\"></td></tr>\n" +
@@ -46,7 +46,7 @@ public class MailUtil {
                             "                                <tr>\n" +
                             "                                    <td>\n" +
                             "                                        <span style=\"font-size: 14px;\">\n" +
-                            "                        \"사용자 [" + ToEmail + "]님에 대한 인증 코드는 [" + code + "] 입니다. 인증 코드란에 정확히 기입해주세요." +
+                            "                        사용자 [" + ToEmail + "]님에 대한 <br/> 인증 코드는 다음과 같습니다. <br/> " + code + "<br/> 인증 코드란에 정확히 기입해주세요." +
                             "                                        </span>\n" +
                             "                                    </td>\n" +
                             "                                </tr>\n<tr><td style=\"height: 30px;\"></td></tr>" +
