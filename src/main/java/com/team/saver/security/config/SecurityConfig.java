@@ -23,7 +23,8 @@ public class SecurityConfig {
         http.csrf().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .requestMatchers("/account/sign-up" , "/account/sign-in").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/account/sign-up" , "/account/sign-in" , "/mail/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/**").hasRole("NORMAL");
 
