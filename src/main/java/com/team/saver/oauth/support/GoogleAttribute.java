@@ -1,6 +1,5 @@
 package com.team.saver.oauth.support;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team.saver.oauth.dto.AccountInfo;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;

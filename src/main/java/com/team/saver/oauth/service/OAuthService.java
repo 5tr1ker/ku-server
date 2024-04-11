@@ -6,6 +6,8 @@ import com.team.saver.account.entity.UserType;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.dto.OAuthRequest;
+import com.team.saver.oauth.support.GoogleAttribute;
+import com.team.saver.oauth.support.KakaoAttribute;
 import com.team.saver.oauth.support.NaverAttribute;
 import com.team.saver.oauth.support.OAuthAttribute;
 import com.team.saver.oauth.util.OAuthType;
@@ -26,6 +28,8 @@ public class OAuthService {
     private final RestTemplate restTemplate;
     private final SessionManager sessionManager;
     private final NaverAttribute naverAttribute;
+    private final GoogleAttribute googleAttribute;
+    private final KakaoAttribute kakaoAttribute;
 
     public void SignInOAuthAccount(OAuthRequest request, HttpSession session) {
         Account account = createAccountFromOAuthRequest(request);
@@ -55,10 +59,10 @@ public class OAuthService {
             return naverAttribute;
         }
         else if(type.equals(OAuthType.KAKAO)) {
-            return null;
+            return kakaoAttribute;
         }
         else if(type.equals(OAuthType.GOOGLE)) {
-            return null;
+            return googleAttribute;
         }
 
         throw new RuntimeException(UNKNOWN_OAUTH_TYPE.getMessage());
