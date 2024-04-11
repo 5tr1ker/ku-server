@@ -31,11 +31,15 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Enumerated(EnumType.STRING)
+    private UserType type;
+
     public static Account createAccount(SignUpRequest request, String encodePassword) {
         return Account.builder()
                 .email(request.getEmail())
                 .password(encodePassword)
                 .role(UserRole.NORMAL)
+                .type(UserType.GENERATE)
                 .build();
     }
 
