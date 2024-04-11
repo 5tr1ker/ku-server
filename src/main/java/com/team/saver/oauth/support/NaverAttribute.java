@@ -1,14 +1,15 @@
 package com.team.saver.oauth.support;
 
 import com.team.saver.oauth.dto.AccountInfo;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.util.Objects;
 
 @Getter
+@Component
 public class NaverAttribute implements OAuthAttribute {
 
     @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")

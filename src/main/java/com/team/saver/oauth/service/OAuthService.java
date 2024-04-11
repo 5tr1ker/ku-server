@@ -25,6 +25,7 @@ public class OAuthService {
     private final AccountRepository accountRepository;
     private final RestTemplate restTemplate;
     private final SessionManager sessionManager;
+    private final NaverAttribute naverAttribute;
 
     public void SignInOAuthAccount(OAuthRequest request, HttpSession session) {
         Account account = createAccountFromOAuthRequest(request);
@@ -51,7 +52,7 @@ public class OAuthService {
 
     private OAuthAttribute findAttribute(OAuthType type) {
         if(type.equals(OAuthType.NAVER)) {
-            return new NaverAttribute();
+            return naverAttribute;
         }
         else if(type.equals(OAuthType.KAKAO)) {
             return null;
