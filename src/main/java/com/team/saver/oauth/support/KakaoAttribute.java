@@ -1,14 +1,10 @@
 package com.team.saver.oauth.support;
 
 import com.team.saver.oauth.dto.AccountInfo;
-import lombok.Getter;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,19 +13,21 @@ import java.net.URI;
 import java.util.Objects;
 
 @Component
-public class NaverAttribute implements OAuthAttribute {
+public class KakaoAttribute implements OAuthAttribute {
 
-    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
-    private String naver_user_info_uri;
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String kakao_user_info_uri;
 
     @Override
     public ResponseEntity<String> requestUserInfo(String accessToken, RestTemplate restTemplate) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","Bearer " + accessToken);
+        headers.add("Authorization","Bearer "+ accessToken);
+
+        headers.setContentType(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         URI uri = UriComponentsBuilder
-                .fromUriString(naver_user_info_uri)
-                .build().toUri();
+                .fromUriString(kakao_user_info_uri)
+                .encode().build().toUri();
 
         return restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(headers), String.class);
     }
@@ -38,7 +36,7 @@ public class NaverAttribute implements OAuthAttribute {
     public AccountInfo getUserInfo(ResponseEntity<String> userInfoRes) {
         JSONObject jsonObject =
                 (JSONObject) JSONValue.parse(Objects.requireNonNull(userInfoRes.getBody()));
-        JSONObject accountObject = (JSONObject) jsonObject.get("response");
+        JSONObject accountObject = (JSONObject) jsonObject.get("kakao_account");
 
         return AccountInfo.builder()
                 .name((String) accountObject.get("name"))
