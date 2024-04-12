@@ -1,9 +1,7 @@
 package com.team.saver.partner.request.controller;
 
-import com.team.saver.account.entity.Account;
 import com.team.saver.partner.request.dto.NewPartnerRequest;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
-import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.service.PartnerRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
