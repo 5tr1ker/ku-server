@@ -18,16 +18,16 @@ import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_SORT_TYPE;
 public class MarketSortTool {
 
     public static List<MarketResponse> sortMarket(List<MarketResponse> marketResponse, SortType sort, DistanceRequest request) {
-        if(sort.equals(SortType.DISTANCE)) {
+        if(sort.equals(SortType.NEAR_DISTANCE)) {
             return sortByDistance(marketResponse, request);
         }
-        else if(sort.equals(SortType.DISCOUNT)) {
+        else if(sort.equals(SortType.HIGHEST_DISCOUNT)) {
             return sortByMaxDiscountRate(marketResponse);
         }
         else if(sort.equals(SortType.HIGHEST_RATED)) {
             return sortByAverageReviewScore(marketResponse);
         }
-        else if(sort.equals(SortType.REVIEW)) {
+        else if(sort.equals(SortType.MANY_REVIEW)) {
             return sortByReviewCount(marketResponse);
         }
 
@@ -38,7 +38,7 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
-                return Long.compare(o1.getReviewCount(), o2.getReviewCount());
+                return Long.compare(o2.getReviewCount(), o1.getReviewCount());
             }
         });
 
@@ -49,7 +49,7 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
-                return Double.compare(o1.getAverageReviewScore(), o2.getAverageReviewScore());
+                return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
             }
         });
 
@@ -60,7 +60,7 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
-                return Double.compare(o1.getMaxDiscountRate(), o2.getMaxDiscountRate());
+                return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
             }
         });
 

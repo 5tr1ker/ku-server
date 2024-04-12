@@ -2,6 +2,6 @@ package com.team.saver.market.store.util;
 
 public enum SortType {
 
-    DISTANCE, DISCOUNT, REVIEW, HIGHEST_RATED
+    NEAR_DISTANCE, HIGHEST_DISCOUNT, MANY_REVIEW, HIGHEST_RATED
 
 }

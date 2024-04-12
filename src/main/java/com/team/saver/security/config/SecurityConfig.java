@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.GET ,"/market/**").permitAll()
+                .requestMatchers(HttpMethod.POST ,"/market/search" , "/market/search/**").permitAll()
                 .requestMatchers("/account/sign-up" , "/account/sign-in" , "/mail/**" , "/account/oauth/sign-in").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/**").hasRole("NORMAL");

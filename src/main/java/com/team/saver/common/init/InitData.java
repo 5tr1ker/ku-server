@@ -69,5 +69,104 @@ public class InitData implements CommandLineRunner {
         market2.addReview(Review.builder().score(5).build());
 
         marketRepository.save(market2);
+
+        Market market3 = Market.builder()
+                .marketDescription("description")
+                .locationX(13.651)
+                .locationY(56.14)
+                .marketName("abcvbzc")
+                .mainCategory(MainCategory.CULTURE)
+                .detailAddress("detailAddress")
+                .build();
+        market3.addCoupon(Coupon.builder().saleRate(8.0).build());
+        market3.addCoupon(Coupon.builder().saleRate(3.0).build());
+        market3.addCoupon(Coupon.builder().saleRate(5.0).build());
+        market3.addReview(Review.builder().score(1).build());
+        market3.addReview(Review.builder().score(4).build());
+        market3.addReview(Review.builder().score(5).build());
+        market3.addReview(Review.builder().score(4).build());
+
+        marketRepository.save(market3);
+
+        Market market3_1 = Market.builder()
+                .marketDescription("description")
+                .locationX(13.651)
+                .locationY(56.14)
+                .marketName("abcvbzc")
+                .mainCategory(MainCategory.CULTURE)
+                .detailAddress("detailAddress")
+                .build();
+        market3_1.addCoupon(Coupon.builder().saleRate(8.0).build());
+        market3_1.addCoupon(Coupon.builder().saleRate(3.0).build());
+        market3_1.addCoupon(Coupon.builder().saleRate(5.0).build());
+        market3_1.addCoupon(Coupon.builder().saleRate(8.0).build());
+        market3_1.addCoupon(Coupon.builder().saleRate(3.0).build());
+        market3_1.addCoupon(Coupon.builder().saleRate(5.0).build());
+        market3_1.addReview(Review.builder().score(1).build());
+        market3_1.addReview(Review.builder().score(4).build());
+        market3_1.addReview(Review.builder().score(5).build());
+        market3_1.addReview(Review.builder().score(4).build());
+        market3_1.addReview(Review.builder().score(1).build());
+        market3_1.addReview(Review.builder().score(4).build());
+        market3_1.addReview(Review.builder().score(5).build());
+        market3_1.addReview(Review.builder().score(4).build());
+
+        marketRepository.save(market3_1);
+
+        Market market4 = Market.builder()
+                .marketDescription("description")
+                .locationX(131.651)
+                .locationY(56.14)
+                .marketName("abcabc")
+                .mainCategory(MainCategory.CULTURE)
+                .detailAddress("detailAddress")
+                .build();
+        market4.addCoupon(Coupon.builder().saleRate(15.0).build());
+        market4.addCoupon(Coupon.builder().saleRate(14.0).build());
+        market4.addCoupon(Coupon.builder().saleRate(17.0).build());
+        market4.addReview(Review.builder().score(5).build());
+        market4.addReview(Review.builder().score(4).build());
+        market4.addReview(Review.builder().score(5).build());
+        market4.addReview(Review.builder().score(4).build());
+
+        marketRepository.save(market4);
+
+        Market market4_1 = Market.builder()
+                .marketDescription("description")
+                .locationX(131.651)
+                .locationY(56.14)
+                .marketName("abcabc")
+                .mainCategory(MainCategory.CULTURE)
+                .detailAddress("detailAddress")
+                .build();
+        market4_1.addCoupon(Coupon.builder().saleRate(15.0).build());
+        market4_1.addCoupon(Coupon.builder().saleRate(14.0).build());
+        market4_1.addCoupon(Coupon.builder().saleRate(17.0).build());
+        market4_1.addReview(Review.builder().score(5).build());
+        market4_1.addReview(Review.builder().score(4).build());
+        market4_1.addReview(Review.builder().score(5).build());
+        market4_1.addReview(Review.builder().score(4).build());
+        market4_1.addCoupon(Coupon.builder().saleRate(15.0).build());
+        market4_1.addCoupon(Coupon.builder().saleRate(14.0).build());
+        market4_1.addCoupon(Coupon.builder().saleRate(17.0).build());
+        market4_1.addReview(Review.builder().score(5).build());
+        market4_1.addReview(Review.builder().score(4).build());
+        market4_1.addReview(Review.builder().score(5).build());
+        market4_1.addReview(Review.builder().score(4).build());
+
+        marketRepository.save(market4_1);
+
+        Market market5 = Market.builder()
+                .marketDescription("description")
+                .locationX(1341.651)
+                .locationY(5516.14)
+                .marketName("aaaaa")
+                .mainCategory(MainCategory.CULTURE)
+                .detailAddress("detailAddress")
+                .build();
+        market5.addReview(Review.builder().score(3).build());
+
+        marketRepository.save(market5);
+
     }
 }
