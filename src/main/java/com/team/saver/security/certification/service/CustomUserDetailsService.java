@@ -1,6 +1,5 @@
 package com.team.saver.security.certification.service;
 
-import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import lombok.RequiredArgsConstructor;

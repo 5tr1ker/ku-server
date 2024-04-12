@@ -1,6 +1,6 @@
 package com.team.saver.account.entity;
 
-import com.team.saver.account.dto.SignUpRequest;
+import com.team.saver.oauth.dto.AccountInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,16 +26,22 @@ public class Account implements UserDetails {
 
     private String email;
 
+    private String phone;
+
+    private String age;
+
+    private String name;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private boolean isStudent;
-
-    public static Account createAccount(SignUpRequest request) {
+    public static Account createAccountEntity(AccountInfo accountInfo) {
         return Account.builder()
-                .email(request.getEmail())
+                .email(accountInfo.getEmail())
+                .phone(accountInfo.getPhone())
+                .age(accountInfo.getAge())
+                .name(accountInfo.getName())
                 .role(UserRole.NORMAL)
-                .isStudent(false)
                 .build();
     }
 

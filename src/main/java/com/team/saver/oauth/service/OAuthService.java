@@ -1,7 +1,6 @@
 package com.team.saver.oauth.service;
 
 import com.team.saver.account.entity.Account;
-import com.team.saver.account.entity.UserType;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.oauth.dto.AccountInfo;
@@ -36,22 +35,14 @@ public class OAuthService {
         accountRepository.findByEmail(account.getEmail())
                 .orElseGet(() -> accountRepository.save(account));
 
-        isValidSignIn(account);
-
         sessionManager.addSession(account.getEmail(), session);
-    }
-
-    private void isValidSignIn(Account account) {
-        if(!account.getType().equals(UserType.OAUTH)) {
-            throw new CustomRuntimeException(NOT_VALID_OAUTH_USER);
-        }
     }
 
     private Account createAccountFromOAuthRequest(OAuthRequest request) {
         OAuthAttribute attribute = findAttribute(request.getType());
 
         AccountInfo info = getUserInfo(attribute, request.getAccessToken());
-        return info.createAccountEntity();
+        return Account.createAccountEntity(info);
     }
 
     private OAuthAttribute findAttribute(OAuthType type) {
