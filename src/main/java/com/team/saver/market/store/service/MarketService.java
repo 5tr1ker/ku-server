@@ -24,13 +24,19 @@ public class MarketService {
     }
 
     public List<MarketResponse> findMarketBySearch(SearchByNameRequest request) {
-        List<MarketResponse> result = marketRepository.findMarketsByMarketNameContaining(request.getMarketName());
+        List<MarketResponse> result = marketRepository.findMarketsByMarketName(request.getMarketName());
 
         return MarketSortTool.sortMarket(result, request.getSort(), request.getDistance());
     }
 
     public List<MarketResponse> findMarketByMainCategory(SearchByCategoryRequest request) {
-        List<MarketResponse> result = marketRepository.findMarketsByMainCategory(request.getCategory());
+        List<MarketResponse> result;
+
+        if(request.getMarketName() == null) {
+            result = marketRepository.findMarketsByMainCategory(request.getCategory());
+        } else {
+            result = marketRepository.findMarketsByMainCategoryAndMarketName(request.getCategory(), request.getMarketName());
+        }
 
         return MarketSortTool.sortMarket(result, request.getSort(), request.getDistance());
     }

@@ -62,7 +62,29 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public List<MarketResponse> findMarketsByMarketNameContaining(String marketName) {
+    public List<MarketResponse> findMarketsByMainCategoryAndMarketName(MainCategory category, String marketName) {
+        return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
+                        market.marketId,
+                        market.mainCategory,
+                        market.locationX,
+                        market.locationY,
+                        market.marketName,
+                        market.marketDescription,
+                        market.detailAddress,
+                        review.score.avg(),
+                        review.countDistinct(),
+                        coupon.saleRate.max()
+                ))
+                .from(market)
+                .leftJoin(market.coupons, coupon)
+                .leftJoin(market.reviews, review)
+                .groupBy(market)
+                .where(market.mainCategory.eq(category).and(market.marketName.contains(marketName)))
+                .fetch();
+    }
+
+    @Override
+    public List<MarketResponse> findMarketsByMarketName(String marketName) {
         return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,

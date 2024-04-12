@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class SearchMarketRequest {
+
     private SortType sort;
 
     private DistanceRequest distance;

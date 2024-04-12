@@ -13,4 +13,6 @@ public class SearchByCategoryRequest {
 
     private MainCategory category;
 
+    private String marketName;
+
 }

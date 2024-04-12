@@ -11,6 +11,8 @@ public interface CustomMarketRepository {
 
     List<MarketResponse> findMarketsByMainCategory(MainCategory category);
 
-    List<MarketResponse> findMarketsByMarketNameContaining(String marketName);
+    List<MarketResponse> findMarketsByMainCategoryAndMarketName(MainCategory category, String marketName);
+
+    List<MarketResponse> findMarketsByMarketName(String marketName);
 
 }
