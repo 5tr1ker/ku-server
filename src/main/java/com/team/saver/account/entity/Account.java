@@ -1,6 +1,6 @@
 package com.team.saver.account.entity;
 
-import com.team.saver.account.dto.SignUpRequest;
+import com.team.saver.oauth.dto.AccountInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,15 +26,21 @@ public class Account implements UserDetails {
 
     private String email;
 
-    private String password;
+    private String phone;
+
+    private String age;
+
+    private String name;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public static Account createAccount(SignUpRequest request, String encodePassword) {
+    public static Account createAccountEntity(AccountInfo accountInfo) {
         return Account.builder()
-                .email(request.getEmail())
-                .password(encodePassword)
+                .email(accountInfo.getEmail())
+                .phone(accountInfo.getPhone())
+                .age(accountInfo.getAge())
+                .name(accountInfo.getName())
                 .role(UserRole.NORMAL)
                 .build();
     }
@@ -46,7 +52,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override

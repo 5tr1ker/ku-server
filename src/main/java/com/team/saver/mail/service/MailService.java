@@ -1,19 +1,18 @@
 package com.team.saver.mail.service;
 
-import com.team.saver.account.entity.Account;
-import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.mail.dto.MailRequest;
 import com.team.saver.mail.entity.Mail;
 import com.team.saver.mail.repository.MailRepository;
 import com.team.saver.mail.util.MailUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.team.saver.common.dto.ErrorMessage.*;
+import static com.team.saver.common.dto.ErrorMessage.NOT_MATCHED_CODE;
+import static com.team.saver.common.dto.ErrorMessage.SMTP_SERVER_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class MailService {
         Mail mailCert = createVerification(request.getEmail());
 
         if (!mailUtil.sendMail(request.getEmail(), mailCert.getVerificationCode())) {
-            throw new RuntimeException(SMTP_SERVER_ERROR.getMessage());
+            throw new CustomRuntimeException(SMTP_SERVER_ERROR);
         }
     }
 
@@ -55,10 +54,10 @@ public class MailService {
 
     private boolean isCorrectVerificationCode(MailRequest request) {
         Mail mailCert = mailRepository.findById(request.getEmail())
-                .orElseThrow(() -> new RuntimeException(NOT_MATCHED_CODE.getMessage()));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_MATCHED_CODE));
 
         if(!mailCert.isCorrectVerificationCode(request.getCode())) {
-            throw new RuntimeException(NOT_MATCHED_CODE.getMessage());
+            throw new CustomRuntimeException(NOT_MATCHED_CODE);
         }
 
         return true;
