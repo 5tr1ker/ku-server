@@ -1,4 +1,4 @@
-package com.team.saver.market.entity;
+package com.team.saver.market.store.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,10 +17,16 @@ public class Market {
     private long marketId;
 
     @Enumerated(EnumType.STRING)
-    MainCategory mainCategory;
+    private MainCategory mainCategory;
 
     private double locationX;
 
     private double locationY;
+
+    private String marketName;
+
+    private String marketDescription;
+
+    private String detailAddress;
 
 }
