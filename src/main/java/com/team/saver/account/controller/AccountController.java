@@ -23,7 +23,6 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    private final AccountRepository accountRepository;
     private final SessionManager sessionManager;
     @PostMapping("/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")

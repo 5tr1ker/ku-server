@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class InitData implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
-    private final MarketRepository marketRepository;
 
     @Override
     @Transactional
