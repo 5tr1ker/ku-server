@@ -2,10 +2,7 @@ package com.team.saver.market.coupon.entity;
 
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Getter
@@ -18,6 +15,7 @@ public class Coupon {
     private long couponId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private Market market;
 
     private String couponName;
