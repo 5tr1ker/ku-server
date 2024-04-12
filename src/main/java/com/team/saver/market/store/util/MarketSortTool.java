@@ -38,6 +38,11 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
+                if(o1.getReviewCount() == o2.getReviewCount()) {
+
+                    return Double.compare(o2.getAverageReviewScore() , o1.getAverageReviewScore());
+                }
+
                 return Long.compare(o2.getReviewCount(), o1.getReviewCount());
             }
         });
@@ -49,6 +54,11 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
+                if(o1.getAverageReviewScore() == o2.getAverageReviewScore()) {
+
+                    return Long.compare(o2.getReviewCount(), o1.getReviewCount());
+                }
+
                 return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
             }
         });
@@ -60,6 +70,11 @@ public class MarketSortTool {
         Collections.sort(marketResponse, new Comparator<MarketResponse>() {
             @Override
             public int compare(MarketResponse o1, MarketResponse o2) {
+                if(o1.getMaxDiscountRate() == o2.getMaxDiscountRate()) {
+
+                    return Double.compare(o2.getAverageReviewScore() , o1.getAverageReviewScore());
+                }
+
                 return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
             }
         });
