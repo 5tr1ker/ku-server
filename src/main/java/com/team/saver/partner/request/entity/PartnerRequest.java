@@ -1,8 +1,8 @@
 package com.team.saver.partner.request.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.team.saver.account.entity.Account;
+import com.team.saver.partner.request.dto.NewPartnerRequest;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,4 +20,14 @@ public class PartnerRequest {
 
     private String marketAddress;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account requestUser;
+
+    public static PartnerRequest createPartnerRequest(Account account, NewPartnerRequest request) {
+        return PartnerRequest.builder()
+                .requestMarketName(request.getRequestMarketName())
+                .marketAddress(request.getMarketAddress())
+                .requestUser(account)
+                .build();
+    }
 }
