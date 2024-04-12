@@ -1,9 +1,9 @@
 package com.team.saver.oauth.service;
 
-import com.team.saver.account.dto.SignUpRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserType;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.dto.OAuthRequest;
 import com.team.saver.oauth.support.GoogleAttribute;
@@ -43,7 +43,7 @@ public class OAuthService {
 
     private void isValidSignIn(Account account) {
         if(!account.getType().equals(UserType.OAUTH)) {
-            throw new RuntimeException(NOT_VALID_OAUTH_USER.getMessage());
+            throw new CustomRuntimeException(NOT_VALID_OAUTH_USER);
         }
     }
 
@@ -65,7 +65,7 @@ public class OAuthService {
             return googleAttribute;
         }
 
-        throw new RuntimeException(UNKNOWN_OAUTH_TYPE.getMessage());
+        throw new CustomRuntimeException(UNKNOWN_OAUTH_TYPE);
     }
 
     private AccountInfo getUserInfo(OAuthAttribute attribute, String accessToken) {

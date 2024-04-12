@@ -26,20 +26,16 @@ public class Account implements UserDetails {
 
     private String email;
 
-    private String password;
-
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Enumerated(EnumType.STRING)
-    private UserType type;
+    private boolean isStudent;
 
-    public static Account createAccount(SignUpRequest request, String encodePassword) {
+    public static Account createAccount(SignUpRequest request) {
         return Account.builder()
                 .email(request.getEmail())
-                .password(encodePassword)
                 .role(UserRole.NORMAL)
-                .type(UserType.GENERATE)
+                .isStudent(false)
                 .build();
     }
 
@@ -50,7 +46,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override

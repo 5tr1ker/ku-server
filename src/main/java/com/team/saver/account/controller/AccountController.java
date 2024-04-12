@@ -1,16 +1,17 @@
 package com.team.saver.account.controller;
 
-import com.team.saver.account.dto.SignUpRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,22 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
-
-    @PostMapping("/sign-up")
-    @Operation(summary = "회원가입")
-    public ResponseEntity signUp(@RequestBody SignUpRequest request) {
-        accountService.signUp(request);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/sign-in")
-    @Operation(summary = "로그인")
-    public ResponseEntity signIn(@RequestBody SignUpRequest request, HttpSession session) {
-        accountService.signIn(request, session);
-
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/profile")
     @Operation(summary = "사용자 정보 가져오기")

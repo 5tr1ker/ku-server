@@ -2,6 +2,7 @@ package com.team.saver.security.certification.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.exception.CustomRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return accountRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException(NOT_FOUNT_USER.getMessage()));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
     }
 }
