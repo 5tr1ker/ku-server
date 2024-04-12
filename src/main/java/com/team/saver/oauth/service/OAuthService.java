@@ -42,7 +42,7 @@ public class OAuthService {
         OAuthAttribute attribute = findAttribute(request.getType());
 
         AccountInfo info = getUserInfo(attribute, request.getAccessToken());
-        return Account.createAccountEntity(info);
+        return Account.createAccountEntity(info, request.getType());
     }
 
     private OAuthAttribute findAttribute(OAuthType type) {
