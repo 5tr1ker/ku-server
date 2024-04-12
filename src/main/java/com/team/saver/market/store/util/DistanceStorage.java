@@ -1,6 +1,6 @@
 package com.team.saver.market.store.util;
 
-import com.team.saver.market.store.dto.StoreResponse;
+import com.team.saver.market.store.dto.MarketResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DistanceStorage {
 
-    private StoreResponse storeResponses;
+    private MarketResponse marketResponses;
 
     private double distance;
 

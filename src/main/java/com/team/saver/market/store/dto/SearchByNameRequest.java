@@ -1,0 +1,15 @@
+package com.team.saver.market.store.dto;
+
+import com.team.saver.market.store.util.SortType;
+import lombok.Getter;
+
+@Getter
+public class SearchByNameRequest {
+
+    private SortType sort;
+
+    private DistanceRequest distance;
+
+    private String marketName;
+
+}

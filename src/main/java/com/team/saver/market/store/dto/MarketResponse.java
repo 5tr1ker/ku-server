@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class StoreResponse {
+public class MarketResponse {
 
     private long marketId;
 
