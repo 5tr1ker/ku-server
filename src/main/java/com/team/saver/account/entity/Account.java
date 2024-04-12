@@ -1,15 +1,18 @@
 package com.team.saver.account.entity;
 
 import com.team.saver.oauth.dto.AccountInfo;
+import com.team.saver.oauth.util.OAuthType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -33,14 +36,21 @@ public class Account implements UserDetails {
     private String name;
 
     @Enumerated(EnumType.STRING)
+    private OAuthType oAuthType;
+
+    @CreationTimestamp
+    private LocalDate joinDate;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public static Account createAccountEntity(AccountInfo accountInfo) {
+    public static Account createAccountEntity(AccountInfo accountInfo, OAuthType type) {
         return Account.builder()
                 .email(accountInfo.getEmail())
                 .phone(accountInfo.getPhone())
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
+                .oAuthType(type)
                 .role(UserRole.NORMAL)
                 .build();
     }
