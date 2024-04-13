@@ -1,5 +1,6 @@
 package com.team.saver.market.store.entity;
 
+import com.team.saver.account.entity.Account;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
 import jakarta.persistence.*;
@@ -24,6 +25,9 @@ public class Market {
 
     @Enumerated(EnumType.STRING)
     private MainCategory mainCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account partner;
 
     @OneToMany(mappedBy = "market" , cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true)
     @Builder.Default
