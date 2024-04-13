@@ -1,16 +1,14 @@
 package com.team.saver.partner.request.repository;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
+import com.team.saver.partner.request.entity.PartnerRequest;
 import lombok.RequiredArgsConstructor;
 
-import static com.team.saver.partner.response.entity.QPartnerResponse.partnerResponse;
-import static com.team.saver.account.entity.QAccount.account;
-import static com.team.saver.partner.request.entity.QPartnerRequest.partnerRequest;
-
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.team.saver.partner.request.entity.QPartnerRequest.partnerRequest;
 
 @RequiredArgsConstructor
 public class PartnerRequestRepositoryImpl implements CustomPartnerRequestRepository {
@@ -19,19 +17,15 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public List<PartnerRequestResponse> findAllEntity() {
-
-        return jpaQueryFactory.select(Projections.constructor(
-                        PartnerRequestResponse.class,
-                        partnerRequest.partnerRequestId,
-                        partnerRequest.requestMarketName,
-                        partnerRequest.marketAddress,
-                        account.accountId,
-                        account.email,
-                        Expressions.list(partnerResponse.message)
-                ))
+        List<PartnerRequest> result = jpaQueryFactory
+                .select(partnerRequest)
                 .from(partnerRequest)
-                .innerJoin(partnerRequest.requestUser, account)
-                .leftJoin(partnerRequest.partnerResponse, partnerResponse)
+                .innerJoin(partnerRequest.requestUser)
+                .leftJoin(partnerRequest.partnerResponse)
                 .fetch();
+
+        return result.stream()
+                .map(PartnerRequestResponse::createResponse)
+                .collect(Collectors.toList());
     }
 }

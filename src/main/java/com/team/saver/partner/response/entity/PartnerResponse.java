@@ -2,12 +2,10 @@ package com.team.saver.partner.response.entity;
 
 import com.team.saver.partner.request.entity.PartnerRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
