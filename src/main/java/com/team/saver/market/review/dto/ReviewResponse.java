@@ -11,7 +11,7 @@ public class ReviewResponse {
 
     private long reviewerId;
 
-    private long reviewerEmail;
+    private String reviewerEmail;
 
     private String reviewContent;
 

@@ -36,6 +36,15 @@ public class InitData implements CommandLineRunner {
 
         accountRepository.save(account);
 
+        Account account2 = Account.builder()
+                .email("email2@google.com")
+                .age("24")
+                .phone("01046544654")
+                .role(UserRole.NORMAL)
+                .build();
+
+        accountRepository.save(account2);
+
         Market market = Market.builder()
                 .marketName("marketName")
                 .marketDescription("description")
