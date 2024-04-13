@@ -21,9 +21,9 @@ public class CouponController {
 
     private final CouponService couponService;
 
-    @GetMapping("/{marketId}")
+    @GetMapping
     @Operation(summary = "marketId 로 다운로드 가능한 쿠폰 모두 조회")
-    public ResponseEntity findCouponByMarketId(@PathVariable long marketId) {
+    public ResponseEntity findCouponByMarketId(@RequestParam long marketId) {
         List<CouponResponse> result = couponService.findCouponByMarketId(marketId);
 
         return ResponseEntity.ok(result);
@@ -37,7 +37,7 @@ public class CouponController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/download/{couponId}")
+    @PostMapping("/{couponId}/download")
     @Operation(summary = "쿠폰 다운로드")
     public ResponseEntity downloadCoupon(@LogIn CurrentUser currentUser, @PathVariable long couponId) {
 
@@ -46,13 +46,12 @@ public class CouponController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{marketId}")
+    @PostMapping
     @Operation(summary = "새로운 쿠폰 생성")
     public ResponseEntity createCoupon(@LogIn CurrentUser currentUser,
-                                       @RequestBody CouponCreateRequest request,
-                                       @PathVariable long marketId) {
+                                       @RequestBody CouponCreateRequest request) {
 
-        couponService.createCoupon(currentUser, request, marketId);
+        couponService.createCoupon(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -67,7 +66,7 @@ public class CouponController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{downloadCouponId}")
+    @PatchMapping("/download/{downloadCouponId}")
     @Operation(summary = "사용한 쿠폰으로 수정")
     public ResponseEntity updateCouponUsage(@LogIn CurrentUser currentUser,
                                             @PathVariable long downloadCouponId) {

@@ -20,20 +20,19 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/{marketId}")
+    @GetMapping
     @Operation(summary = "리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@PathVariable long marketId) {
+    public ResponseEntity findReviewByMarketId(@RequestParam long marketId) {
         List<ReviewResponse> result = reviewService.findReviewByMarketId(marketId);
 
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/{marketId}")
+    @PostMapping
     @Operation(summary = "리뷰 추가")
-    public ResponseEntity addReview(@PathVariable long marketId,
-                                    @LogIn CurrentUser currentUser,
+    public ResponseEntity addReview(@LogIn CurrentUser currentUser,
                                     @RequestBody ReviewRequest request) {
-        reviewService.addReview(marketId, currentUser, request);
+        reviewService.addReview(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
