@@ -5,9 +5,11 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CouponResponse {
+public class DownloadCouponResponse {
 
-    private long couponId;
+    private long downloadCouponId;
+
+    private boolean isUsage;
 
     private String couponName;
 
@@ -15,4 +17,7 @@ public class CouponResponse {
 
     private double saleRate;
 
+    private long marketId;
+
+    private String marketName;
 }

@@ -1,6 +1,7 @@
 package com.team.saver.market.coupon.entity;
 
 import com.team.saver.account.entity.Account;
+import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public class DownloadCoupon {
     @ManyToOne(fetch = FetchType.LAZY)
     private Coupon coupon;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Market market;
+
     @Builder.Default
     private boolean isUsage = false;
 
@@ -37,10 +41,11 @@ public class DownloadCoupon {
         useDate = LocalDateTime.now();
     }
 
-    public static DownloadCoupon createEntity(Account account, Coupon coupon) {
+    public static DownloadCoupon createEntity(Account account, Coupon coupon, Market market) {
         return DownloadCoupon.builder()
                 .account(account)
                 .coupon(coupon)
+                .market(market)
                 .build();
     }
 

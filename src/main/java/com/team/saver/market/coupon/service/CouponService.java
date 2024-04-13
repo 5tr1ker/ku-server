@@ -6,6 +6,7 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
 import com.team.saver.market.coupon.dto.CouponResponse;
+import com.team.saver.market.coupon.dto.DownloadCouponResponse;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.entity.DownloadCoupon;
 import com.team.saver.market.coupon.repository.CouponDownloadRepository;
@@ -45,7 +46,7 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
 
-        DownloadCoupon downloadCoupon = DownloadCoupon.createEntity(account, coupon);
+        DownloadCoupon downloadCoupon = DownloadCoupon.createEntity(account, coupon, coupon.getMarket());
         couponDownloadRepository.save(downloadCoupon);
     }
 
@@ -67,11 +68,14 @@ public class CouponService {
     }
 
     @Transactional
-    public void updateCouponUsage(UserDetails userDetails, long couponId) {
-        DownloadCoupon downloadCoupon = couponRepository.findDownloadCouponByCouponIdAndUserEmail(userDetails.getUsername(), couponId)
+    public void updateCouponUsage(UserDetails userDetails, long downloadCouponId) {
+        DownloadCoupon downloadCoupon = couponRepository.findDownloadCouponByIdAndUserEmail(userDetails.getUsername(), downloadCouponId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
 
         downloadCoupon.updateIsUsage();
     }
 
+    public List<DownloadCouponResponse> findDownloadCouponByUserEmail(UserDetails userDetails) {
+        return couponRepository.findDownloadCouponByUserEmail(userDetails.getUsername());
+    }
 }

@@ -2,6 +2,7 @@ package com.team.saver.market.coupon.controller;
 
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
 import com.team.saver.market.coupon.dto.CouponResponse;
+import com.team.saver.market.coupon.dto.DownloadCouponResponse;
 import com.team.saver.market.coupon.service.CouponService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,14 @@ public class CouponController {
     @Operation(summary = "marketId 로 다운로드 가능한 쿠폰 모두 조회")
     public ResponseEntity findCouponByMarketId(@PathVariable long marketId) {
         List<CouponResponse> result = couponService.findCouponByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/download")
+    @Operation(summary = "다운로드한 쿠폰 조회")
+    public ResponseEntity findDownloadCouponByUserEmail(@AuthenticationPrincipal UserDetails userDetails) {
+        List<DownloadCouponResponse> result = couponService.findDownloadCouponByUserEmail(userDetails);
 
         return ResponseEntity.ok(result);
     }
@@ -59,12 +68,12 @@ public class CouponController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{couponId}")
+    @PatchMapping("/{downloadCouponId}")
     @Operation(summary = "사용한 쿠폰으로 수정")
     public ResponseEntity updateCouponUsage(@AuthenticationPrincipal UserDetails userDetails,
-                                  @PathVariable long couponId) {
+                                  @PathVariable long downloadCouponId) {
 
-        couponService.updateCouponUsage(userDetails, couponId);
+        couponService.updateCouponUsage(userDetails, downloadCouponId);
 
         return ResponseEntity.ok().build();
     }

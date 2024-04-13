@@ -37,7 +37,7 @@ public class InitData implements CommandLineRunner {
         accountRepository.save(account);
 
         Account account2 = Account.builder()
-                .email("email2@google.com")
+                .email("email2@naver.com")
                 .age("24")
                 .phone("01046544654")
                 .role(UserRole.NORMAL)
@@ -52,6 +52,7 @@ public class InitData implements CommandLineRunner {
                 .mainCategory(MainCategory.RESTAURANT)
                 .locationY(123.451)
                 .locationX(431.176)
+                .partner(account)
                 .closeTime(LocalTime.now())
                 .openTime(LocalTime.now())
                 .marketPhone("01012341234")

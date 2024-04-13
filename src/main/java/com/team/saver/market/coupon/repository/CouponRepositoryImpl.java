@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.team.saver.market.coupon.dto.CouponResponse;
 
+import com.team.saver.market.coupon.dto.DownloadCouponResponse;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.entity.DownloadCoupon;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,35 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<DownloadCoupon> findDownloadCouponByIdAndUserEmail(String email, long id) {
+        DownloadCoupon result = jpaQueryFactory.select(downloadCoupon)
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .where(downloadCoupon.downloadCouponId.eq(id))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<DownloadCouponResponse> findDownloadCouponByUserEmail(String userEmail) {
+        return jpaQueryFactory.select(Projections.constructor(
+                        DownloadCouponResponse.class,
+                        downloadCoupon.downloadCouponId,
+                        downloadCoupon.isUsage,
+                        coupon.couponName,
+                        coupon.couponDescription,
+                        coupon.saleRate,
+                        market.marketId,
+                        market.marketName
+                ))
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.coupon, coupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(userEmail))
+                .innerJoin(downloadCoupon.market, market)
+                .fetch();
     }
 }
