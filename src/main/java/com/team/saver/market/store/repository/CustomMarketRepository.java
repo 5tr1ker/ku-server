@@ -19,4 +19,6 @@ public interface CustomMarketRepository {
 
     Optional<Market> findMarketDetailById(long marketId);
 
+    Optional<Market> findMarketByMarketIdAndPartnerEmail(String partnerEmail, long marketId);
+
 }

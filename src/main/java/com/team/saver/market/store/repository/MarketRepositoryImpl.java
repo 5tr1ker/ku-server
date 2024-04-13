@@ -8,6 +8,7 @@ import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import lombok.RequiredArgsConstructor;
 
+import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
@@ -112,6 +113,17 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
         Market result = jpaQueryFactory.select(market)
                 .from(market)
                 .innerJoin(market.menus).fetchJoin()
+                .where(market.marketId.eq(marketId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Market> findMarketByMarketIdAndPartnerEmail(String partnerEmail, long marketId) {
+        Market result = jpaQueryFactory.select(market)
+                .from(market)
+                .innerJoin(market.partner, account).on(account.email.eq(partnerEmail))
                 .where(market.marketId.eq(marketId))
                 .fetchOne();
 

@@ -16,7 +16,8 @@ public enum ErrorMessage {
     UNKNOWN_OAUTH_TYPE("알 수 없는 OAuth Type 입니다."),
     NOT_FOUNT_PARTNER_REQUEST("파트너 요청 페이지를 찾을 수 없습니다."),
     NOT_FOUND_MARKET("해당 매장을 찾을 수 없습니다."),
-    ONLY_DELETE_WRITER("작성자만 삭제할 수 있습니다.");
+    ONLY_DELETE_WRITER("작성자만 삭제할 수 있습니다."),
+    ONLY_ACCESS_OWNER_PARTNER("파트너 소유자만 접근 가능합니다.");
 
     private final String message;
 
