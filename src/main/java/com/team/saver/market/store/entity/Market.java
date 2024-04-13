@@ -63,4 +63,8 @@ public class Market {
         reviews.add(review);
     }
 
+    public void addMenu(Menu menu) {
+        menus.add(menu);
+    }
+
 }

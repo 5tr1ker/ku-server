@@ -1,6 +1,7 @@
 package com.team.saver.market.review.entity;
 
 import com.team.saver.account.entity.Account;
+import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,12 +19,20 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account reviewer;
 
-    private String reviewMessage;
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
     private Market market;
 
     private int score;
+
+    public static Review createReview(Account account, ReviewRequest request) {
+        return Review.builder()
+                .reviewer(account)
+                .content(request.getContent())
+                .score(request.getScore())
+                .build();
+    }
 
 }
