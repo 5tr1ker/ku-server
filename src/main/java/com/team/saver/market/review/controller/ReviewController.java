@@ -1,5 +1,7 @@
 package com.team.saver.market.review.controller;
 
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.service.ReviewService;
@@ -28,9 +30,9 @@ public class ReviewController {
 
     @PostMapping("/{marketId}")
     public ResponseEntity addReview(@PathVariable long marketId,
-                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    @LogIn CurrentUser currentUser,
                                     @RequestBody ReviewRequest request) {
-        reviewService.addReview(marketId, userDetails, request);
+        reviewService.addReview(marketId, currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

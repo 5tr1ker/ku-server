@@ -2,6 +2,7 @@ package com.team.saver.partner.request.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.partner.request.dto.NewPartnerRequest;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -21,8 +22,8 @@ public class PartnerRequestService {
     private final AccountService accountService;
 
     @Transactional
-    public void requestNewPartner(NewPartnerRequest request, UserDetails userDetails) {
-        Account account = accountService.getProfile(userDetails);
+    public void requestNewPartner(NewPartnerRequest request, CurrentUser currentUser) {
+        Account account = accountService.getProfile(currentUser);
 
         PartnerRequest partnerRequest = PartnerRequest.createPartnerRequest(account, request);
         partnerRequestRepository.save(partnerRequest);

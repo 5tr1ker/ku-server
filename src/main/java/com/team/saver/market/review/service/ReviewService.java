@@ -2,6 +2,7 @@ package com.team.saver.market.review.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewResponse;
@@ -33,11 +34,11 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(long marketId, UserDetails userDetails, ReviewRequest request) {
+    public void addReview(long marketId, CurrentUser currentUser, ReviewRequest request) {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
-        Account account = accountService.getProfile(userDetails);
+        Account account = accountService.getProfile(currentUser);
         Review review = Review.createReview(account, request);
 
         market.addReview(review);
