@@ -1,4 +1,4 @@
-package com.team.saver.security.certification.service;
+package com.team.saver.security.jwt.support;
 
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.exception.CustomRuntimeException;

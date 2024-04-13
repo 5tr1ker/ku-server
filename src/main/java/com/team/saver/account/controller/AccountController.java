@@ -2,9 +2,7 @@ package com.team.saver.account.controller;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
-import com.team.saver.security.util.SessionManager;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,12 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
-    private final SessionManager sessionManager;
 
     @PostMapping("/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")
-    public ResponseEntity signIn(@RequestParam String email, HttpSession session) {
-        sessionManager.addSession(email, session);
+    public ResponseEntity signIn(@RequestParam String email) {
 
         return ResponseEntity.ok().build();
     }
