@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    public String getTokenFromHeader(ServletRequest request) {
+    public static String getTokenFromHeader(ServletRequest request) {
         String token = ((HttpServletRequest) request).getHeader("Authorization");
         if(token.startsWith("bearer ")) {
             return token.substring(7);
