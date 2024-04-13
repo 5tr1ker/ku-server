@@ -30,7 +30,7 @@ public class PartnerRequest {
     private String marketAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Account requestUser;
 
     @OneToMany(mappedBy = "partnerRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

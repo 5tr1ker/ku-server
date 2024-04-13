@@ -29,7 +29,7 @@ public class Market {
     private MainCategory mainCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Account partner;
 
     @OneToMany(mappedBy = "market", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

@@ -11,7 +11,6 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "review_tb")
 public class Review {
 
     @Id
@@ -19,7 +18,7 @@ public class Review {
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Account reviewer;
 
     @Column(nullable = false)
@@ -27,7 +26,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Market market;
 
     @Column(nullable = false)

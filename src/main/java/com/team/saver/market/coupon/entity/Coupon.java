@@ -18,7 +18,7 @@ public class Coupon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Market market;
 
     @Column(nullable = false)

@@ -19,7 +19,7 @@ public class Report {
     private long reportId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Account reporter;
 
     @Column(nullable = false)

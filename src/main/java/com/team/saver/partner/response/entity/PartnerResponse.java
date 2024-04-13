@@ -17,6 +17,7 @@ public class PartnerResponse {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
+    @JoinColumn(nullable = false)
     private PartnerRequest partnerRequest;
 
     @Column(nullable = false)
