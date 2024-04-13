@@ -3,6 +3,7 @@ package com.team.saver.market.coupon.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
 import com.team.saver.market.coupon.dto.CouponResponse;
@@ -36,12 +37,12 @@ public class CouponService {
     }
 
     @Transactional
-    public void downloadCoupon(UserDetails userDetails, long couponId) {
-        if(couponRepository.findDownloadCouponByCouponIdAndUserEmail(userDetails.getUsername(), couponId).isPresent()) {
+    public void downloadCoupon(CurrentUser currentUser, long couponId) {
+        if(couponRepository.findDownloadCouponByCouponIdAndUserEmail(currentUser.getEmail(), couponId).isPresent()) {
             throw new CustomRuntimeException(EXIST_COUPON);
         }
 
-        Account account = accountRepository.findByEmail(userDetails.getUsername())
+        Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
@@ -51,8 +52,8 @@ public class CouponService {
     }
 
     @Transactional
-    public void createCoupon(UserDetails userDetails, CouponCreateRequest request, long marketId) {
-        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(userDetails.getUsername(), marketId)
+    public void createCoupon(CurrentUser currentUser, CouponCreateRequest request, long marketId) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
         Coupon coupon = Coupon.createCoupon(request, market);
@@ -60,22 +61,22 @@ public class CouponService {
     }
 
     @Transactional
-    public void deleteCoupon(UserDetails userDetails, long couponId) {
-        Coupon coupon = couponRepository.findByPartnerEmailAndCouponId(userDetails.getUsername(), couponId)
+    public void deleteCoupon(CurrentUser currentUser, long couponId) {
+        Coupon coupon = couponRepository.findByPartnerEmailAndCouponId(currentUser.getEmail(), couponId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
         couponRepository.delete(coupon);
     }
 
     @Transactional
-    public void updateCouponUsage(UserDetails userDetails, long downloadCouponId) {
-        DownloadCoupon downloadCoupon = couponRepository.findDownloadCouponByIdAndUserEmail(userDetails.getUsername(), downloadCouponId)
+    public void updateCouponUsage(CurrentUser currentUser, long downloadCouponId) {
+        DownloadCoupon downloadCoupon = couponRepository.findDownloadCouponByIdAndUserEmail(currentUser.getEmail(), downloadCouponId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
 
         downloadCoupon.updateIsUsage();
     }
 
-    public List<DownloadCouponResponse> findDownloadCouponByUserEmail(UserDetails userDetails) {
-        return couponRepository.findDownloadCouponByUserEmail(userDetails.getUsername());
+    public List<DownloadCouponResponse> findDownloadCouponByUserEmail(CurrentUser currentUser) {
+        return couponRepository.findDownloadCouponByUserEmail(currentUser.getEmail());
     }
 }

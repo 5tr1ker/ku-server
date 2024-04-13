@@ -11,8 +11,6 @@ import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +43,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(UserDetails userDetails, long reviewId) {
-        Review review = reviewRepository.findByReviewerAndReviewId(userDetails.getUsername(), reviewId)
+    public void deleteReview(CurrentUser currentUser, long reviewId) {
+        Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
         reviewRepository.delete(review);
