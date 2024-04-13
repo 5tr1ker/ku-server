@@ -23,11 +23,14 @@ public class PartnerRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long partnerRequestId;
 
+    @Column(nullable = false)
     private String requestMarketName;
 
+    @Column(nullable = false)
     private String marketAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Account requestUser;
 
     @OneToMany(mappedBy = "partnerRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

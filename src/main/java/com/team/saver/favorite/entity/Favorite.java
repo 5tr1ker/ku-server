@@ -20,9 +20,11 @@ public class Favorite {
     private long favoriteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Market market;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Account account;
 
     public static Favorite createEntity(Market market, Account account) {

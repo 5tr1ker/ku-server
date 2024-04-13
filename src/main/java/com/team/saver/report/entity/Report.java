@@ -19,8 +19,10 @@ public class Report {
     private long reportId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Account reporter;
 
+    @Column(nullable = false)
     private String content;
 
     public static Report createEntity(Account account, String content) {

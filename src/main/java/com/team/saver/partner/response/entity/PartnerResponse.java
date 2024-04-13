@@ -19,6 +19,7 @@ public class PartnerResponse {
     @Setter
     private PartnerRequest partnerRequest;
 
+    @Column(nullable = false)
     private String message;
 
     public static PartnerResponse createEntity(String message) {

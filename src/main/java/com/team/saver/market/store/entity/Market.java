@@ -25,9 +25,11 @@ public class Market {
     private long marketId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MainCategory mainCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Account partner;
 
     @OneToMany(mappedBy = "market", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -42,14 +44,19 @@ public class Market {
     @Builder.Default
     private List<Menu> menus = new ArrayList<>();
 
+    @Column(nullable = false)
     private double locationX;
 
+    @Column(nullable = false)
     private double locationY;
 
+    @Column(nullable = false)
     private String marketName;
 
+    @Column(nullable = false)
     private String marketDescription;
 
+    @Column(nullable = false)
     private String detailAddress;
 
     private LocalTime openTime;

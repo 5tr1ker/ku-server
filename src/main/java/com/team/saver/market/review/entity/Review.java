@@ -11,6 +11,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "review_tb")
 public class Review {
 
     @Id
@@ -18,14 +19,18 @@ public class Review {
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Account reviewer;
 
+    @Column(nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
+    @Column(nullable = false)
     private Market market;
 
+    @Column(nullable = false)
     private int score;
 
     public static Review createEntity(Account account, ReviewRequest request) {
