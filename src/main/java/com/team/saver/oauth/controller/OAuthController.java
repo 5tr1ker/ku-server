@@ -2,6 +2,7 @@ package com.team.saver.oauth.controller;
 
 import com.team.saver.oauth.dto.OAuthRequest;
 import com.team.saver.oauth.service.OAuthService;
+import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class OAuthController {
 
     @PostMapping("/sign-in")
     @Operation(summary = "OAuth 로그인")
-    public ResponseEntity signIn(@RequestBody OAuthRequest request, HttpSession session) {
-        oAuthService.SignInOAuthAccount(request, session);
+    public ResponseEntity signIn(@RequestBody OAuthRequest request) {
+        Token result = oAuthService.SignInOAuthAccount(request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(result);
     }
 
 }

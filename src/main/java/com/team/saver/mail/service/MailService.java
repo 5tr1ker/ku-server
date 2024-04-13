@@ -40,7 +40,7 @@ public class MailService {
 
     private Mail createVerificationCode(String id, String code) {
         Mail mailCert = mailRepository.findById(id)
-                .orElseGet(() -> Mail.createMailCert(id, code));
+                .orElseGet(() -> Mail.createEntity(id, code));
 
         return mailCert;
     }

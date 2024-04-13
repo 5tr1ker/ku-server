@@ -18,22 +18,27 @@ import java.time.LocalDateTime;
 public class DownloadCoupon {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long downloadCouponId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Market market;
 
     @Builder.Default
+    @Column(nullable = false)
     private boolean isUsage = false;
 
     @Builder.Default
+    @Column(nullable = false)
     private LocalDateTime useDate = null;
 
     public void updateIsUsage() {

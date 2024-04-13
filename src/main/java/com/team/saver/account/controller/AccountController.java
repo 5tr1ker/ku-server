@@ -1,15 +1,15 @@
 package com.team.saver.account.controller;
 
 import com.team.saver.account.entity.Account;
+import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
-import com.team.saver.security.util.SessionManager;
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
+import com.team.saver.security.jwt.dto.Token;
+import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,31 +18,24 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
-    private final SessionManager sessionManager;
 
+    private final AccountRepository accountRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     @PostMapping("/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")
-    public ResponseEntity signIn(@RequestParam String email, HttpSession session) {
-        sessionManager.addSession(email, session);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/profile")
-    @Operation(summary = "사용자 정보 가져오기")
-    public ResponseEntity getProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        Account result = accountService.getProfile(userDetails);
+    public ResponseEntity signIn(@RequestParam String email) {
+        Account account = accountRepository.findByEmail(email).get();
+        Token result = jwtTokenProvider.createJwtToken(account.getEmail(), account.getRole());
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/test/login")
-    @Operation(summary = "테스트 API 곧 삭제 예정")
-    public @ResponseBody String testLogin(Authentication authentication) {
-        System.out.println("/test/login==========");
-        Account principalDetails = (Account) authentication.getPrincipal();
-        System.out.println("authentication : {}" +  principalDetails.getEmail());
-        return "세션 정보 확인하기";
+    @GetMapping("/profile")
+    @Operation(summary = "사용자 정보 가져오기")
+    public ResponseEntity getProfile(@LogIn CurrentUser currentUser) {
+        Account result = accountService.getProfile(currentUser);
+
+        return ResponseEntity.ok(result);
     }
 
 }

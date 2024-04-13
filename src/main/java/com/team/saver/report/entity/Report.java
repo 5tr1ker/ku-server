@@ -14,12 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Report {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reportId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Account reporter;
 
+    @Column(nullable = false)
     private String content;
 
     public static Report createEntity(Account account, String content) {

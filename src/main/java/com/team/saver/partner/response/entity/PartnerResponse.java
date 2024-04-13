@@ -11,16 +11,19 @@ import lombok.*;
 @AllArgsConstructor
 public class PartnerResponse {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long partnerResponseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
+    @JoinColumn(nullable = false)
     private PartnerRequest partnerRequest;
 
+    @Column(nullable = false)
     private String message;
 
-    public static PartnerResponse createPartnerResponse(String message) {
+    public static PartnerResponse createEntity(String message) {
         return PartnerResponse.builder()
                 .message(message)
                 .build();

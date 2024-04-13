@@ -16,16 +16,18 @@ import lombok.NoArgsConstructor;
 public class Favorite {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long favoriteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Market market;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Account account;
 
-    public static Favorite createFavorite(Market market, Account account) {
+    public static Favorite createEntity(Market market, Account account) {
         return Favorite.builder()
                 .market(market)
                 .account(account)

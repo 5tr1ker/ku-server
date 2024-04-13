@@ -1,5 +1,7 @@
 package com.team.saver.partner.request.controller;
 
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
 import com.team.saver.partner.request.dto.NewPartnerRequest;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.service.PartnerRequestService;
@@ -23,8 +25,8 @@ public class PartnerRequestController {
     @PostMapping
     @Operation(summary = "새로운 파트너십 요청 API [ 사용자 인증 정보 필요 ]")
     public ResponseEntity requestNewPartner(@RequestBody NewPartnerRequest request
-            , @AuthenticationPrincipal UserDetails userDetails) {
-        partnerRequestService.requestNewPartner(request, userDetails);
+            , @LogIn CurrentUser currentUser) {
+        partnerRequestService.requestNewPartner(request, currentUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

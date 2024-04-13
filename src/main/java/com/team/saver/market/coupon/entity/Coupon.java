@@ -13,22 +13,25 @@ import lombok.*;
 public class Coupon {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long couponId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
+    @JoinColumn(nullable = false)
     private Market market;
 
+    @Column(nullable = false)
     private String couponName;
 
+    @Column(nullable = false)
     private String couponDescription;
 
+    @Column(nullable = false)
     private double saleRate;
 
-    public static Coupon createCoupon(CouponCreateRequest request, Market market) {
+    public static Coupon createEntity(CouponCreateRequest request) {
         return Coupon.builder()
-                .market(market)
                 .couponName(request.getCouponName())
                 .couponDescription(request.getCouponDescription())
                 .saleRate(request.getSaleRate())

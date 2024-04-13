@@ -2,13 +2,13 @@ package com.team.saver.favorite.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.favorite.entity.Favorite;
 import com.team.saver.favorite.repository.FavoriteRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,18 +23,18 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
 
     @Transactional
-    public void addFavorite(UserDetails userDetails, long marketId) {
-        if(favoriteRepository.findByUserEmailAndMarketId(userDetails.getUsername(), marketId).isPresent()) {
+    public void addFavorite(CurrentUser currentUser, long marketId) {
+        if(favoriteRepository.findByUserEmailAndMarketId(currentUser.getEmail(), marketId).isPresent()) {
             throw new CustomRuntimeException(ALREADY_FAVORITE_MARKET);
         };
 
-        Account account = accountRepository.findByEmail(userDetails.getUsername())
+        Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
 
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
-        Favorite favorite = Favorite.createFavorite(market, account);
+        Favorite favorite = Favorite.createEntity(market, account);
         favoriteRepository.save(favorite);
     }
 

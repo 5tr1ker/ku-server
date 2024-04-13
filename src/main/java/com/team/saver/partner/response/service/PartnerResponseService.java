@@ -24,7 +24,7 @@ public class PartnerResponseService {
         PartnerRequest request = partnerRequestRepository.findById(response.getPartnerRequestId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_PARTNER_REQUEST));
 
-        PartnerResponse result = PartnerResponse.createPartnerResponse(response.getMessage());
+        PartnerResponse result = PartnerResponse.createEntity(response.getMessage());
 
         request.addPartnerResponse(result);
     }

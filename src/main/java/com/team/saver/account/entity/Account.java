@@ -24,6 +24,7 @@ public class Account implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long accountId;
 
+    @Column(nullable = false)
     private String email;
 
     private String phone;
@@ -33,15 +34,18 @@ public class Account implements UserDetails {
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OAuthType oAuthType;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private LocalDate joinDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
-    public static Account createAccountEntity(AccountInfo accountInfo, OAuthType type) {
+    public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
         return Account.builder()
                 .email(accountInfo.getEmail())
                 .phone(accountInfo.getPhone())

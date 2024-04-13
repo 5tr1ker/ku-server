@@ -27,7 +27,7 @@ public class Mail {
         return verificationCode.equals(code);
     }
 
-    public static Mail createMailCert(String id, String code) {
+    public static Mail createEntity(String id, String code) {
         return Mail.builder()
                 .id(id)
                 .verificationCode(code)

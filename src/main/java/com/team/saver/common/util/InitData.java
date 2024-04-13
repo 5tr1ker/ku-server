@@ -10,6 +10,7 @@ import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.oauth.util.OAuthType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public class InitData implements CommandLineRunner {
                 .age("20")
                 .phone("01012341234")
                 .role(UserRole.NORMAL)
+                .oAuthType(OAuthType.KAKAO)
                 .build();
 
         accountRepository.save(account);
@@ -41,6 +43,7 @@ public class InitData implements CommandLineRunner {
                 .age("24")
                 .phone("01046544654")
                 .role(UserRole.NORMAL)
+                .oAuthType(OAuthType.NAVER)
                 .build();
 
         accountRepository.save(account2);
