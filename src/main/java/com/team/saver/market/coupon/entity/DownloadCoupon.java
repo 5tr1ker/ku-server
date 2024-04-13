@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class DownloadCoupon {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long downloadCouponId;
 
     @ManyToOne(fetch = FetchType.LAZY)

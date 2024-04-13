@@ -13,7 +13,8 @@ import lombok.*;
 @NoArgsConstructor
 public class Review {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,7 +28,7 @@ public class Review {
 
     private int score;
 
-    public static Review createReview(Account account, ReviewRequest request) {
+    public static Review createEntity(Account account, ReviewRequest request) {
         return Review.builder()
                 .reviewer(account)
                 .content(request.getContent())

@@ -41,7 +41,7 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public static Account createAccountEntity(AccountInfo accountInfo, OAuthType type) {
+    public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
         return Account.builder()
                 .email(accountInfo.getEmail())
                 .phone(accountInfo.getPhone())

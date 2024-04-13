@@ -19,7 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class PartnerRequest {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long partnerRequestId;
 
     private String requestMarketName;
@@ -33,7 +34,7 @@ public class PartnerRequest {
     @Builder.Default
     private List<PartnerResponse> partnerResponse = new ArrayList<>();
 
-    public static PartnerRequest createPartnerRequest(Account account, NewPartnerRequest request) {
+    public static PartnerRequest createEntity(Account account, NewPartnerRequest request) {
         return PartnerRequest.builder()
                 .requestMarketName(request.getRequestMarketName())
                 .marketAddress(request.getMarketAddress())

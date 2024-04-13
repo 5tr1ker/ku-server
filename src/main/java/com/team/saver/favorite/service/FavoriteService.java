@@ -34,7 +34,7 @@ public class FavoriteService {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
-        Favorite favorite = Favorite.createFavorite(market, account);
+        Favorite favorite = Favorite.createEntity(market, account);
         favoriteRepository.save(favorite);
     }
 

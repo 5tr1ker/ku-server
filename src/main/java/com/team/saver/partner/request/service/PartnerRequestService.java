@@ -8,7 +8,6 @@ import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,7 @@ public class PartnerRequestService {
     public void requestNewPartner(NewPartnerRequest request, CurrentUser currentUser) {
         Account account = accountService.getProfile(currentUser);
 
-        PartnerRequest partnerRequest = PartnerRequest.createPartnerRequest(account, request);
+        PartnerRequest partnerRequest = PartnerRequest.createEntity(account, request);
         partnerRequestRepository.save(partnerRequest);
     }
 

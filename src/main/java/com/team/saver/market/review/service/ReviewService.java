@@ -37,7 +37,7 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         Account account = accountService.getProfile(currentUser);
-        Review review = Review.createReview(account, request);
+        Review review = Review.createEntity(account, request);
 
         market.addReview(review);
     }

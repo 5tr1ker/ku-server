@@ -15,7 +15,6 @@ import com.team.saver.market.coupon.repository.CouponRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +55,7 @@ public class CouponService {
         Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
-        Coupon coupon = Coupon.createCoupon(request, market);
+        Coupon coupon = Coupon.createEntity(request, market);
         couponRepository.save(coupon);
     }
 
