@@ -1,9 +1,6 @@
 package com.team.saver.market.store.controller;
 
-import com.team.saver.market.store.dto.MarketResponse;
-import com.team.saver.market.store.dto.SearchByCategoryRequest;
-import com.team.saver.market.store.dto.SearchByNameRequest;
-import com.team.saver.market.store.dto.SearchMarketRequest;
+import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.service.MarketService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +15,14 @@ import java.util.List;
 public class MarketController {
 
     private final MarketService marketService;
+
+    @GetMapping("/{marketId}")
+    @Operation(summary = "해당 Market의 상세 정보 가져오기")
+    public ResponseEntity findMarketDetailById(@PathVariable long marketId) {
+        MarketDetailResponse result = marketService.findMarketDetailById(marketId);
+
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping("/search")
     @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ")
