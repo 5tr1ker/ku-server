@@ -1,6 +1,7 @@
 package com.team.saver.favorite.controller;
 
 import com.team.saver.favorite.service.FavoriteService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @PostMapping
+    @Operation(summary = "해당 가게를 관심 목록 추가")
     public ResponseEntity addFavorite(@AuthenticationPrincipal UserDetails userDetails,
                             @RequestParam long marketId) {
 
