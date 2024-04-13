@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,10 @@ public class Market {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true)
+    @Builder.Default
+    private List<Menu> menus = new ArrayList<>();
+
     private double locationX;
 
     private double locationY;
@@ -41,6 +46,12 @@ public class Market {
     private String marketDescription;
 
     private String detailAddress;
+
+    private LocalTime openTime;
+
+    private LocalTime closeTime;
+
+    private String marketPhone;
 
     public void addCoupon(Coupon coupon) {
         coupon.setMarket(this);
