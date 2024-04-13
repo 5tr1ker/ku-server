@@ -6,8 +6,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.coupon.dto.CouponResponse;
 
 import com.team.saver.market.coupon.entity.Coupon;
+import com.team.saver.market.coupon.entity.DownloadCoupon;
 import lombok.RequiredArgsConstructor;
 
+import static com.team.saver.market.coupon.entity.QDownloadCoupon.downloadCoupon;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.store.entity.QMarket.market;
@@ -41,6 +43,17 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(coupon.market, market)
                 .innerJoin(market.partner, account).on(account.email.eq(partnerEmail))
                 .where(coupon.couponId.eq(couponId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<DownloadCoupon> findDownloadCouponByCouponIdAndUserEmail(String email, long couponId) {
+        DownloadCoupon result = jpaQueryFactory.select(downloadCoupon)
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.couponId.eq(couponId))
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
                 .fetchOne();
 
         return Optional.ofNullable(result);
