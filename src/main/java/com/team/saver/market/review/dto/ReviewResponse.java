@@ -15,6 +15,10 @@ public class ReviewResponse {
 
     private String reviewContent;
 
+    private long marketId;
+
+    private String marketName;
+
     private int score;
 
 }

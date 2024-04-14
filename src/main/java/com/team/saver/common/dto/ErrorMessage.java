@@ -16,6 +16,7 @@ public enum ErrorMessage {
     NOT_FOUND_PARTNER_REQUEST("파트너 요청 페이지를 찾을 수 없습니다."),
     NOT_FOUND_MARKET("해당 매장을 찾을 수 없습니다."),
     ONLY_DELETE_WRITER("작성자만 삭제할 수 있습니다."),
+    ONLY_UPDATE_WRITER("작성자만 수정할 수 있습니다."),
     ONLY_ACCESS_OWNER_PARTNER("파트너 소유자만 접근 가능합니다."),
     EXIST_COUPON("이미 쿠폰을 다운로드했습니다."),
     NOT_FOUND_COUPON("쿠폰을 찾을 수 없습니다."),
