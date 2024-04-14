@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUNT_PARTNER_REQUEST;
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PARTNER_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class PartnerResponseService {
     @Transactional
     public void addPartnerResponse(NewPartnerResponse response) {
         PartnerRequest request = partnerRequestRepository.findById(response.getPartnerRequestId())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_PARTNER_REQUEST));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
 
         PartnerResponse result = PartnerResponse.createEntity(response.getMessage());
 

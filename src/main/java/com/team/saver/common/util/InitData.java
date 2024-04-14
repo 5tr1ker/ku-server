@@ -73,5 +73,20 @@ public class InitData implements CommandLineRunner {
         market.addMenu(menu5);
 
         marketRepository.save(market);
+
+        Market market2 = Market.builder()
+                .marketName("12e1e2")
+                .marketDescription("desc13r13rription")
+                .detailAddress("f13")
+                .mainCategory(MainCategory.RESTAURANT)
+                .locationY(41.145)
+                .locationX(68.478)
+                .partner(account)
+                .closeTime(LocalTime.now())
+                .openTime(LocalTime.now())
+                .marketPhone("01012341234")
+                .build();
+
+        marketRepository.save(market2);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUNT_USER;
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return accountRepository.findByEmail(username)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
     }
 }

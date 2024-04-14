@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUNT_USER;
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class ReportService {
     @Transactional
     public void addReport(CurrentUser currentUser, ReportRequest request) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
         Report result = Report.createEntity(account, request.getContent());
         reportRepository.save(result);
