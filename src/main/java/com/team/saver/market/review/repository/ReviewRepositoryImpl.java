@@ -20,13 +20,15 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findReviewByMarketId(long marketId) {
+    public List<ReviewResponse> findByMarketId(long marketId) {
         return jpaQueryFactory.select(Projections.constructor(
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
                         account.email,
                         review.content,
+                        market.marketId,
+                        market.marketName,
                         review.score
                 )).from(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
@@ -43,5 +45,22 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<ReviewResponse> findByUserEmail(String email) {
+        return jpaQueryFactory.select(Projections.constructor(
+                        ReviewResponse.class,
+                        review.reviewId,
+                        account.accountId,
+                        account.email,
+                        review.content,
+                        market.marketId,
+                        market.marketName,
+                        review.score
+                )).from(review)
+                .innerJoin(review.market, market)
+                .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .fetch();
     }
 }

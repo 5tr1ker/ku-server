@@ -42,7 +42,7 @@ public class CouponService {
         }
 
         Account account = accountRepository.findByEmail(currentUser.getEmail())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUNT_USER));
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
 

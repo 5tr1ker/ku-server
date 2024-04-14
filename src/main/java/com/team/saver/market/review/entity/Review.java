@@ -2,6 +2,7 @@ package com.team.saver.market.review.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewRequest;
+import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,4 +41,8 @@ public class Review {
                 .build();
     }
 
+    public void update(ReviewUpdateRequest request) {
+        this.content = request.getContent();
+        this.score = request.getScore();
+    }
 }

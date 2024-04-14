@@ -1,13 +1,19 @@
 package com.team.saver.favorite.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.favorite.entity.Favorite;
 
+import com.team.saver.market.store.dto.MarketResponse;
 import lombok.RequiredArgsConstructor;
 
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.favorite.entity.QFavorite.favorite;
+import static com.team.saver.market.coupon.entity.QCoupon.coupon;
+import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
+
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -24,5 +30,28 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<MarketResponse> findFavoriteMarketByUserEmail(String email) {
+        return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
+                        market.marketId,
+                        market.mainCategory,
+                        market.locationX,
+                        market.locationY,
+                        market.marketName,
+                        market.marketDescription,
+                        market.detailAddress,
+                        review.score.avg(),
+                        review.countDistinct(),
+                        coupon.saleRate.max()
+                ))
+                .from(favorite)
+                .innerJoin(favorite.account, account).on(account.email.eq(email))
+                .innerJoin(favorite.market, market)
+                .leftJoin(market.coupons, coupon)
+                .leftJoin(market.reviews, review)
+                .groupBy(market)
+                .fetch();
     }
 }

@@ -6,6 +6,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewResponse;
+import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
@@ -16,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_MARKET;
-import static com.team.saver.common.dto.ErrorMessage.ONLY_DELETE_WRITER;
+import static com.team.saver.common.dto.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +27,20 @@ public class ReviewService {
     private final MarketRepository marketRepository;
     private final AccountService accountService;
 
-    public List<ReviewResponse> findReviewByMarketId(long marketId) {
-        return reviewRepository.findReviewByMarketId(marketId);
+    public List<ReviewResponse> findByMarketId(long marketId) {
+        return reviewRepository.findByMarketId(marketId);
+    }
+
+    public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {
+        return reviewRepository.findByUserEmail(currentUser.getEmail());
+    }
+
+    @Transactional
+    public void updateReview(CurrentUser currentUser, long reviewId, ReviewUpdateRequest request) {
+        Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)
+                .orElseThrow(() -> new CustomRuntimeException(ONLY_UPDATE_WRITER));
+
+        review.update(request);
     }
 
     @Transactional

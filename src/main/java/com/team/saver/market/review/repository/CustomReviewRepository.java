@@ -8,8 +8,9 @@ import java.util.Optional;
 
 public interface CustomReviewRepository {
 
-    List<ReviewResponse> findReviewByMarketId(long marketId);
+    List<ReviewResponse> findByMarketId(long marketId);
 
     Optional<Review> findByReviewerAndReviewId(String reviewerEmail, long reviewId);
 
+    List<ReviewResponse> findByUserEmail(String email);
 }
