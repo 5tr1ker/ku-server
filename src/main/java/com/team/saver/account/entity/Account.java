@@ -52,8 +52,20 @@ public class Account implements UserDetails {
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
                 .oAuthType(type)
-                .role(UserRole.NORMAL)
+                .role(UserRole.PARTNER)
                 .build();
+    }
+
+    public void updateRoleToStudent() {
+        role = UserRole.STUDENT;
+    }
+
+    public void updateRoleToPartner() {
+        role = UserRole.PARTNER;
+    }
+
+    public void updateRoleToAdmin() {
+        role = UserRole.ADMIN;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class InitData implements CommandLineRunner {
                 .email("email@naver.com")
                 .age("20")
                 .phone("01012341234")
-                .role(UserRole.NORMAL)
+                .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.KAKAO)
                 .build();
 
@@ -42,7 +42,7 @@ public class InitData implements CommandLineRunner {
                 .email("email2@naver.com")
                 .age("24")
                 .phone("01046544654")
-                .role(UserRole.NORMAL)
+                .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.NAVER)
                 .build();
 
