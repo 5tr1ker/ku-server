@@ -1,5 +1,6 @@
 package com.team.saver.account.controller;
 
+import com.team.saver.account.dto.UpdateRoleRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
@@ -21,6 +22,7 @@ public class AccountController {
 
     private final AccountRepository accountRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
     @PostMapping("/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")
     public ResponseEntity signIn(@RequestParam String email) {
@@ -36,6 +38,15 @@ public class AccountController {
         Account result = accountService.getProfile(currentUser);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/role")
+    @Operation(summary = "사용자 권한 변경 API")
+    public ResponseEntity updateRole(@LogIn CurrentUser currentUser,
+                                     @RequestBody UpdateRoleRequest request) {
+        accountService.updateRole(currentUser, request);
+
+        return ResponseEntity.ok().build();
     }
 
 }

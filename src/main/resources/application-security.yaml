@@ -7,6 +7,7 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.gmail.com
 
   security:
     oauth2:
@@ -18,9 +19,3 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
           google:
             user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
-
-server:
-  servlet:
-    session:
-      timeout: 1800
-      tracking-modes: cookie

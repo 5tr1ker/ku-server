@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
 import java.util.UUID;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_MATCHED_CODE;
@@ -64,9 +65,10 @@ public class MailService {
     }
 
     private String createVerificationCode() {
-        String code = UUID.randomUUID().toString();
+        Random random = new Random();
 
-        return code;
+        int randomNumber = 100000 + random.nextInt(888888);
+        return String.valueOf(randomNumber);
     }
 
 }
