@@ -27,6 +27,7 @@ public class History {
     private LocalDateTime localDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Builder.Default
     private Account account = new Account();
 
     public static History createEntity(Account account, String content) {
@@ -34,6 +35,10 @@ public class History {
                 .content(content)
                 .localDateTime(LocalDateTime.now())
                 .build();
+    }
+
+    public void updateTime() {
+        localDateTime = LocalDateTime.now();
     }
 
 }

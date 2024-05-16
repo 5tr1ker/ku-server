@@ -28,7 +28,7 @@ public class HistoryService {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        return historyRepository.findAllByAccount(currentUser);
+        return historyRepository.findAllByAccount(account);
     }
 
     @Transactional
@@ -36,7 +36,10 @@ public class HistoryService {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        History history = History.createEntity(account, historyRequest.getContent());
+        History history = historyRepository.findByAccountAndContent(account, historyRequest.getContent())
+                .orElseGet(() -> History.createEntity(account, historyRequest.getContent()));
+
+        history.updateTime();
         historyRepository.save(history);
     }
 
@@ -53,7 +56,7 @@ public class HistoryService {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        historyRepository.deleteHistoryByAccountAndHistoryId(currentUser, historyRequest.getHistoryId());
+        historyRepository.deleteHistoryByAccountAndHistoryId(account, historyRequest.getHistoryId());
     }
 
 }
