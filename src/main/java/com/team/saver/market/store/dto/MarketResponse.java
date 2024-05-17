@@ -20,6 +20,8 @@ public class MarketResponse {
 
     private String marketDescription;
 
+    private String marketImage;
+
     private String detailAddress;
 
     private double averageReviewScore;
