@@ -48,6 +48,9 @@ public class Market {
     private double locationX;
 
     @Column(nullable = false)
+    private String marketImage;
+
+    @Column(nullable = false)
     private double locationY;
 
     @Column(nullable = false)

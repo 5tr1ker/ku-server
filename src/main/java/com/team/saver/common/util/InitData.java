@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +29,9 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        accountRepository.deleteAll();
+        marketRepository.deleteAll();
+
         Account account = Account.builder()
                 .email("email@naver.com")
                 .age("20")
@@ -55,6 +59,7 @@ public class InitData implements CommandLineRunner {
                 .mainCategory(MainCategory.RESTAURANT)
                 .locationY(123.451)
                 .locationX(431.176)
+                .marketImage("https://ibb.co/0DSt7KN")
                 .partner(account)
                 .closeTime(LocalTime.now())
                 .openTime(LocalTime.now())
@@ -71,22 +76,42 @@ public class InitData implements CommandLineRunner {
         market.addMenu(menu4);
         Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
         market.addMenu(menu5);
-
+        Review review1 = Review.builder().reviewer(account).content("content1").score(1).build();
         marketRepository.save(market);
+        market.addReview(review1);
 
-        Market market2 = Market.builder()
-                .marketName("12e1e2")
-                .marketDescription("desc13r13rription")
-                .detailAddress("f13")
-                .mainCategory(MainCategory.RESTAURANT)
-                .locationY(41.145)
-                .locationX(68.478)
-                .partner(account)
-                .closeTime(LocalTime.now())
-                .openTime(LocalTime.now())
-                .marketPhone("01012341234")
-                .build();
+        for (int i = 0; i < 20; i++) {
+            Random random = new Random();
+            double randomX = random.nextDouble(99999);
+            double randomY = random.nextDouble(99999);
+            int reviewCount = random.nextInt(8);
 
-        marketRepository.save(market2);
+            Market market_20 = Market.builder()
+                    .marketName("MarketName " + (i + 1))
+                    .marketDescription("Market Description" + (i + 1))
+                    .detailAddress("세부주소 101-1003 45로")
+                    .mainCategory(MainCategory.RESTAURANT)
+                    .locationY(randomX)
+                    .locationX(randomY)
+                    .marketImage("https://ibb.co/0DSt7KN")
+                    .partner(account)
+                    .closeTime(LocalTime.now())
+                    .openTime(LocalTime.now())
+                    .marketPhone("01012341234")
+                    .build();
+
+            for (int j = 0; j < reviewCount; j++) {
+                int randomScore = random.nextInt(5) + 1;
+
+                market_20.addReview(Review
+                        .builder()
+                        .reviewer(account)
+                        .content("content " + randomScore)
+                        .score(randomScore)
+                        .build());
+            }
+
+            marketRepository.save(market_20);
+        }
     }
 }
