@@ -30,6 +30,9 @@ public class MarketSortTool {
         else if(sort.equals(SortType.MANY_REVIEW)) {
             return sortByReviewCount(marketResponse);
         }
+        else if(sort.equals(SortType.RECENTLY_RELEASE)) {
+            return sortByRecentlyRelease(marketResponse);
+        }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);
     }
@@ -76,6 +79,18 @@ public class MarketSortTool {
                 }
 
                 return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
+            }
+        });
+
+        return marketResponse;
+    }
+
+    private static List<MarketResponse> sortByRecentlyRelease(List<MarketResponse> marketResponse) {
+        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
+            @Override
+            public int compare(MarketResponse o1, MarketResponse o2) {
+
+                return Double.compare(o2.getMarketId(), o1.getMarketId());
             }
         });
 
