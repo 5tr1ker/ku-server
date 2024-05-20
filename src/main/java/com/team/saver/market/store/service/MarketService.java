@@ -17,17 +17,18 @@ import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_MARKET;
 public class MarketService {
 
     private final MarketRepository marketRepository;
+    private final MarketSortTool marketSortTool;
 
     public List<MarketResponse> findAllMarket(SearchMarketRequest request) {
         List<MarketResponse> result = marketRepository.findMarkets();
 
-        return MarketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
     }
 
     public List<MarketResponse> findMarketBySearch(SearchByNameRequest request) {
         List<MarketResponse> result = marketRepository.findMarketsByMarketName(request.getMarketName());
 
-        return MarketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
     }
 
     public List<MarketResponse> findMarketByMainCategory(SearchByCategoryRequest request) {
@@ -39,7 +40,7 @@ public class MarketService {
             result = marketRepository.findMarketsByMainCategoryAndMarketName(request.getCategory(), request.getMarketName());
         }
 
-        return MarketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
