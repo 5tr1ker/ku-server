@@ -5,6 +5,7 @@ import com.team.saver.market.store.dto.DistanceRequest;
 import com.team.saver.market.store.dto.MarketResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,9 +16,10 @@ import java.util.stream.Collectors;
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_SORT_TYPE;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
 public class MarketSortTool {
 
-    public static List<MarketResponse> sortMarket(List<MarketResponse> marketResponse, SortType sort, DistanceRequest request) {
+    public List<MarketResponse> sortMarket(List<MarketResponse> marketResponse, SortType sort, DistanceRequest request) {
         if(sort.equals(SortType.NEAR_DISTANCE)) {
             return sortByDistance(marketResponse, request);
         }
@@ -29,6 +31,9 @@ public class MarketSortTool {
         }
         else if(sort.equals(SortType.MANY_REVIEW)) {
             return sortByReviewCount(marketResponse);
+        }
+        else if(sort.equals(SortType.RECENTLY_RELEASE)) {
+            return sortByRecentlyRelease(marketResponse);
         }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);
@@ -76,6 +81,18 @@ public class MarketSortTool {
                 }
 
                 return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
+            }
+        });
+
+        return marketResponse;
+    }
+
+    private static List<MarketResponse> sortByRecentlyRelease(List<MarketResponse> marketResponse) {
+        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
+            @Override
+            public int compare(MarketResponse o1, MarketResponse o2) {
+
+                return Double.compare(o2.getMarketId(), o1.getMarketId());
             }
         });
 
