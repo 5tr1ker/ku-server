@@ -1,4 +1,4 @@
-package com.team.saver.search.dto;
+package com.team.saver.search.autocomplete.dto;
 
 import lombok.Getter;
 

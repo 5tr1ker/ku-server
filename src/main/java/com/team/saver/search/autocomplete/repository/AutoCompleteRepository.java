@@ -1,6 +1,6 @@
-package com.team.saver.search.repository;
+package com.team.saver.search.autocomplete.repository;
 
-import com.team.saver.search.entity.AutoComplete;
+import com.team.saver.search.autocomplete.entity.AutoComplete;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

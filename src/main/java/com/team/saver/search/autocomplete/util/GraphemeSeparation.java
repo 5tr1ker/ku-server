@@ -1,4 +1,4 @@
-package com.team.saver.search.util;
+package com.team.saver.search.autocomplete.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

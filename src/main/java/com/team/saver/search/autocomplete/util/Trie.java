@@ -1,8 +1,8 @@
-package com.team.saver.search.util;
+package com.team.saver.search.autocomplete.util;
 
-import com.team.saver.search.dto.UtilInitDto;
-import com.team.saver.search.entity.AutoComplete;
-import com.team.saver.search.repository.AutoCompleteRepository;
+import com.team.saver.search.autocomplete.dto.UtilInitDto;
+import com.team.saver.search.autocomplete.entity.AutoComplete;
+import com.team.saver.search.autocomplete.repository.AutoCompleteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.team.saver.search.entity;
+package com.team.saver.search.autocomplete.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,9 +1,8 @@
-package com.team.saver.search.controller;
+package com.team.saver.search.autocomplete.controller;
 
-import com.team.saver.common.dto.ResponseMessage;
-import com.team.saver.search.dto.AutoCompleteRequest;
-import com.team.saver.search.dto.UtilInitDto;
-import com.team.saver.search.service.AutoCompleteService;
+import com.team.saver.search.autocomplete.dto.AutoCompleteRequest;
+import com.team.saver.search.autocomplete.dto.UtilInitDto;
+import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

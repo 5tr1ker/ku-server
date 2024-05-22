@@ -1,8 +1,8 @@
-package com.team.saver.search.service;
+package com.team.saver.search.autocomplete.service;
 
-import com.team.saver.search.dto.AutoCompleteRequest;
-import com.team.saver.search.dto.UtilInitDto;
-import com.team.saver.search.util.Trie;
+import com.team.saver.search.autocomplete.dto.AutoCompleteRequest;
+import com.team.saver.search.autocomplete.dto.UtilInitDto;
+import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
