@@ -19,3 +19,9 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
           google:
             user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
+
+  data:
+    redis:
+      port: 6379
+      host: 127.0.0.1
+      password: password
