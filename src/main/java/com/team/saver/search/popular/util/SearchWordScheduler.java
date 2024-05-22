@@ -1,6 +1,6 @@
 package com.team.saver.search.popular.util;
 
-import com.team.saver.search.popular.entity.PopularSearchWord;
+import com.team.saver.search.popular.entity.SearchWordCache;
 import com.team.saver.search.popular.repository.PopularSearchWordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -33,18 +32,24 @@ public class SearchWordScheduler {
             String userAgent = valueOperations.get(key);
 
             if(!popularSearchWordRepository.existsByUserIpAndSearchTimeAndSearchWord(userIp, date, searchWord)){
-                PopularSearchWord popularSearchWord = PopularSearchWord.builder()
+                SearchWordCache searchWordCache = SearchWordCache.builder()
                         .userIp(userIp)
                         .userAgent(userAgent)
                         .searchTime(date)
                         .searchWord(searchWord)
                         .build();
 
-                popularSearchWordRepository.save(popularSearchWord);
+                popularSearchWordRepository.save(searchWordCache);
             }
 
             redisTemplate.delete(key);
         }
     }
+
+    @Scheduled(cron = "0 0 0 1/1 * ? *")
+    public void
+
+    @Scheduled(cron = "0 0 0 ? * MON *")
+    public
 
 }

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PopularSearchWord {
+public class SearchWordCache {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

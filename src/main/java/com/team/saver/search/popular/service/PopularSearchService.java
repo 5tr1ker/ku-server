@@ -22,7 +22,7 @@ public class PopularSearchService {
         String userAgent = httpServletRequest.getHeader("User-Agent");
         String today = getNowDateTimeOnlyDateAndHour().toString();
 
-        String key = userIp + "_" + today + "_" + request;
+        String key = userIp + "_" + today + "_" + request.getSearchWord();
 
         ValueOperations valueOperations = redisTemplate.opsForValue();
 
@@ -35,6 +35,12 @@ public class PopularSearchService {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         return localDateTime.withMinute(0).withSecond(0).withNano(0);
+    }
+
+    private LocalDate getNowDateOnlyDateAndHour() {
+        LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
+        return localDate;
     }
 
 }
