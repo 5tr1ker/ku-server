@@ -3,8 +3,10 @@ package com.team.saver.market.store.util;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.store.dto.DistanceRequest;
 import com.team.saver.market.store.dto.MarketResponse;
+import com.team.saver.market.store.repository.MarketRepository;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_SORT_TYPE;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Component
+@RequiredArgsConstructor
 public class MarketSortTool {
+
+    private final MarketRepository marketRepository;
 
     public List<MarketResponse> sortMarket(List<MarketResponse> marketResponse, SortType sort, DistanceRequest request) {
         if(sort.equals(SortType.NEAR_DISTANCE)) {
@@ -40,63 +44,18 @@ public class MarketSortTool {
     }
 
     private static List<MarketResponse> sortByReviewCount(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if(o1.getReviewCount() == o2.getReviewCount()) {
 
-                    return Double.compare(o2.getAverageReviewScore() , o1.getAverageReviewScore());
-                }
-
-                return Long.compare(o2.getReviewCount(), o1.getReviewCount());
-            }
-        });
-
-        return marketResponse;
     }
 
     private static List<MarketResponse> sortByAverageReviewScore(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if(o1.getAverageReviewScore() == o2.getAverageReviewScore()) {
 
-                    return Long.compare(o2.getReviewCount(), o1.getReviewCount());
-                }
-
-                return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
-            }
-        });
-
-        return marketResponse;
     }
 
     private static List<MarketResponse> sortByMaxDiscountRate(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if(o1.getMaxDiscountRate() == o2.getMaxDiscountRate()) {
 
-                    return Double.compare(o2.getAverageReviewScore() , o1.getAverageReviewScore());
-                }
-
-                return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
-            }
-        });
-
-        return marketResponse;
     }
 
-    private static List<MarketResponse> sortByRecentlyRelease(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-
-                return Double.compare(o2.getMarketId(), o1.getMarketId());
-            }
-        });
-
-        return marketResponse;
+    private List<MarketResponse> sortByRecentlyRelease(List<MarketResponse> marketResponse) {
     }
 
     private static List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, DistanceRequest request) {
@@ -132,3 +91,4 @@ public class MarketSortTool {
 
 
 }
+
