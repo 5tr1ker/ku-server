@@ -1,7 +1,8 @@
 package com.team.saver.search.popular.util;
 
 import com.team.saver.search.popular.entity.SearchWordCache;
-import com.team.saver.search.popular.repository.PopularSearchWordRepository;
+import com.team.saver.search.popular.repository.SearchWordCacheRepository;
+import com.team.saver.search.popular.repository.SearchWordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -16,10 +17,11 @@ import java.util.Set;
 public class SearchWordScheduler {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final PopularSearchWordRepository popularSearchWordRepository;
+    private final SearchWordCacheRepository searchWordCacheRepository;
+    private final SearchWordRepository searchWordRepository;
 
     @Scheduled(cron = "0 0 0/1 1/1 * ? *")
-    public void updateSearchWord() {
+    public void updateSearchWord_everyTime() {
         Set<String> keys = redisTemplate.keys("*_*");
 
         for (String key : keys) {
@@ -31,7 +33,7 @@ public class SearchWordScheduler {
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             String userAgent = valueOperations.get(key);
 
-            if(!popularSearchWordRepository.existsByUserIpAndSearchTimeAndSearchWord(userIp, date, searchWord)){
+            if(!searchWordCacheRepository.existsByUserIpAndSearchTimeAndSearchWord(userIp, date, searchWord)){
                 SearchWordCache searchWordCache = SearchWordCache.builder()
                         .userIp(userIp)
                         .userAgent(userAgent)
@@ -39,17 +41,35 @@ public class SearchWordScheduler {
                         .searchWord(searchWord)
                         .build();
 
-                popularSearchWordRepository.save(searchWordCache);
+                searchWordCacheRepository.save(searchWordCache);
             }
 
             redisTemplate.delete(key);
         }
     }
 
+    private boolean isRecentlySearchWord(LocalDateTime localDateTime) {
+        LocalDateTime now = LocalDateTime.now().minusHours(1);
+
+        if(now.compareTo(localDateTime) >= 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void resetSearchWord_everyTime() {
+        searchWordRepository.resetRecentlySearch();
+    }
+
     @Scheduled(cron = "0 0 0 1/1 * ? *")
-    public void
+    public void resetSearchWord_everyDay() {
+        searchWordRepository.resetDaySearch();
+    }
 
     @Scheduled(cron = "0 0 0 ? * MON *")
-    public
+    public void resetSearchWord_everyWeek() {
+        searchWordRepository.resetWeekSearch();
+    }
 
 }

@@ -31,10 +31,14 @@ public class PopularSearchService {
         }
     }
 
+    public void getPopularSearchWord() {
+
+    }
+
     private LocalDateTime getNowDateTimeOnlyDateAndHour() {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        return localDateTime.withMinute(0).withSecond(0).withNano(0);
+        return localDateTime;
     }
 
     private LocalDate getNowDateOnlyDateAndHour() {

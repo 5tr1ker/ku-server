@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 
-public interface PopularSearchWordRepository extends JpaRepository<SearchWordCache, Long> {
+public interface SearchWordCacheRepository extends JpaRepository<SearchWordCache, Long> {
 
     boolean existsByUserIpAndSearchTimeAndSearchWord(String userIp, LocalDateTime date, String searchWord);
 
