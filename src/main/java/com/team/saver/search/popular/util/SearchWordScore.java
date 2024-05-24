@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 @Component
 public class SearchWordScore {
 
-    private PriorityQueue<SearchWordScoreDto> queue = new PriorityQueue<>();
+    private PriorityQueue<SearchWordScoreDto.Node> queue = new PriorityQueue<>(new SearchWordScoreDto.NodeComparator());
 
     public void clearQueue() {
         queue.clear();
@@ -20,19 +20,23 @@ public class SearchWordScore {
         return queue.isEmpty();
     }
 
-    public void addSearchWord(String searchWord, double score) {
-        queue.add(new SearchWordScoreDto(score, searchWord));
+    public void addSearchWord(long nodeId, String searchWord, double score) {
+        queue.add(new SearchWordScoreDto.Node(nodeId, score, searchWord));
     }
 
-    public void initQueue(List<SearchWordScoreDto> searchWordScoreDto) {
-        queue = new PriorityQueue<>(searchWordScoreDto);
+    public void initQueue(List<SearchWordScoreDto.Node> searchWordScoreDto) {
+        queue = new PriorityQueue<>(new SearchWordScoreDto.NodeComparator());
+
+        for(SearchWordScoreDto.Node node : searchWordScoreDto) {
+            queue.add(node);
+        }
     }
 
-    public List<SearchWordScoreDto> getAsList() {
+    public List<SearchWordScoreDto.Node> getAsList() {
         return new ArrayList<>(queue);
     }
 
-    public SearchWordScoreDto getSearchWord() {
+    public SearchWordScoreDto.Node getSearchWord() {
         return queue.poll();
     }
 }

@@ -22,7 +22,7 @@ public class PopularSearchController {
 
     @GetMapping
     public ResponseEntity getPopularSearchWord() {
-        List<SearchWordScoreDto> result = popularSearchService.getPopularSearchWord();
+        List<SearchWordScoreDto.Node> result = popularSearchService.getPopularSearchWord();
 
         return ResponseEntity.ok(result);
     }
@@ -34,26 +34,6 @@ public class PopularSearchController {
         popularSearchService.addSearchWordToRedis(httpServletRequest, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/1")
-    public void a() {
-        searchWordScheduler.updateSearchWord_everyTime();
-    }
-
-    @PostMapping("/2")
-    public void b() {
-        searchWordScheduler.resetSearchWord_everyTime();
-    }
-
-    @PostMapping("/3")
-    public void c() {
-        searchWordScheduler.resetSearchWord_everyDay();
-    }
-
-    @PostMapping("/4")
-    public void d() {
-        searchWordScheduler.resetSearchWord_everyWeek();
     }
 
 }

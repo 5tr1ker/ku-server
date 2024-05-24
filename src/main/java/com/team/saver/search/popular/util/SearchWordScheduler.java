@@ -25,44 +25,52 @@ public class SearchWordScheduler {
     @Transactional
     public void updateSearchWord_everyTime() {
         resetSearchWord_everyTime();
-        searchWordScore.clearQueue();
 
         Set<String> keys = redisTemplate.keys("*searchWord*");
 
         for (String key : keys) {
-            System.out.println("발견 키 : " + key);
-            String[] parts = key.split("_"); // 0 - userIp , 1 - date , 2 - searchWord
-            String searchWord = parts[2];
+            String[] parts = key.split("_"); // 0 - userIp, 1 - searchWord
+            String searchWord = parts[1];
 
             SearchWord searchWordEntity = searchWordRepository.findBySearchWord(searchWord)
                     .orElseGet(() -> searchWordRepository.save(SearchWord.createEntity(searchWord)));
             searchWordEntity.updateSearch();
 
-            addSearchWordScore(searchWordEntity);
-
             redisTemplate.delete(key);
         }
 
+        updateSearchWordScore();
+
         calculateRankingChangeValue();
+    }
+
+    private void updateSearchWordScore() {
+        searchWordScore.clearQueue();
+        List<SearchWord> searchWordList = searchWordRepository.findAll();
+
+        for(SearchWord searchWord : searchWordList) {
+            addSearchWordScore(searchWord);
+        }
     }
 
     private void addSearchWordScore(SearchWord searchWord) {
         double score = WeightValue.calculated(searchWord);
 
-        searchWordScore.addSearchWord(searchWord.getSearchWord() , score);
+        searchWordScore.addSearchWord(searchWord.getSearchWordId(), searchWord.getSearchWord() , score);
     }
 
     @Transactional
     public void calculateRankingChangeValue() {
-        List<SearchWordScoreDto> temp = new ArrayList<>();
+        List<SearchWordScoreDto.Node> temp = new ArrayList<>();
 
         int rankingIndex = 1;
-        while(searchWordScore.isEmpty()) {
-            SearchWordScoreDto searchWordDto = searchWordScore.getSearchWord();
+
+        while(!searchWordScore.isEmpty()) {
+            SearchWordScoreDto.Node searchWordDto = searchWordScore.getSearchWord();
 
             SearchWord searchWord = searchWordRepository.findBySearchWord(searchWordDto.getSearchWord()).get();
 
-            temp.add(new SearchWordScoreDto(searchWordDto , searchWord.getPreviousRanking() - rankingIndex));
+            temp.add(new SearchWordScoreDto.Node(searchWord.getSearchWordId(),rankingIndex, searchWordDto , searchWord.getPreviousRanking() - rankingIndex));
             searchWord.setPreviousRanking(rankingIndex);
 
             rankingIndex += 1;
@@ -72,16 +80,19 @@ public class SearchWordScheduler {
         searchWordScore.initQueue(temp);
     }
 
+    @Transactional
     public void resetSearchWord_everyTime() {
         searchWordRepository.resetRecentlySearch();
     }
 
     @Scheduled(cron = "0 0 0 1/1 * ?")
+    @Transactional
     public void resetSearchWord_everyDay() {
         searchWordRepository.resetDaySearch();
     }
 
     @Scheduled(cron = "0 0 0 ? * MON")
+    @Transactional
     public void resetSearchWord_everyWeek() {
         searchWordRepository.resetWeekSearch();
     }

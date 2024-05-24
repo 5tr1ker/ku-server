@@ -23,10 +23,8 @@ public class PopularSearchService {
     public void addSearchWordToRedis(HttpServletRequest httpServletRequest, PopularSearchRequest request) {
         String userIp = httpServletRequest.getRemoteAddr();
         String userAgent = httpServletRequest.getHeader("User-Agent");
-        String today = getNowDateTimeOnlyDateAndHour().toString();
 
-        String key = "searchWord=" + userIp + "_" + today + "_" + request.getSearchWord();
-
+        String key = "searchWord=" + userIp + "_" + request.getSearchWord();
         ValueOperations valueOperations = redisTemplate.opsForValue();
 
         if (!valueOperations.getOperations().hasKey(key)) {
@@ -34,14 +32,8 @@ public class PopularSearchService {
         }
     }
 
-    public List<SearchWordScoreDto> getPopularSearchWord() {
+    public List<SearchWordScoreDto.Node> getPopularSearchWord() {
         return searchWordScore.getAsList();
-    }
-
-    private LocalDateTime getNowDateTimeOnlyDateAndHour() {
-        LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
-        return localDateTime;
     }
 
 }

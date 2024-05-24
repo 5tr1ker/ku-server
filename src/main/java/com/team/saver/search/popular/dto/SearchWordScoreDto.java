@@ -3,30 +3,47 @@ package com.team.saver.search.popular.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Comparator;
 
-@Getter
-@Builder
-@AllArgsConstructor
-public class SearchWordScoreDto implements Comparator<SearchWordScoreDto> {
-    private double score;
-    private String searchWord;
-    private int rankChangeValue;
+public class SearchWordScoreDto {
 
-    public SearchWordScoreDto(double score, String searchWord) {
-        this.score = score;
-        this.searchWord = searchWord;
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    static public class Node {
+
+        private long nodeId;
+        private int rank;
+        private double score;
+        private String searchWord;
+        private int rankChangeValue;
+
+        public Node(long nodeId, double score, String searchWord) {
+            this.nodeId = nodeId;
+            this.score = score;
+            this.searchWord = searchWord;
+        }
+
+        public Node(long nodeId, int rank, Node searchWordDto, int rankChangeValue) {
+            this.nodeId = nodeId;
+            this.rank = rank;
+            this.score = searchWordDto.score;
+            this.searchWord = searchWordDto.searchWord;
+            this.rankChangeValue = rankChangeValue;
+        }
     }
 
-    public SearchWordScoreDto(SearchWordScoreDto searchWordScoreDto, int rankChangeValue) {
-        this.score = searchWordScoreDto.getScore();
-        this.searchWord = searchWordScoreDto.getSearchWord();
-        this.rankChangeValue = rankChangeValue;
+    static public class NodeComparator implements Comparator<Node> {
+        @Override
+        public int compare(Node o1, Node o2) {
+            if(o1.score == o2.score) {
+                return Double.compare(o1.nodeId, o2.nodeId);
+            }
+
+            return Double.compare(o2.score, o1.score);
+        }
     }
 
-    @Override
-    public int compare(SearchWordScoreDto o1, SearchWordScoreDto o2) {
-        return Double.compare(o1.score, o2.score);
-    }
 }
