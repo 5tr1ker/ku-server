@@ -18,7 +18,6 @@ import java.util.List;
 public class PopularSearchController {
 
     private final PopularSearchService popularSearchService;
-    private final SearchWordScheduler searchWordScheduler;
 
     @GetMapping
     public ResponseEntity getPopularSearchWord() {
