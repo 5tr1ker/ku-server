@@ -1,15 +1,17 @@
 package com.team.saver.search.popular.util;
 
-import com.team.saver.search.popular.entity.SearchWordCache;
-import com.team.saver.search.popular.repository.SearchWordCacheRepository;
+import com.team.saver.search.popular.dto.SearchWordScoreDto;
+import com.team.saver.search.popular.entity.SearchWord;
 import com.team.saver.search.popular.repository.SearchWordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 @Component
@@ -17,45 +19,54 @@ import java.util.Set;
 public class SearchWordScheduler {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final SearchWordCacheRepository searchWordCacheRepository;
     private final SearchWordRepository searchWordRepository;
+    private final SearchWordScore searchWordScore;
 
     @Scheduled(cron = "0 0 0/1 1/1 * ? *")
+    @Transactional
     public void updateSearchWord_everyTime() {
-        Set<String> keys = redisTemplate.keys("*_*");
+        resetSearchWord_everyTime();
+        searchWordScore.clearQueue();
+
+        Set<String> keys = redisTemplate.keys("*searchWord*");
 
         for (String key : keys) {
-            String[] parts = key.split("_");
-            String userIp = parts[0];
-            LocalDateTime date = LocalDateTime.parse(parts[1]);
+            String[] parts = key.split("_"); // 0 - userIp , 1 - date , 2 - searchWord
             String searchWord = parts[2];
 
-            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-            String userAgent = valueOperations.get(key);
+            SearchWord searchWordEntity = searchWordRepository.findBySearchWord(searchWord)
+                    .orElseGet(() -> searchWordRepository.save(SearchWord.createEntity(searchWord)));
+            searchWordEntity.updateSearch();
 
-            if(!searchWordCacheRepository.existsByUserIpAndSearchTimeAndSearchWord(userIp, date, searchWord)){
-                SearchWordCache searchWordCache = SearchWordCache.builder()
-                        .userIp(userIp)
-                        .userAgent(userAgent)
-                        .searchTime(date)
-                        .searchWord(searchWord)
-                        .build();
-
-                searchWordCacheRepository.save(searchWordCache);
-            }
+            addSearchWordScore(searchWordEntity);
 
             redisTemplate.delete(key);
         }
+
+        calculateRankingChangeValue();
     }
 
-    private boolean isRecentlySearchWord(LocalDateTime localDateTime) {
-        LocalDateTime now = LocalDateTime.now().minusHours(1);
+    private void addSearchWordScore(SearchWord searchWord) {
+        double score = WeightValue.calculated(searchWord);
 
-        if(now.compareTo(localDateTime) >= 0) {
-            return true;
+        searchWordScore.addSearchWord(searchWord.getSearchWord() , score);
+    }
+
+    @Transactional
+    public void calculateRankingChangeValue() {
+        List<SearchWordScoreDto> temp = new ArrayList<>();
+
+        int rankingIndex = 1;
+        while(searchWordScore.isEmpty()) {
+            SearchWordScoreDto searchWordDto = searchWordScore.getSearchWord();
+
+            SearchWord searchWord = searchWordRepository.findBySearchWord(searchWordDto.getSearchWord()).get();
+
+            temp.add(new SearchWordScoreDto(searchWordDto , searchWord.getPreviousRanking() - rankingIndex));
+            searchWord.setPreviousRanking(rankingIndex);
+
+            rankingIndex += 1;
         }
-
-        return false;
     }
 
     public void resetSearchWord_everyTime() {

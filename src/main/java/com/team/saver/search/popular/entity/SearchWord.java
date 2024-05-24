@@ -1,10 +1,7 @@
 package com.team.saver.search.popular.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
@@ -36,23 +33,16 @@ public class SearchWord {
     @Builder.Default
     private int totalSearch = 0;
 
+    @Column(nullable = false)
+    @Builder.Default
+    @Setter
+    private int previousRanking = 0;
+
     public void updateSearch() {
         recentlySearch += 1;
         daySearch += 1;
         weekSearch += 1;
         totalSearch += 1;
-    }
-
-    public void resetRecentlySearch() {
-        recentlySearch = 0;
-    }
-
-    public void resetDaySearch() {
-        daySearch = 0;
-    }
-
-    public void resetWeekSearch() {
-        weekSearch = 0;
     }
 
     public static SearchWord createEntity(String searchWord) {
