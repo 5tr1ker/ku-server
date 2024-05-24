@@ -1,6 +1,7 @@
 package com.team.saver.search.popular.service;
 
 import com.team.saver.search.popular.dto.PopularSearchRequest;
+import com.team.saver.search.popular.dto.SearchWordScoreDto;
 import com.team.saver.search.popular.util.SearchWordScore;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +9,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,20 +34,14 @@ public class PopularSearchService {
         }
     }
 
-    public void getPopularSearchWord() {
-
+    public List<SearchWordScoreDto> getPopularSearchWord() {
+        return searchWordScore.getAsList();
     }
 
     private LocalDateTime getNowDateTimeOnlyDateAndHour() {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         return localDateTime;
-    }
-
-    private LocalDate getNowDateOnlyDateAndHour() {
-        LocalDate localDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
-
-        return localDate;
     }
 
 }

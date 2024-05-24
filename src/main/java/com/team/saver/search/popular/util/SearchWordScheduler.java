@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 @Component
@@ -22,7 +21,7 @@ public class SearchWordScheduler {
     private final SearchWordRepository searchWordRepository;
     private final SearchWordScore searchWordScore;
 
-    @Scheduled(cron = "0 0 0/1 1/1 * ? *")
+    @Scheduled(cron = "0 0 0/1 1/1 * ?")
     @Transactional
     public void updateSearchWord_everyTime() {
         resetSearchWord_everyTime();
@@ -31,6 +30,7 @@ public class SearchWordScheduler {
         Set<String> keys = redisTemplate.keys("*searchWord*");
 
         for (String key : keys) {
+            System.out.println("발견 키 : " + key);
             String[] parts = key.split("_"); // 0 - userIp , 1 - date , 2 - searchWord
             String searchWord = parts[2];
 
@@ -67,18 +67,21 @@ public class SearchWordScheduler {
 
             rankingIndex += 1;
         }
+
+        searchWordScore.clearQueue();
+        searchWordScore.initQueue(temp);
     }
 
     public void resetSearchWord_everyTime() {
         searchWordRepository.resetRecentlySearch();
     }
 
-    @Scheduled(cron = "0 0 0 1/1 * ? *")
+    @Scheduled(cron = "0 0 0 1/1 * ?")
     public void resetSearchWord_everyDay() {
         searchWordRepository.resetDaySearch();
     }
 
-    @Scheduled(cron = "0 0 0 ? * MON *")
+    @Scheduled(cron = "0 0 0 ? * MON")
     public void resetSearchWord_everyWeek() {
         searchWordRepository.resetWeekSearch();
     }
