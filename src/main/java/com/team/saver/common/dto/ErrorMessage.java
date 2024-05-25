@@ -23,7 +23,9 @@ public enum ErrorMessage {
     EXIST_COUPON("이미 쿠폰을 다운로드했습니다."),
     NOT_FOUND_COUPON("쿠폰을 찾을 수 없습니다."),
     TAMPERED_TOKEN("변조되거나 알 수 없는 토큰입니다."),
-    NOT_FOUND_FAVORITE("관심 목록을 찾을 수 없습니다.");
+    NOT_FOUND_FAVORITE("관심 목록을 찾을 수 없습니다."),
+    EXIST_RECOMMENDER("이미 추천했습니다."),
+    NOT_FOUND_REVIEW("리뷰를 찾을 수 없습니다.");
 
     private final String message;
 

@@ -5,11 +5,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
@@ -62,5 +64,16 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
                 .fetch();
+    }
+
+    @Override
+    public Optional<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId) {
+        ReviewRecommender result = jpaQueryFactory.select(reviewRecommender)
+                .from(reviewRecommender)
+                .innerJoin(reviewRecommender.account, account).on(account.email.eq(email))
+                .innerJoin(reviewRecommender.review, review).on(review.reviewId.eq(reviewId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }

@@ -7,6 +7,9 @@ import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @Getter
 @Entity
@@ -23,6 +26,9 @@ public class Review {
     private Account reviewer;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,12 +39,22 @@ public class Review {
     @Column(nullable = false)
     private int score;
 
+    @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true)
+    @Builder.Default
+    private List<ReviewRecommender> recommender = new ArrayList<>();
+
     public static Review createEntity(Account account, ReviewRequest request) {
         return Review.builder()
                 .reviewer(account)
+                .title(request.getTitle())
                 .content(request.getContent())
                 .score(request.getScore())
                 .build();
+    }
+
+    public void addRecommender(ReviewRecommender reviewRecommender) {
+        recommender.add(reviewRecommender);
+        reviewRecommender.setReview(this);
     }
 
     public void update(ReviewUpdateRequest request) {
