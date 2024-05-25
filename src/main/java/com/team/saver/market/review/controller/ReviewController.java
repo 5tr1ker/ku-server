@@ -9,6 +9,7 @@ import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,14 @@ public class ReviewController {
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
     public ResponseEntity findReviewByMarketId(@RequestParam long marketId) {
         List<ReviewResponse> result = reviewService.findByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/top")
+    @Operation(summary = "BEST 리뷰 가져오기")
+    public ResponseEntity findBestReview(Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findBestReview(pageable);
 
         return ResponseEntity.ok(result);
     }

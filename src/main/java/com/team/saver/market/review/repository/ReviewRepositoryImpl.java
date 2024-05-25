@@ -7,6 +7,7 @@ import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,5 +82,28 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<ReviewResponse> findBestReview(Pageable pageable) {
+        return jpaQueryFactory.select(Projections.constructor(
+                        ReviewResponse.class,
+                        review.reviewId,
+                        account.accountId,
+                        account.email,
+                        review.content,
+                        market.marketId,
+                        market.marketName,
+                        review.score,
+                        reviewRecommender.count()
+                )).from(review)
+                .innerJoin(review.market, market)
+                .innerJoin(review.reviewer, account)
+                .leftJoin(review.recommender, reviewRecommender)
+                .groupBy(review)
+                .orderBy(reviewRecommender.count().desc(), review.content.length().desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
     }
 }

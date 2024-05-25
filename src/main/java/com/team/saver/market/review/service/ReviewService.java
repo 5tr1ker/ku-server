@@ -14,6 +14,7 @@ import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,5 +76,9 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
 
         review.addRecommender(ReviewRecommender.createEntity(account, review));
+    }
+
+    public List<ReviewResponse> findBestReview(Pageable pageable) {
+        return reviewRepository.findBestReview(pageable);
     }
 }
