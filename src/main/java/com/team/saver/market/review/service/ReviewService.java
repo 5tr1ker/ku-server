@@ -4,14 +4,17 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.review.dto.ReviewRecommendRequest;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,4 +65,20 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+    @Transactional
+    public void recommendReview(CurrentUser currentUser, ReviewRecommendRequest request) {
+        if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), request.getReviewId()).isPresent()) {
+            throw new CustomRuntimeException(EXIST_RECOMMENDER);
+        };
+
+        Account account = accountService.getProfile(currentUser);
+        Review review = reviewRepository.findById(request.getReviewId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
+
+        review.addRecommender(ReviewRecommender.createEntity(account, review));
+    }
+
+    public List<ReviewResponse> findBestReview(Pageable pageable) {
+        return reviewRepository.findBestReview(pageable);
+    }
 }

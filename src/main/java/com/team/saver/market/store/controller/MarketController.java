@@ -2,6 +2,7 @@ package com.team.saver.market.store.controller;
 
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.service.MarketService;
+import com.team.saver.market.store.util.RecommendAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,20 @@ import java.util.List;
 public class MarketController {
 
     private final MarketService marketService;
+    private final RecommendAlgorithm recommendAlgorithm;
 
     @GetMapping("/{marketId}")
     @Operation(summary = "해당 Market의 상세 정보 가져오기")
     public ResponseEntity findMarketDetailById(@PathVariable long marketId) {
         MarketDetailResponse result = marketService.findMarketDetailById(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/recommend")
+    @Operation(summary = "Market 추천 받기")
+    public ResponseEntity recommendMarket(@RequestBody MarketRecommendRequest request) {
+        List<MarketResponse> result = recommendAlgorithm.recommendMarket(request);
 
         return ResponseEntity.ok(result);
     }

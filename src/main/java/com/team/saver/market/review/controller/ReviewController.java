@@ -2,12 +2,14 @@ package com.team.saver.market.review.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.market.review.dto.ReviewRecommendRequest;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,23 @@ public class ReviewController {
         List<ReviewResponse> result = reviewService.findByMarketId(marketId);
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/top")
+    @Operation(summary = "BEST 리뷰 가져오기")
+    public ResponseEntity findBestReview(Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findBestReview(pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/recommendation")
+    @Operation(summary = "리뷰 추천하기")
+    public ResponseEntity recommendReview(@LogIn CurrentUser currentUser,
+                                          @RequestBody ReviewRecommendRequest request) {
+        reviewService.recommendReview(currentUser, request);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/written-user")

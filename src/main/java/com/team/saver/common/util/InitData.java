@@ -76,15 +76,15 @@ public class InitData implements CommandLineRunner {
         market.addMenu(menu4);
         Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
         market.addMenu(menu5);
-        Review review1 = Review.builder().reviewer(account).content("content1").score(1).build();
+        Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
         marketRepository.save(market);
         market.addReview(review1);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             Random random = new Random();
             double randomX = random.nextDouble(99999);
             double randomY = random.nextDouble(99999);
-            int reviewCount = random.nextInt(8);
+            int reviewCount = random.nextInt(30);
 
             Market market_20 = Market.builder()
                     .marketName("MarketName " + (i + 1))
@@ -106,6 +106,7 @@ public class InitData implements CommandLineRunner {
                 market_20.addReview(Review
                         .builder()
                         .reviewer(account)
+                        .title("title " + randomScore)
                         .content("content " + randomScore)
                         .score(randomScore)
                         .build());
