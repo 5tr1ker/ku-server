@@ -22,7 +22,7 @@ public class RecommendAlgorithm {
     }
 
     @Scheduled(cron = "0 0 0 1/1 * ?")
-    protected void updateMarketRecommend() {
+    public void updateMarketRecommend() {
         List<MarketResponse> marketList = marketRepository.findMarkets();
 
         marketRecommend.clearMarket();
@@ -34,7 +34,7 @@ public class RecommendAlgorithm {
     }
 
     private double calculateRatingScore(double reviewScore, long totalReview) {
-        return reviewScore - (reviewScore - 0.5) * Math.pow(2 , Math.log(totalReview + 1));
+        return reviewScore - (reviewScore - 0.05) * Math.pow(2 , Math.log(totalReview + 1));
     }
 
 }

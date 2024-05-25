@@ -2,7 +2,6 @@ package com.team.saver.market.store.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,12 +22,14 @@ public class MarketRecommend {
         List<MarketResponse> result = new ArrayList<>();
         List<Node> temp = new ArrayList<>();
 
-        for(int i = 0; i < count; i++) {
+        for(int i = 0; i < count && !queue.isEmpty() ; i++) {
             temp.add(queue.peek());
             result.add(queue.poll().marketResponse);
         }
 
-        temp.stream().map(node -> queue.add(node));
+        for(Node node : temp) {
+            queue.add(node);
+        }
 
         return result;
     }
@@ -50,8 +51,7 @@ public class MarketRecommend {
 
         @Override
         public int compare(Node o1, Node o2) {
-
-            return Double.compare(o2.score, o1.score);
+            return Double.compare(o1.score, o2.score);
         }
     }
 

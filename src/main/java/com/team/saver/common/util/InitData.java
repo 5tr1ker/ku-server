@@ -80,11 +80,11 @@ public class InitData implements CommandLineRunner {
         marketRepository.save(market);
         market.addReview(review1);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             Random random = new Random();
             double randomX = random.nextDouble(99999);
             double randomY = random.nextDouble(99999);
-            int reviewCount = random.nextInt(8);
+            int reviewCount = random.nextInt(30);
 
             Market market_20 = Market.builder()
                     .marketName("MarketName " + (i + 1))
