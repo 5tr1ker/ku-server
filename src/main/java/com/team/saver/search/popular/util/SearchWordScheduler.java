@@ -44,7 +44,7 @@ public class SearchWordScheduler {
         calculateRankingChangeValue();
     }
 
-    private void updateSearchWordScore() {
+    public void updateSearchWordScore() {
         searchWordScore.clearQueue();
         List<SearchWord> searchWordList = searchWordRepository.findAll();
 

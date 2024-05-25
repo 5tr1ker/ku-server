@@ -10,7 +10,9 @@ import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
+import com.team.saver.search.popular.util.SearchWordScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,10 +27,18 @@ public class InitData implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
     private final MarketRepository marketRepository;
+    private final RecommendAlgorithm recommendAlgorithm;
+    private final SearchWordScheduler searchWordScheduler;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        // init Data-Start
+        recommendAlgorithm.updateMarketRecommend();
+        searchWordScheduler.updateSearchWordScore();
+        searchWordScheduler.calculateRankingChangeValue();
+        // init Data-End
+
         accountRepository.deleteAll();
         marketRepository.deleteAll();
 
