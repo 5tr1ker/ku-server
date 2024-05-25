@@ -21,4 +21,6 @@ public class ReviewResponse {
 
     private int score;
 
+    private long recommendCount;
+
 }

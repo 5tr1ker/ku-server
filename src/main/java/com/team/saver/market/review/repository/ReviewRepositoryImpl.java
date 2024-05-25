@@ -31,10 +31,13 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         review.content,
                         market.marketId,
                         market.marketName,
-                        review.score
+                        review.score,
+                        reviewRecommender.count()
                 )).from(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
+                .leftJoin(review.recommender, reviewRecommender)
+                .groupBy(review)
                 .fetch();
     }
 
@@ -59,10 +62,13 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         review.content,
                         market.marketId,
                         market.marketName,
-                        review.score
+                        review.score,
+                        reviewRecommender.count()
                 )).from(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .leftJoin(review.recommender, reviewRecommender)
+                .groupBy(review)
                 .fetch();
     }
 

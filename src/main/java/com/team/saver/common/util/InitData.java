@@ -76,7 +76,7 @@ public class InitData implements CommandLineRunner {
         market.addMenu(menu4);
         Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
         market.addMenu(menu5);
-        Review review1 = Review.builder().reviewer(account).content("content1").score(1).build();
+        Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
         marketRepository.save(market);
         market.addReview(review1);
 
@@ -106,6 +106,7 @@ public class InitData implements CommandLineRunner {
                 market_20.addReview(Review
                         .builder()
                         .reviewer(account)
+                        .title("title " + randomScore)
                         .content("content " + randomScore)
                         .score(randomScore)
                         .build());

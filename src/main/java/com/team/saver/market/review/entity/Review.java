@@ -39,7 +39,7 @@ public class Review {
     @Column(nullable = false)
     private int score;
 
-    @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "review")
     @Builder.Default
     private List<ReviewRecommender> recommender = new ArrayList<>();
 
