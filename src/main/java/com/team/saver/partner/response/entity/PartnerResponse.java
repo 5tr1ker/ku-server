@@ -1,8 +1,12 @@
 package com.team.saver.partner.response.entity;
 
+import com.team.saver.account.entity.Account;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,6 +26,12 @@ public class PartnerResponse {
 
     @Column(nullable = false)
     private String message;
+
+    @CreationTimestamp
+    private LocalDateTime writeTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account writer;
 
     public static PartnerResponse createEntity(String message) {
         return PartnerResponse.builder()

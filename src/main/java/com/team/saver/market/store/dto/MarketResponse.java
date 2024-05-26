@@ -4,6 +4,8 @@ import com.team.saver.market.store.entity.MainCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalTime;
+
 @AllArgsConstructor
 @Getter
 public class MarketResponse {
@@ -23,6 +25,12 @@ public class MarketResponse {
     private String marketImage;
 
     private String detailAddress;
+
+    private LocalTime openTime;
+
+    private LocalTime closeTime;
+
+    private String closedDays;
 
     private double averageReviewScore;
 
