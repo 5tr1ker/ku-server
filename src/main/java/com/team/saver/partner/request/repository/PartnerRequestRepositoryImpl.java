@@ -25,6 +25,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                 .select(partnerRequest)
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser)
+                .leftJoin(partnerRequest.partnerRecommenders)
                 .leftJoin(partnerRequest.partnerResponse)
                 .fetch();
 

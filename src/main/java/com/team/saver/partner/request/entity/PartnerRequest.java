@@ -31,6 +31,18 @@ public class PartnerRequest {
     @Column(nullable = false)
     private String marketAddress;
 
+    @Column(nullable = false)
+    private String detailAddress;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Account requestUser;
@@ -51,6 +63,10 @@ public class PartnerRequest {
                 .requestMarketName(request.getRequestMarketName())
                 .marketAddress(request.getMarketAddress())
                 .requestUser(account)
+                .detailAddress(request.getDetailAddress())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .phoneNumber(request.getPhoneNumber())
                 .build();
     }
 
