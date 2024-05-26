@@ -31,11 +31,13 @@ public class PartnerResponse {
     private LocalDateTime writeTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Account writer;
 
-    public static PartnerResponse createEntity(String message) {
+    public static PartnerResponse createEntity(String message, Account account) {
         return PartnerResponse.builder()
                 .message(message)
+                .writer(account)
                 .build();
     }
 
