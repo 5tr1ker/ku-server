@@ -5,6 +5,7 @@ import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +21,15 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PartnerRequestResponse> findAllEntity() {
+    public List<PartnerRequestResponse> findAllEntity(Pageable pageable) {
         List<PartnerRequest> result = jpaQueryFactory
                 .select(partnerRequest)
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser)
                 .leftJoin(partnerRequest.partnerRecommenders)
                 .leftJoin(partnerRequest.partnerResponse)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         return result.stream()

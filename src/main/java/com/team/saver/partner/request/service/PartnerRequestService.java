@@ -10,6 +10,7 @@ import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,8 @@ public class PartnerRequestService {
         partnerRequestRepository.save(partnerRequest);
     }
 
-    public List<PartnerRequestResponse> findAllEntity() {
-        return partnerRequestRepository.findAllEntity();
+    public List<PartnerRequestResponse> findAllEntity(Pageable pageable) {
+        return partnerRequestRepository.findAllEntity(pageable);
     }
 
     @Transactional

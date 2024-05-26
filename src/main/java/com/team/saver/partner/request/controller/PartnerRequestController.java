@@ -11,6 +11,7 @@ import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.service.PartnerRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,8 +41,8 @@ public class PartnerRequestController {
 
     @GetMapping
     @Operation(summary = "요청된 모든 파트너십 데이터 가져오기")
-    public ResponseEntity findAllEntity() {
-        List<PartnerRequestResponse> result = partnerRequestService.findAllEntity();
+    public ResponseEntity findAllEntity(Pageable pageable) {
+        List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(pageable);
 
         return ResponseEntity.ok(result);
     }

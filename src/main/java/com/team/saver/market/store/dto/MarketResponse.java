@@ -18,11 +18,11 @@ public class MarketResponse {
 
     private double locationY;
 
+    private String marketImage;
+
     private String marketName;
 
     private String marketDescription;
-
-    private String marketImage;
 
     private String detailAddress;
 
