@@ -66,6 +66,8 @@ public class Market {
 
     private LocalTime closeTime;
 
+    private String closedDays;
+
     private String marketPhone;
 
     public void addCoupon(Coupon coupon) {

@@ -9,4 +9,12 @@ public class NewPartnerRequest {
 
     private String marketAddress;
 
+    private String detailAddress;
+
+    private String phoneNumber;
+
+    private String title;
+
+    private String description;
+
 }

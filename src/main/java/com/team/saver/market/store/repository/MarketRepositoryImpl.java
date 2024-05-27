@@ -32,6 +32,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
                         review.score.avg(),
                         review.countDistinct(),
                         coupon.saleRate.max()
@@ -54,6 +57,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
                         review.score.avg(),
                         review.countDistinct(),
                         coupon.saleRate.max()
@@ -77,6 +83,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
                         review.score.avg(),
                         review.countDistinct(),
                         coupon.saleRate.max()
@@ -100,6 +109,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
                         review.score.avg(),
                         review.countDistinct(),
                         coupon.saleRate.max()

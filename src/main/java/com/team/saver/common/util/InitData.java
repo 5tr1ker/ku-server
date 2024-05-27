@@ -30,14 +30,18 @@ public class InitData implements CommandLineRunner {
     private final RecommendAlgorithm recommendAlgorithm;
     private final SearchWordScheduler searchWordScheduler;
 
-    @Override
-    @Transactional
-    public void run(String... args) throws Exception {
+    public void settingInitData() {
         // init Data-Start
         recommendAlgorithm.updateMarketRecommend();
         searchWordScheduler.updateSearchWordScore();
         searchWordScheduler.calculateRankingChangeValue();
         // init Data-End
+    }
+
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+
 
         accountRepository.deleteAll();
         marketRepository.deleteAll();
@@ -123,6 +127,8 @@ public class InitData implements CommandLineRunner {
             }
 
             marketRepository.save(market_20);
+
+            settingInitData();
         }
     }
 }

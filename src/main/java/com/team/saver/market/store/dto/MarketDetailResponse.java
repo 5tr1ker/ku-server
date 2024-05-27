@@ -35,6 +35,8 @@ public class MarketDetailResponse {
 
     private LocalTime closeTime;
 
+    private String closeDays;
+
     private String marketPhone;
 
     @Builder.Default
@@ -56,6 +58,7 @@ public class MarketDetailResponse {
                 .detailAddress(market.getDetailAddress())
                 .openTime(market.getOpenTime())
                 .closeTime(market.getCloseTime())
+                .closeDays(market.getClosedDays())
                 .marketPhone(market.getMarketPhone())
                 .menus(menusList)
                 .build();
