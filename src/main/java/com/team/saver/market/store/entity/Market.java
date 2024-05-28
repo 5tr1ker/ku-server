@@ -3,6 +3,7 @@ package com.team.saver.market.store.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.store.dto.MarketRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +45,10 @@ public class Market {
     @Builder.Default
     private List<Menu> menus = new ArrayList<>();
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
+    private List<MarketClassification> marketClassifications = new ArrayList<>();
+
     @Column(nullable = false)
     private double locationX;
 
@@ -80,8 +85,30 @@ public class Market {
         reviews.add(review);
     }
 
+    public void addClassification(MarketClassification marketClassification) {
+        marketClassifications.add(marketClassification);
+        marketClassification.setMarket(this);
+    }
+
     public void addMenu(Menu menu) {
         menus.add(menu);
+    }
+
+    public static Market createEntity(Account account, MarketRequest request, String marketImage) {
+        return Market.builder()
+                .mainCategory(request.getMainCategory())
+                .partner(account)
+                .locationX(request.getLocationX())
+                .locationY(request.getLocationY())
+                .marketName(request.getMarketName())
+                .marketImage(marketImage)
+                .marketDescription(request.getMarketDescription())
+                .detailAddress(request.getDetailAddress())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
+                .closedDays(request.getClosedDays())
+                .marketPhone(request.getMarketPhone())
+                .build();
     }
 
 }
