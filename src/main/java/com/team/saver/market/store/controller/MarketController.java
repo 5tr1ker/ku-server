@@ -1,13 +1,17 @@
 package com.team.saver.market.store.controller;
 
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.service.MarketService;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Currency;
 import java.util.List;
 
 @RestController
@@ -17,6 +21,13 @@ public class MarketController {
 
     private final MarketService marketService;
     private final RecommendAlgorithm recommendAlgorithm;
+
+    @PostMapping
+    public ResponseEntity addMarket(@LogIn CurrentUser currentUser, @RequestBody MarketRequest request) {
+        marketService.addMarket(currentUser, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @GetMapping("/{marketId}")
     @Operation(summary = "해당 Market의 상세 정보 가져오기")

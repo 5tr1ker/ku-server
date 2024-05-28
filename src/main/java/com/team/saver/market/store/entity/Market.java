@@ -3,6 +3,7 @@ package com.team.saver.market.store.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.store.dto.MarketRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -91,6 +92,22 @@ public class Market {
 
     public void addMenu(Menu menu) {
         menus.add(menu);
+    }
+
+    public static Market createEntity(Account account, MarketRequest request) {
+        return Market.builder()
+                .mainCategory(request.getMainCategory())
+                .partner(account)
+                .locationX(request.getLocationX())
+                .locationY(request.getLocationY())
+                .marketName(request.getMarketName())
+                .marketDescription(request.getMarketDescription())
+                .detailAddress(request.getDetailAddress())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
+                .closedDays(request.getClosedDays())
+                .marketPhone(request.getMarketPhone())
+                .build();
     }
 
 }

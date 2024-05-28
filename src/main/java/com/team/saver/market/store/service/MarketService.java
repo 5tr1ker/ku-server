@@ -1,5 +1,8 @@
 package com.team.saver.market.store.service;
 
+import com.team.saver.account.entity.Account;
+import com.team.saver.account.service.AccountService;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Classification;
@@ -13,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.EXIST_CLASSIFICATION;
@@ -26,6 +31,7 @@ public class MarketService {
     private final MarketSortTool marketSortTool;
     private final ClassificationRepository classificationRepository;
     private final MarketClassificationRepository marketClassificationRepository;
+    private final AccountService accountService;
 
     public List<MarketResponse> findAllMarket(SearchMarketRequest request) {
         List<MarketResponse> result = marketRepository.findMarkets();
@@ -59,9 +65,27 @@ public class MarketService {
     }
 
     @Transactional
-    protected void addClassification(Market market, String classification) {
-        Classification classificationEntity = classificationRepository.findByClassification(classification)
+    public void addMarket(CurrentUser currentUser, MarketRequest request) {
+        Account account = accountService.getProfile(currentUser);
+
+        Market market = Market.createEntity(account, request);
+        for(String classification : new HashSet<>(Arrays.asList(request.getClassifications()))) {
+            Classification classificationEntity = getClassificationEntity(classification);
+
+            MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
+
+            market.addClassification(marketClassification);
+        }
+    }
+
+    private Classification getClassificationEntity(String classification) {
+        return classificationRepository.findByClassification(classification)
                 .orElseGet(() -> classificationRepository.save(Classification.createEntity(classification)));
+    }
+
+    @Transactional
+    protected void addClassification(Market market, String classification) {
+        Classification classificationEntity = getClassificationEntity(classification);
 
         if(marketClassificationRepository.findByMarketAndClassification(market, classificationEntity).isPresent()) {
             throw new CustomRuntimeException(EXIST_CLASSIFICATION);
