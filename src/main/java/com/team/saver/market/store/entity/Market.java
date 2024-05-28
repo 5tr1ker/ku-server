@@ -94,13 +94,14 @@ public class Market {
         menus.add(menu);
     }
 
-    public static Market createEntity(Account account, MarketRequest request) {
+    public static Market createEntity(Account account, MarketRequest request, String marketImage) {
         return Market.builder()
                 .mainCategory(request.getMainCategory())
                 .partner(account)
                 .locationX(request.getLocationX())
                 .locationY(request.getLocationY())
                 .marketName(request.getMarketName())
+                .marketImage(marketImage)
                 .marketDescription(request.getMarketDescription())
                 .detailAddress(request.getDetailAddress())
                 .openTime(request.getOpenTime())

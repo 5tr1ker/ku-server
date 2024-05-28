@@ -12,8 +12,6 @@ public class MarketRequest {
 
     private double locationX;
 
-    private String marketImage;
-
     private double locationY;
 
     private String marketName;

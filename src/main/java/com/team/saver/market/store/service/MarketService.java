@@ -68,7 +68,7 @@ public class MarketService {
     public void addMarket(CurrentUser currentUser, MarketRequest request) {
         Account account = accountService.getProfile(currentUser);
 
-        Market market = Market.createEntity(account, request);
+        Market market = Market.createEntity(account, request, "image");
         for(String classification : new HashSet<>(Arrays.asList(request.getClassifications()))) {
             Classification classificationEntity = getClassificationEntity(classification);
 
@@ -76,6 +76,8 @@ public class MarketService {
 
             market.addClassification(marketClassification);
         }
+
+        marketRepository.save(market);
     }
 
     private Classification getClassificationEntity(String classification) {
