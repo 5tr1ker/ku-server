@@ -44,6 +44,10 @@ public class Market {
     @Builder.Default
     private List<Menu> menus = new ArrayList<>();
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
+    private List<MarketClassification> marketClassifications = new ArrayList<>();
+
     @Column(nullable = false)
     private double locationX;
 
@@ -78,6 +82,11 @@ public class Market {
     public void addReview(Review review) {
         review.setMarket(this);
         reviews.add(review);
+    }
+
+    public void addClassification(MarketClassification marketClassification) {
+        marketClassifications.add(marketClassification);
+        marketClassification.setMarket(this);
     }
 
     public void addMenu(Menu menu) {
