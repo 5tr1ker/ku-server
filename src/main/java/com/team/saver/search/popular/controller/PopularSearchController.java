@@ -1,5 +1,7 @@
 package com.team.saver.search.popular.controller;
 
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
 import com.team.saver.search.popular.dto.PopularSearchRequest;
 import com.team.saver.search.popular.dto.SearchWordScoreDto;
 import com.team.saver.search.popular.service.PopularSearchService;
@@ -27,10 +29,10 @@ public class PopularSearchController {
     }
 
     @PostMapping
-    public ResponseEntity addSearchWordToRedis(HttpServletRequest httpServletRequest,
-                                     @RequestBody PopularSearchRequest request) {
+    public ResponseEntity addSearchWordToRedis(@LogIn CurrentUser currentUser,
+                                               @RequestBody PopularSearchRequest request) {
 
-        popularSearchService.addSearchWordToRedis(httpServletRequest, request);
+        popularSearchService.addSearchWordToRedis(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
