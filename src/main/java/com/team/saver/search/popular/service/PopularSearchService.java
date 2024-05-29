@@ -1,5 +1,6 @@
 package com.team.saver.search.popular.service;
 
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.search.popular.dto.PopularSearchRequest;
 import com.team.saver.search.popular.dto.SearchWordScoreDto;
 import com.team.saver.search.popular.util.SearchWordScore;
@@ -20,16 +21,14 @@ public class PopularSearchService {
     private final RedisTemplate<String, String> redisTemplate;
     private final SearchWordScore searchWordScore;
 
-    public void addSearchWordToRedis(HttpServletRequest httpServletRequest, PopularSearchRequest request) {
-        String userIp = httpServletRequest.getRemoteAddr();
-        String userAgent = httpServletRequest.getHeader("User-Agent");
-
-        String key = "searchWord=" + userIp + "_" + request.getSearchWord();
+    public void addSearchWordToRedis(CurrentUser currentUser, PopularSearchRequest request) {
+        String key = "searchWord=" + currentUser.getEmail() + "_" + request.getSearchWord();
         ValueOperations valueOperations = redisTemplate.opsForValue();
 
         if (!valueOperations.getOperations().hasKey(key)) {
-            valueOperations.set(key, userAgent);
+            valueOperations.set(key, request.getSearchWord());
         }
+
     }
 
     public List<SearchWordScoreDto.Node> getPopularSearchWord() {

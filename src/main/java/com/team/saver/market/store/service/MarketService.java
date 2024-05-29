@@ -8,6 +8,7 @@ import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Classification;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.MarketClassification;
+import com.team.saver.market.store.entity.QMarket;
 import com.team.saver.market.store.repository.ClassificationRepository;
 import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.EXIST_CLASSIFICATION;
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_MARKET;
+import static com.team.saver.market.store.entity.QMarket.market;
 
 @Service
 @RequiredArgsConstructor
@@ -34,27 +36,21 @@ public class MarketService {
     private final AccountService accountService;
 
     public List<MarketResponse> findAllMarket(SearchMarketRequest request) {
-        List<MarketResponse> result = marketRepository.findMarkets();
-
-        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null);
     }
 
-    public List<MarketResponse> findMarketBySearch(SearchByNameRequest request) {
-        List<MarketResponse> result = marketRepository.findMarketsByMarketName(request.getMarketName());
+    public List<MarketResponse> findMarketByMarketName(SearchByNameRequest request) {
+        QMarket market = new QMarket("market");
 
-        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(request.getMarketName()));
     }
 
     public List<MarketResponse> findMarketByMainCategory(SearchByCategoryRequest request) {
-        List<MarketResponse> result;
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(request.getCategory()));
+    }
 
-        if(request.getMarketName() == null) {
-            result = marketRepository.findMarketsByMainCategory(request.getCategory());
-        } else {
-            result = marketRepository.findMarketsByMainCategoryAndMarketName(request.getCategory(), request.getMarketName());
-        }
-
-        return marketSortTool.sortMarket(result, request.getSort(), request.getDistance());
+    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchByCategoryAndNameRequest request) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(request.getCategory()).and(market.marketName.contains(request.getMarketName())));
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
@@ -69,7 +65,7 @@ public class MarketService {
         Account account = accountService.getProfile(currentUser);
 
         Market market = Market.createEntity(account, request, "image");
-        for(String classification : new HashSet<>(Arrays.asList(request.getClassifications()))) {
+        for (String classification : new HashSet<>(Arrays.asList(request.getClassifications()))) {
             Classification classificationEntity = getClassificationEntity(classification);
 
             MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
@@ -89,9 +85,10 @@ public class MarketService {
     protected void addClassification(Market market, String classification) {
         Classification classificationEntity = getClassificationEntity(classification);
 
-        if(marketClassificationRepository.findByMarketAndClassification(market, classificationEntity).isPresent()) {
+        if (marketClassificationRepository.findByMarketAndClassification(market, classificationEntity).isPresent()) {
             throw new CustomRuntimeException(EXIST_CLASSIFICATION);
-        };
+        }
+        ;
 
         MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
 

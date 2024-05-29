@@ -26,10 +26,10 @@ public class SearchWordScheduler {
     public void updateSearchWord_everyTime() {
         resetSearchWord_everyTime();
 
-        Set<String> keys = redisTemplate.keys("*searchWord*");
+        Set<String> keys = redisTemplate.keys("searchWord*");
 
         for (String key : keys) {
-            String[] parts = key.split("_"); // 0 - userIp, 1 - searchWord
+            String[] parts = key.split("_"); // 0 - userEmail, 1 - searchWord
             String searchWord = parts[1];
 
             SearchWord searchWordEntity = searchWordRepository.findBySearchWord(searchWord)

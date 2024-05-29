@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Currency;
 import java.util.List;
 
 @RestController
@@ -56,7 +55,7 @@ public class MarketController {
     @PostMapping("/search/market-name")
     @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketBySearch(@RequestBody SearchByNameRequest request) {
-        List<MarketResponse> result = marketService.findMarketBySearch(request);
+        List<MarketResponse> result = marketService.findMarketByMarketName(request);
 
         return ResponseEntity.ok(result);
     }
@@ -65,6 +64,14 @@ public class MarketController {
     @Operation(summary = "해당 category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketByMainCategory(@RequestBody SearchByCategoryRequest request) {
         List<MarketResponse> result = marketService.findMarketByMainCategory(request);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/search/name-category")
+    @Operation(summary = "해당 category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    public ResponseEntity findMarketByMainCategoryAndMarketName(@RequestBody SearchByCategoryAndNameRequest request) {
+        List<MarketResponse> result = marketService.findMarketByMainCategoryAndMarketName(request);
 
         return ResponseEntity.ok(result);
     }
