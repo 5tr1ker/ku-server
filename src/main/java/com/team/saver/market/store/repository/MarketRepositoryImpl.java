@@ -1,20 +1,21 @@
 package com.team.saver.market.store.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import com.team.saver.market.store.dto.MarketResponse;
-import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Optional;
 
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
-
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class MarketRepositoryImpl implements CustomMarketRepository {
@@ -47,7 +48,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public List<MarketResponse> findMarketsByMainCategory(MainCategory category) {
+    public List<MarketResponse> findMarketsByConditional(BooleanExpression conditional) {
         return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
@@ -68,13 +69,13 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .where(market.mainCategory.eq(category))
+                .where(conditional)
                 .fetch();
     }
 
     @Override
-    public List<MarketResponse> findMarketsByMainCategoryAndMarketName(MainCategory category, String marketName) {
-        return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
+    public List<MarketResponse> findMarketsAndSort(OrderSpecifier orderSpecifier, BooleanExpression conditional) {
+        JPAQuery<MarketResponse> query = jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
                         market.locationX,
@@ -94,34 +95,13 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .where(market.mainCategory.eq(category).and(market.marketName.contains(marketName)))
-                .fetch();
-    }
+                .orderBy(orderSpecifier);
 
-    @Override
-    public List<MarketResponse> findMarketsByMarketName(String marketName) {
-        return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
-                        market.marketId,
-                        market.mainCategory,
-                        market.locationX,
-                        market.locationY,
-                        market.marketImage,
-                        market.marketName,
-                        market.marketDescription,
-                        market.detailAddress,
-                        market.openTime,
-                        market.closeTime,
-                        market.closedDays,
-                        review.score.avg(),
-                        review.countDistinct(),
-                        coupon.saleRate.max()
-                ))
-                .from(market)
-                .leftJoin(market.coupons, coupon)
-                .leftJoin(market.reviews, review)
-                .groupBy(market)
-                .where(market.marketName.contains(marketName))
-                .fetch();
+        if (conditional != null) {
+            query.where(conditional);
+        }
+
+        return query.fetch();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.team.saver.market.store.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
@@ -11,11 +13,9 @@ public interface CustomMarketRepository {
 
     List<MarketResponse> findMarkets();
 
-    List<MarketResponse> findMarketsByMainCategory(MainCategory category);
+    List<MarketResponse> findMarketsByConditional(BooleanExpression conditional);
 
-    List<MarketResponse> findMarketsByMainCategoryAndMarketName(MainCategory category, String marketName);
-
-    List<MarketResponse> findMarketsByMarketName(String marketName);
+    List<MarketResponse> findMarketsAndSort(OrderSpecifier orderSpecifier, BooleanExpression conditional);
 
     Optional<Market> findMarketDetailById(long marketId);
 

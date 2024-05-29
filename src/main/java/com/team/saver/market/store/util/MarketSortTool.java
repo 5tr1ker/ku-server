@@ -1,11 +1,13 @@
 package com.team.saver.market.store.util;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.coupon.entity.QCoupon;
+import com.team.saver.market.review.entity.QReview;
 import com.team.saver.market.store.dto.DistanceRequest;
 import com.team.saver.market.store.dto.MarketResponse;
+import com.team.saver.market.store.entity.QMarket;
 import com.team.saver.market.store.repository.MarketRepository;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,83 +23,51 @@ import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_SORT_TYPE;
 @RequiredArgsConstructor
 public class MarketSortTool {
 
-    public List<MarketResponse> sortMarket(List<MarketResponse> marketResponse, SortType sort, DistanceRequest request) {
+    private final MarketRepository marketRepository;
+
+    public List<MarketResponse> sortMarket(SortType sort, DistanceRequest request, BooleanExpression conditional) {
         if (sort.equals(SortType.NEAR_DISTANCE)) {
+            List<MarketResponse> marketResponse = marketRepository.findMarketsByConditional(conditional);
+
             return sortByDistance(marketResponse, request);
         } else if (sort.equals(SortType.HIGHEST_DISCOUNT)) {
-            return sortByMaxDiscountRate(marketResponse);
+            return sortByHighestDiscountRate(conditional);
         } else if (sort.equals(SortType.HIGHEST_RATED)) {
-            return sortByAverageReviewScore(marketResponse);
+            return sortByHighAverageReviewScore(conditional);
         } else if (sort.equals(SortType.MANY_REVIEW)) {
-            return sortByReviewCount(marketResponse);
-        } else if (sort.equals(SortType.RECENTLY_RELEASE)) {
-            return sortByRecentlyRelease(marketResponse);
+            return sortByManyReviewCount(conditional);
+        } else if (sort.equals(SortType.RECENTLY_UPLOAD)) {
+            return sortByRecentlyUpload(conditional);
         }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);
     }
 
-    private static List<MarketResponse> sortByReviewCount(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if (o1.getReviewCount() == o2.getReviewCount()) {
+    private List<MarketResponse> sortByManyReviewCount(BooleanExpression conditional) {
+        QReview review = new QReview("review");
 
-                    return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
-                }
-
-                return Long.compare(o2.getReviewCount(), o1.getReviewCount());
-            }
-        });
-
-        return marketResponse;
+        return marketRepository.findMarketsAndSort(review.count().desc(), conditional);
     }
 
-    private static List<MarketResponse> sortByAverageReviewScore(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if (o1.getAverageReviewScore() == o2.getAverageReviewScore()) {
+    private List<MarketResponse> sortByHighAverageReviewScore(BooleanExpression conditional) {
+        QReview review = new QReview("review");
 
-                    return Long.compare(o2.getReviewCount(), o1.getReviewCount());
-                }
-
-                return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
-            }
-        });
-
-        return marketResponse;
+        return marketRepository.findMarketsAndSort(review.score.avg().desc(), conditional);
     }
 
-    private static List<MarketResponse> sortByMaxDiscountRate(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
-                if (o1.getMaxDiscountRate() == o2.getMaxDiscountRate()) {
+    private List<MarketResponse> sortByHighestDiscountRate(BooleanExpression conditional) {
+        QCoupon coupon = new QCoupon("coupon");
 
-                    return Double.compare(o2.getAverageReviewScore(), o1.getAverageReviewScore());
-                }
-
-                return Double.compare(o2.getMaxDiscountRate(), o1.getMaxDiscountRate());
-            }
-        });
-
-        return marketResponse;
+        return marketRepository.findMarketsAndSort(coupon.saleRate.max().desc(), conditional);
     }
 
-    private static List<MarketResponse> sortByRecentlyRelease(List<MarketResponse> marketResponse) {
-        Collections.sort(marketResponse, new Comparator<MarketResponse>() {
-            @Override
-            public int compare(MarketResponse o1, MarketResponse o2) {
+    private List<MarketResponse> sortByRecentlyUpload(BooleanExpression conditional) {
+        QMarket market = new QMarket("market");
 
-                return Double.compare(o2.getMarketId(), o1.getMarketId());
-            }
-        });
-
-        return marketResponse;
+        return marketRepository.findMarketsAndSort(market.marketId.desc(), conditional);
     }
 
-    private static List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, DistanceRequest request) {
+    private List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, DistanceRequest request) {
         List<DistanceStorage> storages = calculateDistancePerStore(marketResponse, request);
 
         Collections.sort(storages, new Comparator<DistanceStorage>() {
@@ -112,7 +82,7 @@ public class MarketSortTool {
                 .collect(Collectors.toList());
     }
 
-    private static List<DistanceStorage> calculateDistancePerStore(List<MarketResponse> marketResponse, DistanceRequest request) {
+    private List<DistanceStorage> calculateDistancePerStore(List<MarketResponse> marketResponse, DistanceRequest request) {
         List<DistanceStorage> storages = new ArrayList<>();
 
         for (MarketResponse store : marketResponse) {
