@@ -5,6 +5,7 @@ import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,20 +15,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class MarketDetailResponse {
 
     private long marketId;
 
     private MainCategory mainCategory;
 
-    private double locationX;
-
-    private double locationY;
+    private String marketImage;
 
     private String marketName;
 
     private String marketDescription;
+
+    private int minimumOrderPrice;
 
     private String detailAddress;
 
@@ -39,29 +40,8 @@ public class MarketDetailResponse {
 
     private String marketPhone;
 
-    @Builder.Default
-    private List<MenuResponse> menus = new ArrayList<>();
+    private double averageReviewScore;
 
-
-    public static MarketDetailResponse createResponse(Market market) {
-        List<MenuResponse> menusList = market.getMenus().stream()
-                .map(MenuResponse::createResponse)
-                .collect(Collectors.toList());
-
-        return MarketDetailResponse.builder()
-                .marketId(market.getMarketId())
-                .mainCategory(market.getMainCategory())
-                .locationX(market.getLocationX())
-                .locationY(market.getLocationY())
-                .marketName(market.getMarketName())
-                .marketDescription(market.getMarketDescription())
-                .detailAddress(market.getDetailAddress())
-                .openTime(market.getOpenTime())
-                .closeTime(market.getCloseTime())
-                .closeDays(market.getClosedDays())
-                .marketPhone(market.getMarketPhone())
-                .menus(menusList)
-                .build();
-    }
+    private long reviewCount;
 
 }

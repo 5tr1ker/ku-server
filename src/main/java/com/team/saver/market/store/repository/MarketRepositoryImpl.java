@@ -5,13 +5,16 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.market.store.dto.MarketDetailResponse;
 import com.team.saver.market.store.dto.MarketResponse;
+import com.team.saver.market.store.dto.MenuResponse;
 import com.team.saver.market.store.entity.Market;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.store.entity.QMenu.menu;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
@@ -105,10 +108,26 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<Market> findMarketDetailById(long marketId) {
-        Market result = jpaQueryFactory.select(market)
+    public Optional<MarketDetailResponse> findMarketDetailById(long marketId) {
+        MarketDetailResponse result = jpaQueryFactory.select(Projections.constructor(
+                        MarketDetailResponse.class,
+                        market.marketId,
+                        market.mainCategory,
+                        market.marketImage,
+                        market.marketName,
+                        market.marketDescription,
+                        market.minimumOrderPrice,
+                        market.detailAddress,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
+                        market.marketPhone,
+                        review.score.avg(),
+                        review.countDistinct()
+                ))
                 .from(market)
-                .innerJoin(market.menus).fetchJoin()
+                .innerJoin(market.reviews, review)
+                .groupBy(market)
                 .where(market.marketId.eq(marketId))
                 .fetchOne();
 
@@ -124,5 +143,20 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<MenuResponse> findMarketMenuById(long marketId) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(MenuResponse.class,
+                                menu.menuId,
+                                menu.price,
+                                menu.menuName
+                        )
+                )
+                .from(market)
+                .leftJoin(market.menus, menu)
+                .where(market.marketId.eq(marketId))
+                .fetch();
     }
 }

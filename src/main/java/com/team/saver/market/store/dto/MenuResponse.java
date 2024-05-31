@@ -1,16 +1,16 @@
 package com.team.saver.market.store.dto;
 
-import com.team.saver.market.store.entity.Menu;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
-class MenuResponse {
-    private long price;
-    private String name;
+public class MenuResponse {
 
-    public static MenuResponse createResponse(Menu menu) {
-        return new MenuResponse(menu.getPrice(), menu.getMenuName());
-    }
+    private long menuId;
+    private long price;
+    private String menuName;
+
 }

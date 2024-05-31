@@ -55,6 +55,8 @@ public class Market {
     @Column(nullable = false)
     private String marketImage;
 
+    private int minimumOrderPrice;
+
     @Column(nullable = false)
     private double locationY;
 
