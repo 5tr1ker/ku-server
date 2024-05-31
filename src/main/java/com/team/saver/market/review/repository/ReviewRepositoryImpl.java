@@ -1,9 +1,11 @@
 package com.team.saver.market.review.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewResponse;
+import com.team.saver.market.review.dto.ReviewStatistics;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.account.entity.QAccount.account;
@@ -105,5 +109,23 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    @Override
+    public List<ReviewStatistics> findReviewStatisticsByMarketId(long marketId) {
+        List<Integer> numbers = IntStream.rangeClosed(1, 5).boxed().collect(Collectors.toList());
+
+        List<ReviewStatistics> results = numbers.stream().map(num -> {
+            long count = jpaQueryFactory
+                    .select(review.count())
+                    .from(review)
+                    .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                    .where(review.score.eq(num))
+                    .fetchOne();
+
+            return new ReviewStatistics(num, count);
+        }).collect(Collectors.toList());
+
+        return results;
     }
 }

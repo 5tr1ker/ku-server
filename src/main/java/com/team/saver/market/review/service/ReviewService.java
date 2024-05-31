@@ -4,10 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.market.review.dto.ReviewRecommendRequest;
-import com.team.saver.market.review.dto.ReviewRequest;
-import com.team.saver.market.review.dto.ReviewResponse;
-import com.team.saver.market.review.dto.ReviewUpdateRequest;
+import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.review.repository.ReviewRepository;
@@ -66,13 +63,13 @@ public class ReviewService {
     }
 
     @Transactional
-    public void recommendReview(CurrentUser currentUser, ReviewRecommendRequest request) {
-        if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), request.getReviewId()).isPresent()) {
+    public void recommendReview(CurrentUser currentUser, long reviewId) {
+        if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId).isPresent()) {
             throw new CustomRuntimeException(EXIST_RECOMMENDER);
         };
 
         Account account = accountService.getProfile(currentUser);
-        Review review = reviewRepository.findById(request.getReviewId())
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
 
         review.addRecommender(ReviewRecommender.createEntity(account, review));
@@ -80,5 +77,9 @@ public class ReviewService {
 
     public List<ReviewResponse> findBestReview(Pageable pageable) {
         return reviewRepository.findBestReview(pageable);
+    }
+
+    public List<ReviewStatistics> findReviewStatisticsByMarketId(long marketId) {
+        return reviewRepository.findReviewStatisticsByMarketId(marketId);
     }
 }
