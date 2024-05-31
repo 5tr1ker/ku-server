@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.dto.ReviewStatistics;
+import com.team.saver.market.review.dto.ReviewStatisticsResponse;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -112,7 +113,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewStatistics> findReviewStatisticsByMarketId(long marketId) {
+    public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         List<Integer> numbers = IntStream.rangeClosed(1, 5).boxed().collect(Collectors.toList());
 
         List<ReviewStatistics> results = numbers.stream().map(num -> {
@@ -126,6 +127,12 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
             return new ReviewStatistics(num, count);
         }).collect(Collectors.toList());
 
-        return results;
+        double averageScore = jpaQueryFactory
+                .select(review.score.avg())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .fetchOne();
+
+        return ReviewStatisticsResponse.createDto(results, averageScore);
     }
 }

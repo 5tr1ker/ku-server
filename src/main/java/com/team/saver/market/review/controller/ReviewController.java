@@ -29,9 +29,9 @@ public class ReviewController {
     }
 
     @GetMapping("/statistics")
-    @Operation(summary = "마켓에 등록된 리뷰 가져오기")
+    @Operation(summary = "리뷰 총 평점 및 점수 별 갯수 통계 가져오기")
     public ResponseEntity findReviewStatisticsByMarketId(@RequestParam long marketId) {
-        List<ReviewStatistics> result = reviewService.findReviewStatisticsByMarketId(marketId);
+        ReviewStatisticsResponse result = reviewService.findReviewStatisticsByMarketId(marketId);
 
         return ResponseEntity.ok(result);
     }

@@ -79,7 +79,7 @@ public class ReviewService {
         return reviewRepository.findBestReview(pageable);
     }
 
-    public List<ReviewStatistics> findReviewStatisticsByMarketId(long marketId) {
+    public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         return reviewRepository.findReviewStatisticsByMarketId(marketId);
     }
 }
