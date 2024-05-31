@@ -15,4 +15,6 @@ public class CouponResponse {
 
     private double saleRate;
 
+    private int saleAmount;
+
 }

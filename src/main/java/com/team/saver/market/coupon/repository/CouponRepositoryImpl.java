@@ -30,7 +30,8 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponId,
                         coupon.couponName,
                         coupon.couponDescription,
-                        coupon.saleRate
+                        coupon.saleRate,
+                        coupon.saleAmount
                 ))
                 .from(coupon)
                 .innerJoin(coupon.market).on(market.marketId.eq(marketId))
@@ -80,6 +81,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponName,
                         coupon.couponDescription,
                         coupon.saleRate,
+                        coupon.saleAmount,
                         market.marketId,
                         market.marketName
                 ))

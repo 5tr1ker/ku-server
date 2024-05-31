@@ -41,8 +41,7 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-
-
+        Random random = new Random();
         accountRepository.deleteAll();
         marketRepository.deleteAll();
 
@@ -91,11 +90,24 @@ public class InitData implements CommandLineRunner {
         Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
         market.addMenu(menu5);
         Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
+        for(int i = 0; i < 5; i++) {
+            double randomData = random.nextDouble(100);
+            int randomData2 = random.nextInt(10000);
+
+            Coupon coupon = Coupon.builder()
+                    .couponName("couponName" + i)
+                    .couponDescription("couponDescription")
+                    .market(market)
+                    .saleRate(randomData)
+                    .saleAmount(randomData2)
+                    .build();
+
+            market.addCoupon(coupon);
+        }
         marketRepository.save(market);
         market.addReview(review1);
 
         for (int i = 0; i < 30; i++) {
-            Random random = new Random();
             double randomX = random.nextDouble(99999);
             double randomY = random.nextDouble(99999);
             int reviewCount = random.nextInt(30);

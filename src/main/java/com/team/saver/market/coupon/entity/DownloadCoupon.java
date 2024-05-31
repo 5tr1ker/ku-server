@@ -38,7 +38,6 @@ public class DownloadCoupon {
     private boolean isUsage = false;
 
     @Builder.Default
-    @Column(nullable = false)
     private LocalDateTime useDate = null;
 
     public void updateIsUsage() {

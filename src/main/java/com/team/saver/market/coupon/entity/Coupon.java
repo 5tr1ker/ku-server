@@ -27,14 +27,20 @@ public class Coupon {
     @Column(nullable = false)
     private String couponDescription;
 
+    @Builder.Default
     @Column(nullable = false)
-    private double saleRate;
+    private double saleRate = 0.0;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int saleAmount = 0;
 
     public static Coupon createEntity(CouponCreateRequest request) {
         return Coupon.builder()
                 .couponName(request.getCouponName())
                 .couponDescription(request.getCouponDescription())
                 .saleRate(request.getSaleRate())
+                .saleAmount(request.getSaleAmount())
                 .build();
     }
 
