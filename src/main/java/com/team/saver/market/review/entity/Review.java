@@ -6,7 +6,9 @@ import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,10 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Account reviewer;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime writeTime;
 
     @Column(nullable = false)
     private String title;

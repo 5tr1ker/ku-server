@@ -22,8 +22,8 @@ public class ReviewController {
 
     @GetMapping
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@RequestParam long marketId) {
-        List<ReviewResponse> result = reviewService.findByMarketId(marketId);
+    public ResponseEntity findReviewByMarketId(@RequestParam long marketId, @RequestParam SortType sortType) {
+        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sortType);
 
         return ResponseEntity.ok(result);
     }

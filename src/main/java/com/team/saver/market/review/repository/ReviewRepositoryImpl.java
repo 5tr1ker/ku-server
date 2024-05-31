@@ -1,9 +1,8 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.dto.ReviewStatistics;
 import com.team.saver.market.review.dto.ReviewStatisticsResponse;
@@ -17,9 +16,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
+import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.market.store.entity.QMarket.market;
 
 @RequiredArgsConstructor
@@ -28,13 +27,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId) {
+    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier) {
         return jpaQueryFactory.select(Projections.constructor(
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,
@@ -44,6 +44,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender)
                 .groupBy(review)
+                .orderBy(orderSpecifier)
                 .fetch();
     }
 
@@ -66,6 +67,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,
@@ -97,6 +99,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,

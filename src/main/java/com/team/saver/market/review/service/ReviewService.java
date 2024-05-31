@@ -27,8 +27,8 @@ public class ReviewService {
     private final MarketRepository marketRepository;
     private final AccountService accountService;
 
-    public List<ReviewResponse> findByMarketId(long marketId) {
-        return reviewRepository.findByMarketId(marketId);
+    public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
+        return reviewRepository.findByMarketId(marketId, sortType.getFirstOrderSpecifier(), sortType.getSecondOrderSpecifier());
     }
 
     public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {

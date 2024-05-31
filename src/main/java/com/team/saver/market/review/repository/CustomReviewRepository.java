@@ -1,5 +1,6 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.team.saver.market.review.dto.ReviewResponse;
 import com.team.saver.market.review.dto.ReviewStatistics;
 import com.team.saver.market.review.dto.ReviewStatisticsResponse;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 public interface CustomReviewRepository {
 
-    List<ReviewResponse> findByMarketId(long marketId);
+    List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier);
 
     Optional<Review> findByReviewerAndReviewId(String reviewerEmail, long reviewId);
 
