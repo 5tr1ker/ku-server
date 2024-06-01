@@ -2,10 +2,7 @@ package com.team.saver.market.review.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.market.review.dto.ReviewRecommendRequest;
-import com.team.saver.market.review.dto.ReviewRequest;
-import com.team.saver.market.review.dto.ReviewResponse;
-import com.team.saver.market.review.dto.ReviewUpdateRequest;
+import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +22,16 @@ public class ReviewController {
 
     @GetMapping
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@RequestParam long marketId) {
-        List<ReviewResponse> result = reviewService.findByMarketId(marketId);
+    public ResponseEntity findReviewByMarketId(@RequestParam long marketId, @RequestParam SortType sortType) {
+        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sortType);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/statistics")
+    @Operation(summary = "리뷰 총 평점 및 점수 별 갯수 통계 가져오기")
+    public ResponseEntity findReviewStatisticsByMarketId(@RequestParam long marketId) {
+        ReviewStatisticsResponse result = reviewService.findReviewStatisticsByMarketId(marketId);
 
         return ResponseEntity.ok(result);
     }
@@ -39,11 +44,11 @@ public class ReviewController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/recommendation")
+    @PostMapping("/{reviewId}/recommendation")
     @Operation(summary = "리뷰 추천하기")
     public ResponseEntity recommendReview(@LogIn CurrentUser currentUser,
-                                          @RequestBody ReviewRecommendRequest request) {
-        reviewService.recommendReview(currentUser, request);
+                                          @PathVariable long reviewId) {
+        reviewService.recommendReview(currentUser, reviewId);
 
         return ResponseEntity.ok().build();
     }

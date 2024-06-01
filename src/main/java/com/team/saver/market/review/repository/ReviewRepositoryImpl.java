@@ -1,9 +1,11 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.dto.ReviewResponse;
+import com.team.saver.market.review.dto.ReviewStatistics;
+import com.team.saver.market.review.dto.ReviewStatisticsResponse;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +13,12 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
+import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.market.store.entity.QMarket.market;
 
 @RequiredArgsConstructor
@@ -23,13 +27,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId) {
+    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier) {
         return jpaQueryFactory.select(Projections.constructor(
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,
@@ -39,6 +44,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender)
                 .groupBy(review)
+                .orderBy(orderSpecifier)
                 .fetch();
     }
 
@@ -61,6 +67,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,
@@ -92,6 +99,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         account.accountId,
                         account.email,
                         review.content,
+                        review.writeTime,
                         market.marketId,
                         market.marketName,
                         review.score,
@@ -105,5 +113,29 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    @Override
+    public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
+        List<Integer> numbers = IntStream.rangeClosed(1, 5).boxed().collect(Collectors.toList());
+
+        List<ReviewStatistics> results = numbers.stream().map(num -> {
+            long count = jpaQueryFactory
+                    .select(review.count())
+                    .from(review)
+                    .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                    .where(review.score.eq(num))
+                    .fetchOne();
+
+            return new ReviewStatistics(num, count);
+        }).collect(Collectors.toList());
+
+        double averageScore = jpaQueryFactory
+                .select(review.score.avg())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .fetchOne();
+
+        return ReviewStatisticsResponse.createDto(results, averageScore);
     }
 }

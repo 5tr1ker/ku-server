@@ -54,10 +54,8 @@ public class MarketService {
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
-        Market market = marketRepository.findMarketDetailById(marketId)
+        return marketRepository.findMarketDetailById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
-
-        return MarketDetailResponse.createResponse(market);
     }
 
     @Transactional
@@ -95,4 +93,7 @@ public class MarketService {
         market.addClassification(marketClassification);
     }
 
+    public List<MenuResponse> findMarketMenuById(long marketId) {
+        return marketRepository.findMarketMenuById(marketId);
+    }
 }

@@ -27,8 +27,9 @@ public class Coupon {
     @Column(nullable = false)
     private String couponDescription;
 
+    @Builder.Default
     @Column(nullable = false)
-    private double saleRate;
+    private double saleRate = 0.0;
 
     public static Coupon createEntity(CouponCreateRequest request) {
         return Coupon.builder()

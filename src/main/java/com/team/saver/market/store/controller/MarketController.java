@@ -36,6 +36,14 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/{marketId}/menu")
+    @Operation(summary = "해당 Market의 메뉴 정보 가져오기")
+    public ResponseEntity findMarketMenuById(@PathVariable long marketId) {
+        List<MenuResponse> result = marketService.findMarketMenuById(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/recommend")
     @Operation(summary = "Market 추천 받기")
     public ResponseEntity recommendMarket(@RequestBody MarketRecommendRequest request) {
