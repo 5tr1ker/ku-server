@@ -32,8 +32,10 @@ public class SearchWordScore {
         }
     }
 
-    public List<SearchWordScoreDto.Node> getAsList() {
-        return new ArrayList<>(queue);
+    public List<SearchWordScoreDto.Node> getAsList(int size) {
+        int listSize = Math.min(size, queue.size());
+
+        return new ArrayList<>(queue).subList(0 , listSize);
     }
 
     public SearchWordScoreDto.Node getSearchWord() {

@@ -24,8 +24,8 @@ public class PopularSearchController {
 
     @GetMapping
     @Operation(summary = "인기 검색어 조회")
-    public ResponseEntity getPopularSearchWord() {
-        List<SearchWordScoreDto.Node> result = popularSearchService.getPopularSearchWord();
+    public ResponseEntity getPopularSearchWord(@RequestParam int size) {
+        List<SearchWordScoreDto.Node> result = popularSearchService.getPopularSearchWord(size);
 
         return ResponseEntity.ok(result);
     }
