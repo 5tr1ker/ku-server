@@ -2,11 +2,8 @@ package com.team.saver.market.store.util;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.market.coupon.entity.QCoupon;
-import com.team.saver.market.review.entity.QReview;
 import com.team.saver.market.store.dto.DistanceRequest;
 import com.team.saver.market.store.dto.MarketResponse;
-import com.team.saver.market.store.entity.QMarket;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_SORT_TYPE;
+import static com.team.saver.market.store.util.SortType.*;
 
 @Component
 @RequiredArgsConstructor
@@ -30,41 +28,17 @@ public class MarketSortTool {
             List<MarketResponse> marketResponse = marketRepository.findMarketsByConditional(conditional);
 
             return sortByDistance(marketResponse, request);
-        } else if (sort.equals(SortType.HIGHEST_DISCOUNT)) {
-            return sortByHighestDiscountRate(conditional);
-        } else if (sort.equals(SortType.HIGHEST_RATED)) {
-            return sortByHighAverageReviewScore(conditional);
-        } else if (sort.equals(SortType.MANY_REVIEW)) {
-            return sortByManyReviewCount(conditional);
-        } else if (sort.equals(SortType.RECENTLY_UPLOAD)) {
-            return sortByRecentlyUpload(conditional);
+        } else if (sort.equals(HIGHEST_DISCOUNT)) {
+            return marketRepository.findMarketsAndSort(HIGHEST_DISCOUNT.getOrderSpecifier(), conditional);
+        } else if (sort.equals(HIGHEST_REVIEW_RATED)) {
+            return marketRepository.findMarketsAndSort(HIGHEST_REVIEW_RATED.getOrderSpecifier(), conditional);
+        } else if (sort.equals(MANY_REVIEW_COUNT)) {
+            return marketRepository.findMarketsAndSort(MANY_REVIEW_COUNT.getOrderSpecifier(), conditional);
+        } else if (sort.equals(RECENTLY_UPLOAD)) {
+            return marketRepository.findMarketsAndSort(RECENTLY_UPLOAD.getOrderSpecifier(), conditional);
         }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);
-    }
-
-    private List<MarketResponse> sortByManyReviewCount(BooleanExpression conditional) {
-        QReview review = new QReview("review");
-
-        return marketRepository.findMarketsAndSort(review.count().desc(), conditional);
-    }
-
-    private List<MarketResponse> sortByHighAverageReviewScore(BooleanExpression conditional) {
-        QReview review = new QReview("review");
-
-        return marketRepository.findMarketsAndSort(review.score.avg().desc(), conditional);
-    }
-
-    private List<MarketResponse> sortByHighestDiscountRate(BooleanExpression conditional) {
-        QCoupon coupon = new QCoupon("coupon");
-
-        return marketRepository.findMarketsAndSort(coupon.saleRate.max().desc(), conditional);
-    }
-
-    private List<MarketResponse> sortByRecentlyUpload(BooleanExpression conditional) {
-        QMarket market = new QMarket("market");
-
-        return marketRepository.findMarketsAndSort(market.marketId.desc(), conditional);
     }
 
     private List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, DistanceRequest request) {

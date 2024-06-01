@@ -92,14 +92,12 @@ public class InitData implements CommandLineRunner {
         Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
         for(int i = 0; i < 5; i++) {
             double randomData = random.nextDouble(100);
-            int randomData2 = random.nextInt(10000);
 
             Coupon coupon = Coupon.builder()
                     .couponName("couponName" + i)
                     .couponDescription("couponDescription")
                     .market(market)
                     .saleRate(randomData)
-                    .saleAmount(randomData2)
                     .build();
 
             market.addCoupon(coupon);

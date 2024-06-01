@@ -11,8 +11,6 @@ public class CouponCreateRequest {
 
     private double saleRate;
 
-    private int saleAmount;
-
     private long marketId;
 
 }
