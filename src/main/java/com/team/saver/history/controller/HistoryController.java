@@ -6,6 +6,7 @@ import com.team.saver.history.dto.HistoryDeleteRequest;
 import com.team.saver.history.dto.HistoryRequest;
 import com.team.saver.history.dto.HistoryResponse;
 import com.team.saver.history.service.HistoryService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class HistoryController {
     private final HistoryService historyService;
 
     @GetMapping
+    @Operation(summary = "History 정보 가져오기")
     public ResponseEntity findAllByAccount(@LogIn CurrentUser currentUser) {
         List<HistoryResponse> result = historyService.findAllByAccount(currentUser);
 
@@ -29,6 +31,7 @@ public class HistoryController {
     }
 
     @PostMapping
+    @Operation(summary = "History 데이터 추가")
     public ResponseEntity addHistoryByAccount(@LogIn CurrentUser currentUser,
                                               @RequestBody HistoryRequest historyRequest) {
         historyService.addHistoryByAccount(currentUser, historyRequest);
@@ -37,6 +40,7 @@ public class HistoryController {
     }
 
     @DeleteMapping("/all")
+    @Operation(summary = "모든 History 제거")
     public ResponseEntity deleteAllHistoryByAccount(@LogIn CurrentUser currentUser) {
         historyService.deleteAllHistoryByAccount(currentUser);
 
@@ -44,6 +48,7 @@ public class HistoryController {
     }
 
     @DeleteMapping
+    @Operation(summary = "특정 History 제거")
     public ResponseEntity deleteHistoryByAccountAndHistoryId(@LogIn CurrentUser currentUser,
                                                              @RequestBody HistoryDeleteRequest historyRequest) {
         historyService.deleteHistoryByAccountAndHistoryId(currentUser, historyRequest);
