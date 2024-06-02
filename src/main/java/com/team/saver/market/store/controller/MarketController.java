@@ -22,6 +22,7 @@ public class MarketController {
     private final RecommendAlgorithm recommendAlgorithm;
 
     @PostMapping
+    @Operation(summary = "Market 데이터 추가")
     public ResponseEntity addMarket(@LogIn CurrentUser currentUser, @RequestBody MarketRequest request) {
         marketService.addMarket(currentUser, request);
 

@@ -4,14 +4,11 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.search.popular.dto.PopularSearchRequest;
 import com.team.saver.search.popular.dto.SearchWordScoreDto;
 import com.team.saver.search.popular.util.SearchWordScore;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -31,8 +28,8 @@ public class PopularSearchService {
 
     }
 
-    public List<SearchWordScoreDto.Node> getPopularSearchWord() {
-        return searchWordScore.getAsList();
+    public List<SearchWordScoreDto.Node> getPopularSearchWord(int size) {
+        return searchWordScore.getAsList(size);
     }
 
 }

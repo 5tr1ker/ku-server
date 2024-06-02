@@ -4,6 +4,7 @@ import com.team.saver.oauth.dto.OAuthRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class OAuthController {
 
     @PostMapping("/sign-in")
     @Operation(summary = "OAuth 로그인")
-    public ResponseEntity signIn(@RequestBody OAuthRequest request) {
-        Token result = oAuthService.SignInOAuthAccount(request);
+    public ResponseEntity signIn(HttpServletResponse response, @RequestBody OAuthRequest request) {
+        Token result = oAuthService.SignInOAuthAccount(response, request);
 
         return ResponseEntity.ok(result);
     }
