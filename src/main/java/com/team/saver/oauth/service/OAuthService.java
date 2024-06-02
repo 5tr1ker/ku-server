@@ -12,6 +12,7 @@ import com.team.saver.oauth.support.OAuthAttribute;
 import com.team.saver.oauth.util.OAuthType;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,12 @@ public class OAuthService {
     private final GoogleAttribute googleAttribute;
     private final KakaoAttribute kakaoAttribute;
 
-    public Token SignInOAuthAccount(OAuthRequest request) {
+    public Token SignInOAuthAccount(HttpServletResponse response, OAuthRequest request) {
         Account account = createAccountFromOAuthRequest(request);
         accountRepository.findByEmail(account.getEmail())
                 .orElseGet(() -> accountRepository.save(account));
 
-        return jwtTokenProvider.createJwtToken(account.getEmail(), account.getRole());
+        return jwtTokenProvider.login(response, account.getEmail(), account.getRole());
     }
 
     private Account createAccountFromOAuthRequest(OAuthRequest request) {

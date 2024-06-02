@@ -5,7 +5,10 @@ import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.security.jwt.dto.Token;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,7 @@ public class JwtTokenProvider {
 
     private long tokenValidTime = 30 * 60 * 1000L; // 30 minutes
     private String secretKey = "FZ4617yUKJK5935th5Tyh5hs4GHS45";
+    private final String DOMAIN_URL = "LOCALHOST";
 
     @PostConstruct
     protected void init() {
@@ -42,6 +46,14 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public Token login(HttpServletResponse response, String userPk, UserRole roles) {
+        Token token = createJwtToken(userPk, roles);
+
+        addJwtCookieAtResponse(response, token);
+
+        return token;
+    }
+
     public Token createJwtToken(String userPk, UserRole roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         claims.put("roles", roles);
@@ -49,6 +61,29 @@ public class JwtTokenProvider {
         String accessToken = createAccessToken(claims);
 
         return Token.builder().accessToken(accessToken).key(userPk).build();
+    }
+
+    public void addJwtCookieAtResponse(HttpServletResponse response, Token token) {
+        String accessToken = token.getAccessToken();
+
+        setAccessTokenCookie(response, accessToken, 30 * 60 * 1000L);
+    }
+
+    public void deleteJwtCookieFromResponse(HttpServletResponse response) {
+        setAccessTokenCookie(response, null, 0);
+    }
+
+    private void setAccessTokenCookie(HttpServletResponse response, String value, long maxAge) {
+        ResponseCookie cookie = ResponseCookie.from("accessToken" , value)
+                .path("/")
+                .maxAge(maxAge)
+                //.secure(true)
+                //.domain(DOMAIN_URL)
+                //.httpOnly(true)
+                //.sameSite("none")
+                .build();
+
+        response.addHeader("Set-Cookie" , cookie.toString());
     }
 
     public boolean validateAccessToken(String jwtToken) {

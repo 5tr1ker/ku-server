@@ -9,6 +9,8 @@ import com.team.saver.common.dto.LogIn;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +27,19 @@ public class AccountController {
 
     @PostMapping("/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")
-    public ResponseEntity signIn(@RequestParam String email) {
+    public ResponseEntity signIn(@RequestParam String email, HttpServletResponse response) {
         Account account = accountRepository.findByEmail(email).get();
-        Token result = jwtTokenProvider.createJwtToken(account.getEmail(), account.getRole());
+        Token result = jwtTokenProvider.login(response, account.getEmail(), account.getRole());
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃 API")
+    public ResponseEntity logout(HttpServletResponse response) {
+        jwtTokenProvider.deleteJwtCookieFromResponse(response);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/profile")
