@@ -22,8 +22,8 @@ public class Mission {
 
     private String description;
 
-    private long achievementCriteria;
+    private long increaseWeight;
 
-    private String achievementScore;
+    private String initialWeight;
 
 }
