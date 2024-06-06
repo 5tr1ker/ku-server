@@ -8,4 +8,6 @@ public class UpdateRoleRequest {
 
     private UserRole userRole;
 
+    private String schoolEmail;
+
 }

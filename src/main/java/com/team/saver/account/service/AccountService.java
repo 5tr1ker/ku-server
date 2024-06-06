@@ -30,7 +30,8 @@ public class AccountService {
         Account account = getProfile(currentUser);
 
         if(request.getUserRole() == UserRole.STUDENT) {
-            updateToleToStudent(account);
+            isExistsSchoolEmail(request.getSchoolEmail());
+            updateToleToStudent(account, request.getSchoolEmail());
 
             return;
         }
@@ -48,12 +49,25 @@ public class AccountService {
         throw new CustomRuntimeException(NOT_FOUND_ROLE);
     }
 
-    private void updateToleToStudent(Account account) {
-        if(isStudent(account.getEmail())) {
+    private void updateToleToStudent(Account account, String schoolEmail) {
+        if(isStudent(schoolEmail)) {
+            account.updateSchoolEmail(schoolEmail);
+
             account.updateRoleToStudent();
+            return;
         }
 
         throw new CustomRuntimeException(NOT_STUDENT);
+    }
+
+    private void isExistsSchoolEmail(String email) {
+        if(email == null) {
+            throw new CustomRuntimeException(DATA_NULL_EXCEPTION);
+        }
+
+        if(accountRepository.findBySchoolEmail(email).isPresent()) {
+            throw new CustomRuntimeException(EXIST_SCHOOL_EMAIL);
+        }
     }
 
     private boolean isStudent(String email) {

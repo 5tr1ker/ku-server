@@ -83,6 +83,10 @@ public class Account implements UserDetails {
         this.loginCount += 1;
     }
 
+    public void updateSchoolEmail(String schoolEmail) {
+        this.schoolEmail = schoolEmail;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));
