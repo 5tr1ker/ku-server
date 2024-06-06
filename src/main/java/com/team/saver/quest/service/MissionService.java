@@ -1,6 +1,7 @@
 package com.team.saver.quest.service;
 
 import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.quest.dto.MissionLevelResponse;
 import com.team.saver.quest.dto.MissionResponse;
 import com.team.saver.quest.entity.Mission;
 import com.team.saver.quest.repository.MissionRepository;
@@ -29,4 +30,7 @@ public class MissionService {
         return result;
     }
 
+    public MissionLevelResponse getMissionLevelByEmail(CurrentUser currentUser) {
+        return missionUtil.getMissionLevelByEmail(currentUser);
+    }
 }

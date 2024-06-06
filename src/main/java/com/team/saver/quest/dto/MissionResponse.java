@@ -14,20 +14,27 @@ public class MissionResponse {
 
     private long increaseWeight;
 
-    private long initialWeight;
+    private long initWeight;
+
+    private long initExp;
+
+    private long increaseExp;
+
+    private long expValue;
 
     private MissionType missionType;
 
     private String message;
 
     public static MissionResponse createEntity(Mission mission, long value) {
-        long level = (value - mission.getInitialWeight()) / mission.getInitialWeight() + 1;
+        long level = (value - mission.getInitWeight()) / mission.getInitWeight() + 1;
         long weight = mission.getIncreaseWeight() + mission.getIncreaseWeight() * level;
 
         return MissionResponse.builder()
                 .increaseWeight(mission.getIncreaseWeight())
-                .initialWeight(mission.getInitialWeight())
+                .initWeight(mission.getInitWeight())
                 .missionType(mission.getMissionType())
+                .expValue(value)
                 .message(String.format(mission.getMissionType().getMessage(), weight))
                 .build();
     }

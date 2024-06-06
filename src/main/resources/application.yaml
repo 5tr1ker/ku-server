@@ -12,3 +12,7 @@ spring:
   config:
     import:
       - application-security.yaml
+
+exp:
+  init: 20
+  increase: 25
