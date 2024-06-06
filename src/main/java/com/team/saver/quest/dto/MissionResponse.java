@@ -27,7 +27,7 @@ public class MissionResponse {
     private String message;
 
     public static MissionResponse createEntity(Mission mission, long value) {
-        long level = (value - mission.getInitWeight()) / mission.getInitWeight() + 1;
+        long level = ( value - mission.getInitWeight() ) / mission.getInitWeight() + 1;
         long weight = mission.getIncreaseWeight() + mission.getIncreaseWeight() * level;
 
         return MissionResponse.builder()

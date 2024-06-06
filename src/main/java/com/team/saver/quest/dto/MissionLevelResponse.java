@@ -16,10 +16,12 @@ public class MissionLevelResponse {
     private long userLevel;
 
     public static MissionLevelResponse createEntity(long initExp, long increaseExp, long totalExp) {
-        // 30 - 40 - 50 - 60 - 70 - 80 - 90 - 100 ( 80 { 7 } )
-        // 20 - 35 - 50 - 65 - 80 - 95 - 110 - 125 ( 50 { 4 } )
-        long userLevel = (long) Math.ceil(( totalExp - initExp ) / increaseExp ) + 1;
-        long nextLevelExp = initExp + increaseExp * ( userLevel - 1 ); // 50
+        long userLevel = (long) Math.ceil(( totalExp - ( double ) initExp ) / increaseExp ) + 1;
+        if(totalExp - initExp % increaseExp == 0) {
+            userLevel += 1;
+        }
+
+        long nextLevelExp = initExp + increaseExp * ( userLevel - 1 );
 
         return MissionLevelResponse.builder()
                 .nextLevelExp(nextLevelExp)
