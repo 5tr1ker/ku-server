@@ -89,4 +89,13 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(downloadCoupon.market, market)
                 .fetch();
     }
+
+    @Override
+    public long countUsedCouponByEmail(String email) {
+        return jpaQueryFactory.select(downloadCoupon.count())
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .where(downloadCoupon.isUsage.eq(true))
+                .fetchOne();
+    }
 }

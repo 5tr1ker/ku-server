@@ -20,4 +20,6 @@ public interface CustomCouponRepository {
 
     List<DownloadCouponResponse> findDownloadCouponByUserEmail(String userEmail);
 
+    long countUsedCouponByEmail(String email);
+
 }

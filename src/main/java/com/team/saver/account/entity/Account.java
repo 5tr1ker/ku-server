@@ -27,6 +27,8 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private String email;
 
+    private String schoolEmail;
+
     private String phone;
 
     private String age;
@@ -41,6 +43,12 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private LocalDate joinDate;
 
+    @Column(nullable = false)
+    private LocalDate lastedLoginDate;
+
+    @Column(nullable = false)
+    private long loginCount;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
@@ -51,6 +59,8 @@ public class Account implements UserDetails {
                 .phone(accountInfo.getPhone())
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
+                .loginCount(1)
+                .lastedLoginDate(LocalDate.now())
                 .oAuthType(type)
                 .role(UserRole.PARTNER)
                 .build();
