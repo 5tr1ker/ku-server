@@ -1,5 +1,6 @@
 package com.team.saver.quest.entity;
 
+import com.team.saver.quest.dto.MissionRequest;
 import com.team.saver.quest.util.MissionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,25 @@ public class Mission {
     @Enumerated(EnumType.STRING)
     private MissionType missionType;
 
+    @Column(nullable = false)
     private long increaseWeight;
 
-    private long initialWeight;
+    @Column(nullable = false)
+    private long initWeight;
+
+    @Column(nullable = false)
+    private long initExp;
+
+    @Column(nullable = false)
+    private long increaseExp;
+
+    public static Mission createEntity(MissionRequest request) {
+        return Mission.builder()
+                .increaseExp(request.getIncreaseExp())
+                .initExp(request.getInitExp())
+                .increaseWeight(request.getIncreaseWeight())
+                .initWeight(request.getInitWeight())
+                .build();
+    }
 
 }
