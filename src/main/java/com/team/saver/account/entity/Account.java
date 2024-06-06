@@ -78,6 +78,11 @@ public class Account implements UserDetails {
         role = UserRole.ADMIN;
     }
 
+    public void updateLastedLoginDate() {
+        this.lastedLoginDate = LocalDate.now();
+        this.loginCount += 1;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));
