@@ -6,6 +6,7 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
-
+    private final OAuthService authService;
     private final AccountRepository accountRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -29,6 +30,7 @@ public class AccountController {
     @Operation(summary = "테스트를 위한 로그인 API")
     public ResponseEntity signIn(@RequestParam String email, HttpServletResponse response) {
         Account account = accountRepository.findByEmail(email).get();
+        authService.updateLoginCount(account);
         Token result = jwtTokenProvider.login(response, account.getEmail(), account.getRole());
 
         return ResponseEntity.ok(result);

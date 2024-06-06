@@ -26,7 +26,9 @@ public enum ErrorMessage {
     NOT_FOUND_FAVORITE("관심 목록을 찾을 수 없습니다."),
     EXIST_RECOMMENDER("이미 추천했습니다."),
     NOT_FOUND_REVIEW("리뷰를 찾을 수 없습니다."),
-    EXIST_CLASSIFICATION("이미 존재하는 분류입니다.");
+    EXIST_CLASSIFICATION("이미 존재하는 분류입니다."),
+    EXIST_SCHOOL_EMAIL("이미 존재하는 학교 이메일입니다."),
+    DATA_NULL_EXCEPTION("Body 데이터가 Null 입니다.");
 
     private final String message;
 

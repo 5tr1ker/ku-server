@@ -16,7 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDate;
 
 import static com.team.saver.common.dto.ErrorMessage.UNKNOWN_OAUTH_TYPE;
 
@@ -31,12 +34,22 @@ public class OAuthService {
     private final GoogleAttribute googleAttribute;
     private final KakaoAttribute kakaoAttribute;
 
+    @Transactional
     public Token SignInOAuthAccount(HttpServletResponse response, OAuthRequest request) {
         Account account = createAccountFromOAuthRequest(request);
         accountRepository.findByEmail(account.getEmail())
                 .orElseGet(() -> accountRepository.save(account));
 
+        updateLoginCount(account);
+
         return jwtTokenProvider.login(response, account.getEmail(), account.getRole());
+    }
+
+    @Transactional
+    public void updateLoginCount(Account account) {
+        if(account.getLastedLoginDate().compareTo(LocalDate.now()) < 0) {
+            account.updateLastedLoginDate();
+        }
     }
 
     private Account createAccountFromOAuthRequest(OAuthRequest request) {

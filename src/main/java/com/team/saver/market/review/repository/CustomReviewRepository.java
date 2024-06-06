@@ -23,6 +23,8 @@ public interface CustomReviewRepository {
 
     List<ReviewResponse> findBestReview(Pageable pageable);
 
+    long countReviewByEmail(String email);
+
     ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId);
 
 }

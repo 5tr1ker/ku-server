@@ -1,9 +1,7 @@
 package com.team.saver.quest.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.team.saver.quest.util.MissionType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,10 +18,11 @@ public class Mission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long missionId;
 
-    private String description;
+    @Enumerated(EnumType.STRING)
+    private MissionType missionType;
 
-    private long achievementCriteria;
+    private long increaseWeight;
 
-    private String achievementScore;
+    private long initialWeight;
 
 }

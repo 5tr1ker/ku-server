@@ -18,6 +18,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Random;
 
@@ -49,6 +50,8 @@ public class InitData implements CommandLineRunner {
                 .email("email@naver.com")
                 .age("20")
                 .phone("01012341234")
+                .lastedLoginDate(LocalDate.now().minusDays(5))
+                .loginCount(1)
                 .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.KAKAO)
                 .build();
@@ -59,6 +62,8 @@ public class InitData implements CommandLineRunner {
                 .email("email2@naver.com")
                 .age("24")
                 .phone("01046544654")
+                .lastedLoginDate(LocalDate.now().minusDays(5))
+                .loginCount(1)
                 .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.NAVER)
                 .build();

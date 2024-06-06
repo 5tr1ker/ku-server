@@ -116,6 +116,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
+    public long countReviewByEmail(String email) {
+        return jpaQueryFactory.select(review.count())
+                .from(review)
+                .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .fetchOne();
+    }
+
+    @Override
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         List<Integer> numbers = IntStream.rangeClosed(1, 5).boxed().collect(Collectors.toList());
 
