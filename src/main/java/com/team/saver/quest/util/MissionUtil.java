@@ -75,7 +75,7 @@ public class MissionUtil {
         for(Mission mission : missionList) {
             MissionResponse missionResponse = createMissionResponse(mission, currentUser);
 
-            totalExp += calculateTotalExp(missionResponse.getInitExp(), missionResponse.getIncreaseExp(), missionResponse.getLevel());
+            totalExp += calculateTotalExp(missionResponse.getInitExp(), missionResponse.getIncreaseExp(), missionResponse.getLevel() - 1);
         }
 
         return MissionLevelResponse.createEntity(initExp, increaseExp, totalExp);

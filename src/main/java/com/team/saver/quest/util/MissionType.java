@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MissionType {
 
-    ATTENDANCE("attendance" , "잎 사이 %d 출석하기"),
-    USE_DISCOUNT_COUPON("useDiscountCoupon" , "잎 사이 할인쿠폰 %d 사용하기"),
+    ATTENDANCE("attendance" , "잎 사이 %d일 출석하기"),
+    USE_DISCOUNT_COUPON("useDiscountCoupon" , "잎 사이 할인쿠폰 %d회 사용하기"),
     WRITE_REVIEW("writeReview" , "리뷰 %d번 쓰기");
 
     private final String type;

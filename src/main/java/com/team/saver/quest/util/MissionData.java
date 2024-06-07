@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.team.saver.quest.util.MissionType.*;
+
 @Component
 @RequiredArgsConstructor
 public class MissionData implements CommandLineRunner {
@@ -20,17 +22,19 @@ public class MissionData implements CommandLineRunner {
 
         Mission usedDiscountCoupon = Mission.builder()
                 .initExp(20)
-                .increaseWeight(15)
+                .increaseExp(15)
                 .initWeight(5)
                 .increaseWeight(5)
+                .missionType(USE_DISCOUNT_COUPON)
                 .build();
         missionRepository.save(usedDiscountCoupon);
 
         Mission numberOfAttendance = Mission.builder()
                 .initExp(15)
-                .increaseWeight(10)
+                .increaseExp(10)
                 .initWeight(7)
                 .increaseWeight(7)
+                .missionType(ATTENDANCE)
                 .build();
         missionRepository.save(numberOfAttendance);
 
@@ -39,6 +43,7 @@ public class MissionData implements CommandLineRunner {
                 .increaseExp(10)
                 .initWeight(5)
                 .increaseWeight(5)
+                .missionType(WRITE_REVIEW)
                 .build();
         missionRepository.save(writeReview);
     }
