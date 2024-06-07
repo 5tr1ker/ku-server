@@ -7,6 +7,7 @@ import com.team.saver.market.coupon.dto.CouponResponse;
 import com.team.saver.market.coupon.dto.DownloadCouponResponse;
 import com.team.saver.market.coupon.service.CouponService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +31,17 @@ public class CouponController {
     }
 
     @GetMapping("/download")
-    @Operation(summary = "다운로드한 쿠폰 조회")
-    public ResponseEntity findDownloadCouponByUserEmail(@LogIn CurrentUser currentUser) {
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 조회")
+    public ResponseEntity findDownloadCouponByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<DownloadCouponResponse> result = couponService.findDownloadCouponByUserEmail(currentUser);
 
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{couponId}/download")
-    @Operation(summary = "쿠폰 다운로드")
-    public ResponseEntity downloadCoupon(@LogIn CurrentUser currentUser, @PathVariable long couponId) {
+    @Operation(summary = "[ 로그인 ] 쿠폰 다운로드")
+    public ResponseEntity downloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                         @PathVariable long couponId) {
 
         couponService.downloadCoupon(currentUser, couponId);
 
@@ -47,8 +49,8 @@ public class CouponController {
     }
 
     @PostMapping
-    @Operation(summary = "새로운 쿠폰 생성")
-    public ResponseEntity createCoupon(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 새로운 쿠폰 생성")
+    public ResponseEntity createCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @RequestBody CouponCreateRequest request) {
 
         couponService.createCoupon(currentUser, request);
@@ -57,8 +59,8 @@ public class CouponController {
     }
 
     @DeleteMapping("/{couponId}")
-    @Operation(summary = "생성한 쿠폰 삭제")
-    public ResponseEntity deleteCoupon(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 생성한 쿠폰 삭제")
+    public ResponseEntity deleteCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long couponId) {
 
         couponService.deleteCoupon(currentUser, couponId);
@@ -67,8 +69,8 @@ public class CouponController {
     }
 
     @PatchMapping("/download/{downloadCouponId}")
-    @Operation(summary = "사용한 쿠폰으로 수정")
-    public ResponseEntity updateCouponUsage(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 사용한 쿠폰으로 수정")
+    public ResponseEntity updateCouponUsage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long downloadCouponId) {
 
         couponService.updateCouponUsage(currentUser, downloadCouponId);

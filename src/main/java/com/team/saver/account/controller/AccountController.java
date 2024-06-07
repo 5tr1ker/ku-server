@@ -10,6 +10,7 @@ import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,16 +46,16 @@ public class AccountController {
     }
 
     @GetMapping("/profile")
-    @Operation(summary = "사용자 정보 가져오기")
-    public ResponseEntity getProfile(@LogIn CurrentUser currentUser) {
+    @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
+    public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         Account result = accountService.getProfile(currentUser);
 
         return ResponseEntity.ok(result);
     }
 
     @PatchMapping("/role")
-    @Operation(summary = "사용자 권한 변경 API")
-    public ResponseEntity updateRole(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 사용자 권한 변경 API")
+    public ResponseEntity updateRole(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                      @RequestBody UpdateRoleRequest request) {
         accountService.updateRole(currentUser, request);
 

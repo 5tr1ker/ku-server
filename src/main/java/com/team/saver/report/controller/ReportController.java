@@ -5,6 +5,7 @@ import com.team.saver.common.dto.LogIn;
 import com.team.saver.report.dto.ReportRequest;
 import com.team.saver.report.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping
-    @Operation(summary = "컨텐츠 신고 API")
-    public ResponseEntity addReport(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 컨텐츠 신고 API")
+    public ResponseEntity addReport(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestBody ReportRequest request) {
 
         reportService.addReport(currentUser, request);

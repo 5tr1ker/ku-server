@@ -10,6 +10,7 @@ import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.service.PartnerRequestService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,9 @@ public class PartnerRequestController {
     private final PartnerRequestService partnerRequestService;
 
     @PostMapping
-    @Operation(summary = "새로운 파트너십 요청 API [ 사용자 인증 정보 필요 ]")
+    @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API")
     public ResponseEntity requestNewPartner(@RequestBody NewPartnerRequest request
-            , @LogIn CurrentUser currentUser) {
+            , @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         partnerRequestService.requestNewPartner(request, currentUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -48,8 +49,8 @@ public class PartnerRequestController {
     }
 
     @PostMapping("/{partnerRequestId}/recommendation")
-    @Operation(summary = "파트너쉽 추천 API")
-    public ResponseEntity requestPartnerRecommendation(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 API")
+    public ResponseEntity requestPartnerRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                        @PathVariable long partnerRequestId) {
         partnerRequestService.requestPartnerRecommendation(currentUser, partnerRequestId);
 

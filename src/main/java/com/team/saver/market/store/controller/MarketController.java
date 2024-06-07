@@ -6,6 +6,7 @@ import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.service.MarketService;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,9 @@ public class MarketController {
     private final RecommendAlgorithm recommendAlgorithm;
 
     @PostMapping
-    @Operation(summary = "Market 데이터 추가")
-    public ResponseEntity addMarket(@LogIn CurrentUser currentUser, @RequestBody MarketRequest request) {
+    @Operation(summary = "[ 로그인 ] Market 데이터 추가")
+    public ResponseEntity addMarket(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                    @RequestBody MarketRequest request) {
         marketService.addMarket(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
