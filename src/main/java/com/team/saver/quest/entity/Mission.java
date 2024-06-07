@@ -20,6 +20,7 @@ public class Mission {
     private long missionId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MissionType missionType;
 
     @Column(nullable = false)

@@ -17,7 +17,7 @@ public class MissionLevelResponse {
 
     public static MissionLevelResponse createEntity(long initExp, long increaseExp, long totalExp) {
         long userLevel = (long) Math.ceil(( totalExp - ( double ) initExp ) / increaseExp ) + 1;
-        if(totalExp - initExp % increaseExp == 0) {
+        if(totalExp == initExp + increaseExp * ( userLevel - 1 )) {
             userLevel += 1;
         }
 

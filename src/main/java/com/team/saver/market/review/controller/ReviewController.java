@@ -5,6 +5,7 @@ import com.team.saver.common.dto.LogIn;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,8 @@ public class ReviewController {
     }
 
     @PostMapping("/{reviewId}/recommendation")
-    @Operation(summary = "리뷰 추천하기")
-    public ResponseEntity recommendReview(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 리뷰 추천하기")
+    public ResponseEntity recommendReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                           @PathVariable long reviewId) {
         reviewService.recommendReview(currentUser, reviewId);
 
@@ -54,16 +55,16 @@ public class ReviewController {
     }
 
     @GetMapping("/written-user")
-    @Operation(summary = "내가 등록한 리뷰 가져오기")
-    public ResponseEntity findByUserEmail(@LogIn CurrentUser currentUser) {
+    @Operation(summary = "[ 로그인 ] 내가 등록한 리뷰 가져오기")
+    public ResponseEntity findByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<ReviewResponse> result = reviewService.findByUserEmail(currentUser);
 
         return ResponseEntity.ok(result);
     }
 
     @PostMapping
-    @Operation(summary = "해당 마켓에 리뷰 추가")
-    public ResponseEntity addReview(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가")
+    public ResponseEntity addReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestBody ReviewRequest request) {
         reviewService.addReview(currentUser, request);
 
@@ -71,8 +72,8 @@ public class ReviewController {
     }
 
     @PatchMapping("/{reviewId}")
-    @Operation(summary = "리뷰 수정")
-    public ResponseEntity updateReview(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 리뷰 수정")
+    public ResponseEntity updateReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long reviewId,
                                        @RequestBody ReviewUpdateRequest request) {
 
@@ -82,9 +83,9 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    @Operation(summary = "리뷰 삭제")
+    @Operation(summary = "[ 로그인 ] 리뷰 삭제")
     public ResponseEntity deleteReview(@PathVariable long reviewId,
-                                       @LogIn CurrentUser currentUser) {
+                                       @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         reviewService.deleteReview(currentUser, reviewId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

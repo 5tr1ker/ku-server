@@ -7,6 +7,7 @@ import com.team.saver.search.popular.dto.SearchWordScoreDto;
 import com.team.saver.search.popular.service.PopularSearchService;
 import com.team.saver.search.popular.util.SearchWordScheduler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class PopularSearchController {
     }
 
     @PostMapping
-    @Operation(summary = "인기 검색어 업데이트 및 등록")
-    public ResponseEntity addSearchWordToRedis(@LogIn CurrentUser currentUser,
+    @Operation(summary = "[ 로그인 ] 인기 검색어 업데이트 및 등록")
+    public ResponseEntity addSearchWordToRedis(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                @RequestBody PopularSearchRequest request) {
 
         popularSearchService.addSearchWordToRedis(currentUser, request);
