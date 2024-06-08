@@ -44,4 +44,12 @@ public class SecurityController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/inspection")
+    @Operation(summary = "현재 점검 중인 시간 변경")
+    public ResponseEntity updateInspection(@RequestBody InspectionTimeRequest request) {
+        securityService.updateInspection(request);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

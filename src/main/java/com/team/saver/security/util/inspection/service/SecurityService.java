@@ -65,4 +65,14 @@ public class SecurityService {
 
         inspectionTimeRepository.delete(inspectionTime);
     }
+
+    @Transactional
+    public void updateInspection(InspectionTimeRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+
+        InspectionTime inspectionTime = inspectionTimeRepository.findByInspectionStartLessThanEqualAndInspectionEndGreaterThanEqual(now, now)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_INSPECTION_TIME));
+
+        inspectionTime.updateInspectionTime(request);
+    }
 }
