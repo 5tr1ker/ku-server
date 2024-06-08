@@ -1,17 +1,17 @@
 package com.team.saver.account.controller;
 
-import com.team.saver.account.dto.UpdateRoleRequest;
+import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.mail.dto.MailRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,11 +53,20 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-    @PatchMapping("/role")
-    @Operation(summary = "[ 로그인 ] 사용자 권한 변경 API")
-    public ResponseEntity updateRole(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                     @RequestBody UpdateRoleRequest request) {
-        accountService.updateRole(currentUser, request);
+    @PostMapping("/cert/student/send-mail")
+    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API")
+    public ResponseEntity sendCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                     @RequestBody SchoolCertRequest request) {
+        accountService.sendCodeInOrderToCertStudent(currentUser, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/cert/student/code-check")
+    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
+    public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                              @RequestBody MailRequest request) {
+        accountService.checkCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();
     }
