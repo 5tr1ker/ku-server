@@ -27,7 +27,11 @@ public enum ErrorMessage {
     EXIST_RECOMMENDER("이미 추천했습니다."),
     NOT_FOUND_REVIEW("리뷰를 찾을 수 없습니다."),
     EXIST_CLASSIFICATION("이미 존재하는 분류입니다."),
-    EXIST_SCHOOL_EMAIL("%s 로그인으로 인증된 학교 이메일입니다.");
+    EXIST_SCHOOL_EMAIL("%s 로그인으로 인증된 학교 이메일입니다."),
+    INSPECTION_TIME("점검 시간입니다."),
+    EXIST_INSPECTION_TIME("해당 점검 시간은 중복됩니다."),
+    NOT_VALID_INSPECTION_TIME("유효하지 않는 점검 시간입니다."),
+    NOT_INSPECTION_TIME("현재 점검 시간이 아닙니다.");
 
     private final String message;
 
