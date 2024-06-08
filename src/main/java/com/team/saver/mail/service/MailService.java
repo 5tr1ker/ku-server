@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
-import java.util.UUID;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_MATCHED_CODE;
 import static com.team.saver.common.dto.ErrorMessage.SMTP_SERVER_ERROR;
@@ -23,18 +22,18 @@ public class MailService {
     private final MailRepository mailRepository;
 
     @Transactional
-    public void sendMail(MailRequest request) {
-        Mail mailCert = createVerification(request.getEmail());
+    public void sendMail(String email) {
+        Mail mailCert = createVerification(email);
 
-        if (!mailUtil.sendMail(request.getEmail(), mailCert.getVerificationCode())) {
+        if (!mailUtil.sendMail(email, mailCert.getVerificationCode())) {
             throw new CustomRuntimeException(SMTP_SERVER_ERROR);
         }
     }
 
-    private Mail createVerification(String id) {
+    private Mail createVerification(String email) {
         String code = createVerificationCode();
 
-        Mail mailCert = createVerificationCode(id, code);
+        Mail mailCert = createVerificationCode(email, code);
 
         return mailRepository.save(mailCert);
     }
@@ -49,12 +48,12 @@ public class MailService {
     @Transactional
     public void checkVerificationCode(MailRequest request) {
         if(isCorrectVerificationCode(request)) {
-            mailRepository.deleteById(request.getEmail());
+            mailRepository.deleteById(request.getSchoolEmail());
         }
     }
 
     private boolean isCorrectVerificationCode(MailRequest request) {
-        Mail mailCert = mailRepository.findById(request.getEmail())
+        Mail mailCert = mailRepository.findById(request.getSchoolEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_MATCHED_CODE));
 
         if(!mailCert.isCorrectVerificationCode(request.getCode())) {

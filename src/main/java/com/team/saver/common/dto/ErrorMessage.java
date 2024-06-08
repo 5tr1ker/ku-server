@@ -9,7 +9,7 @@ public enum ErrorMessage {
 
     NOT_FOUND_USER("사용자를 찾을 수 없습니다."),
     NOT_FOUND_ROLE("유효하지 않는 Role 입니다."),
-    NOT_STUDENT("유효하지 않는 이메일이여서 학생 Role 으로 바꿀 수 없습니다."),
+    NOT_STUDENT_EMAIL("학생 이메일이 아닙니다."),
     NOT_FOUND_SORT_TYPE("알 수 없는 탐색 조건입니다."),
     NOT_MATCHED_CODE("인증 코드가 일치하지 않습니다."),
     SMTP_SERVER_ERROR("메일 서버에서 오류가 발생했습니다."),
@@ -27,8 +27,7 @@ public enum ErrorMessage {
     EXIST_RECOMMENDER("이미 추천했습니다."),
     NOT_FOUND_REVIEW("리뷰를 찾을 수 없습니다."),
     EXIST_CLASSIFICATION("이미 존재하는 분류입니다."),
-    EXIST_SCHOOL_EMAIL("이미 존재하는 학교 이메일입니다."),
-    DATA_NULL_EXCEPTION("Body 데이터가 Null 입니다.");
+    EXIST_SCHOOL_EMAIL("%s 로그인으로 인증된 학교 이메일입니다.");
 
     private final String message;
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class MailRequest {
 
-    private String email;
+    private String schoolEmail;
 
     private String code;
 

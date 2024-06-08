@@ -1,11 +1,12 @@
 package com.team.saver.account.service;
 
-import com.team.saver.account.dto.UpdateRoleRequest;
+import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
-import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.mail.dto.MailRequest;
+import com.team.saver.mail.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final MailService mailService;
 
     public Account getProfile(CurrentUser currentUser) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
@@ -25,52 +27,49 @@ public class AccountService {
         return account;
     }
 
+    public void sendCodeInOrderToCertStudent(CurrentUser currentUser, SchoolCertRequest request) {
+        if(!isStudentEmail(request.getSchoolEmail())) {
+            throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
+        }
+        isExistsSchoolEmail(request.getSchoolEmail());
+
+        mailService.sendMail(request.getSchoolEmail());
+    }
+
     @Transactional
-    public void updateRole(CurrentUser currentUser, UpdateRoleRequest request) {
+    public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailRequest request) {
+        mailService.checkVerificationCode(request);
+
+        updateRoleToStudent(currentUser, request);
+    }
+
+    protected void updateRoleToStudent(CurrentUser currentUser, MailRequest request) {
         Account account = getProfile(currentUser);
 
-        if(request.getUserRole() == UserRole.STUDENT) {
-            isExistsSchoolEmail(request.getSchoolEmail());
-            updateToleToStudent(account, request.getSchoolEmail());
-
-            return;
-        }
-        else if(request.getUserRole() == UserRole.PARTNER) {
-            account.updateRoleToPartner();
-
-            return;
-        }
-        else if(request.getUserRole() == UserRole.ADMIN) {
-            account.updateRoleToAdmin();
-
-            return;
-        }
-
-        throw new CustomRuntimeException(NOT_FOUND_ROLE);
+        updateToleToStudent(account, request.getSchoolEmail());
     }
 
     private void updateToleToStudent(Account account, String schoolEmail) {
-        if(isStudent(schoolEmail)) {
+        if(isStudentEmail(schoolEmail)) {
             account.updateSchoolEmail(schoolEmail);
 
             account.updateRoleToStudent();
             return;
         }
 
-        throw new CustomRuntimeException(NOT_STUDENT);
+        throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
     }
 
     private void isExistsSchoolEmail(String email) {
-        if(email == null) {
-            throw new CustomRuntimeException(DATA_NULL_EXCEPTION);
+        Account account = accountRepository.findBySchoolEmail(email).orElse(null);
+        if(account == null) {
+            return;
         }
 
-        if(accountRepository.findBySchoolEmail(email).isPresent()) {
-            throw new CustomRuntimeException(EXIST_SCHOOL_EMAIL);
-        }
+        throw new CustomRuntimeException(EXIST_SCHOOL_EMAIL, account.getOAuthType().getType_kr());
     }
 
-    private boolean isStudent(String email) {
+    private boolean isStudentEmail(String email) {
         if(email.endsWith("@kku.ac.kr")) {
             return true;
         }
