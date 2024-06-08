@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
+import static com.team.saver.common.dto.ErrorMessage.ANOTHER_OAUTH_SERVER;
 import static com.team.saver.common.dto.ErrorMessage.UNKNOWN_OAUTH_TYPE;
 
 @Service
@@ -36,13 +37,21 @@ public class OAuthService {
 
     @Transactional
     public Token SignInOAuthAccount(HttpServletResponse response, OAuthRequest request) {
-        Account account = createAccountFromOAuthRequest(request);
-        accountRepository.findByEmail(account.getEmail())
-                .orElseGet(() -> accountRepository.save(account));
+        Account new_account = createAccountFromOAuthRequest(request);
+        Account account = accountRepository.findByEmail(new_account.getEmail())
+                .orElseGet(() -> accountRepository.save(new_account));
+
+        isEqualsOAuthServer(account, request);
 
         updateLoginCount(account);
 
         return jwtTokenProvider.login(response, account.getEmail(), account.getRole());
+    }
+
+    private void isEqualsOAuthServer(Account account, OAuthRequest request) {
+        if(!account.getOAuthType().getType().equals(request.getType().getType())) {
+            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, request.getType().getType());
+        }
     }
 
     @Transactional
