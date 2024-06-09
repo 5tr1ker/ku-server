@@ -6,19 +6,25 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class ResponseMessage<T> {
+public class ResponseMessage {
     private String code;
     private String message;
-    private T data;
+    private Object data;
 
     private ResponseMessage(String code , String message) {
         this.code = code;
         this.message = message;
     }
 
-    private ResponseMessage(ResponseCode responseCode , T data) {
+    private ResponseMessage(ResponseCode responseCode , Object data) {
         this.code = responseCode.getCode();
         this.message = responseCode.getMessage();
+        this.data = data;
+    }
+
+    private ResponseMessage(String code, String message, Object data) {
+        this.code = code;
+        this.message = message;
         this.data = data;
     }
 
@@ -30,8 +36,11 @@ public class ResponseMessage<T> {
         return new ResponseMessage(responseCode.getCode() , message);
     }
 
-    public static <T> ResponseMessage of(ResponseCode responseCode , T data) {
+    public static ResponseMessage of(ResponseCode responseCode, Object data) {
         return new ResponseMessage(responseCode , data);
     }
 
+    public static ResponseMessage of(ResponseCode responseCode, String message, Object data) {
+        return new ResponseMessage(responseCode.getCode(), message, data);
+    }
 }

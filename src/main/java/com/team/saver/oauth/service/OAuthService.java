@@ -50,7 +50,7 @@ public class OAuthService {
 
     private void isEqualsOAuthServer(Account account, OAuthRequest request) {
         if(!account.getOAuthType().getType().equals(request.getType().getType())) {
-            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, account.getOAuthType().getType());
+            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, account.getOAuthType().getType(), account.getEmail().split("@")[0]);
         }
     }
 
