@@ -89,7 +89,7 @@ public class OAuthService {
     }
 
     @Transactional
-    public void accountTransfer(HttpServletResponse response, OAuthTransferRequest request) {
+    public void accountTransfer(OAuthTransferRequest request) {
         Account previousAccount = accountRepository.findByEmail(request.getPreviousEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 

@@ -28,8 +28,8 @@ public class OAuthController {
 
     @PatchMapping("/transfer")
     @Operation(summary = "OAuth 새로운 계정 이전")
-    public ResponseEntity accountTransfer(HttpServletResponse response, @RequestBody OAuthTransferRequest request) {
-        oAuthService.accountTransfer(response, request);
+    public ResponseEntity accountTransfer(@RequestBody OAuthTransferRequest request) {
+        oAuthService.accountTransfer(request);
 
         return ResponseEntity.ok().build();
     }
