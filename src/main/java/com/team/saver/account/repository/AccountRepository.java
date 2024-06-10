@@ -3,6 +3,7 @@ package com.team.saver.account.repository;
 import com.team.saver.account.entity.Account;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.history.dto.HistoryResponse;
+import com.team.saver.oauth.util.OAuthType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

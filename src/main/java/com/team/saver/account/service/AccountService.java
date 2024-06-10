@@ -36,6 +36,14 @@ public class AccountService {
         mailService.sendMail(request.getSchoolEmail());
     }
 
+    public void sendCodeInOrderToReCertStudent(CurrentUser currentUser, SchoolCertRequest request) {
+        if(!isStudentEmail(request.getSchoolEmail())) {
+            throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
+        }
+
+        mailService.sendMail(request.getSchoolEmail());
+    }
+
     @Transactional
     public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailRequest request) {
         mailService.checkVerificationCode(request);
@@ -76,5 +84,6 @@ public class AccountService {
 
         return false;
     }
+
 
 }

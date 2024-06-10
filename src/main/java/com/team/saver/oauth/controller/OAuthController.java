@@ -1,6 +1,7 @@
 package com.team.saver.oauth.controller;
 
 import com.team.saver.oauth.dto.OAuthRequest;
+import com.team.saver.oauth.dto.OAuthTransferRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,10 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +24,14 @@ public class OAuthController {
         Token result = oAuthService.SignInOAuthAccount(response, request);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/transfer")
+    @Operation(summary = "OAuth 새로운 계정 이전")
+    public ResponseEntity accountTransfer(HttpServletResponse response, @RequestBody OAuthTransferRequest request) {
+        oAuthService.accountTransfer(response, request);
+
+        return ResponseEntity.ok().build();
     }
 
 }

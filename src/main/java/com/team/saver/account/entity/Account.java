@@ -87,6 +87,11 @@ public class Account implements UserDetails {
         this.schoolEmail = schoolEmail;
     }
 
+    public void updateOAuthInfo(Account account) {
+        this.oAuthType = account.getOAuthType();
+        this.email = account.getEmail();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));

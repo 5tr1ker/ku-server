@@ -5,6 +5,7 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.dto.OAuthRequest;
+import com.team.saver.oauth.dto.OAuthTransferRequest;
 import com.team.saver.oauth.support.GoogleAttribute;
 import com.team.saver.oauth.support.KakaoAttribute;
 import com.team.saver.oauth.support.NaverAttribute;
@@ -21,8 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
-import static com.team.saver.common.dto.ErrorMessage.ANOTHER_OAUTH_SERVER;
-import static com.team.saver.common.dto.ErrorMessage.UNKNOWN_OAUTH_TYPE;
+import static com.team.saver.common.dto.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class OAuthService {
 
     private void isEqualsOAuthServer(Account account, OAuthRequest request) {
         if(!account.getOAuthType().getType().equals(request.getType().getType())) {
-            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, account.getOAuthType().getType(), account.getEmail().split("@")[0]);
+            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, account.getOAuthType().getType(), account.getEmail());
         }
     }
 
@@ -88,4 +88,12 @@ public class OAuthService {
         return attribute.getUserInfo(responseResult);
     }
 
+    @Transactional
+    public void accountTransfer(HttpServletResponse response, OAuthTransferRequest request) {
+        Account previousAccount = accountRepository.findByEmail(request.getPreviousEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+
+        Account new_account = createAccountFromOAuthRequest(OAuthRequest.createEntity(request));
+        previousAccount.updateOAuthInfo(new_account);
+    }
 }
