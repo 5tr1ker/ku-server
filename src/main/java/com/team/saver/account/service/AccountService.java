@@ -36,11 +36,23 @@ public class AccountService {
         mailService.sendMail(request.getSchoolEmail());
     }
 
+    public void sendCodeInOrderToReCertStudent(SchoolCertRequest request) {
+        if(!isStudentEmail(request.getSchoolEmail())) {
+            throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
+        }
+
+        mailService.sendMail(request.getSchoolEmail());
+    }
+
     @Transactional
     public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailRequest request) {
         mailService.checkVerificationCode(request);
 
         updateRoleToStudent(currentUser, request);
+    }
+
+    public void checkCodeInOrderToReCertStudent(MailRequest request) {
+        mailService.checkVerificationCode(request);
     }
 
     protected void updateRoleToStudent(CurrentUser currentUser, MailRequest request) {
@@ -76,5 +88,6 @@ public class AccountService {
 
         return false;
     }
+
 
 }

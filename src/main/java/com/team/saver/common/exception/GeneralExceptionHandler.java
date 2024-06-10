@@ -12,8 +12,8 @@ import static com.team.saver.common.dto.ResponseCode.REQUEST_FAIL;
 public class GeneralExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity handleExceptionHandler(Exception e) {
-        ResponseMessage message = ResponseMessage.of(REQUEST_FAIL , e.getMessage());
+    public ResponseEntity handleExceptionHandler(CustomRuntimeException e) {
+        ResponseMessage message = ResponseMessage.of(REQUEST_FAIL , e.getMessage(), e.getData());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
