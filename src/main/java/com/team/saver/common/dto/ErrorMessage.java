@@ -32,7 +32,8 @@ public enum ErrorMessage {
     INSPECTION_TIME("점검 시간입니다."),
     EXIST_INSPECTION_TIME("해당 점검 시간은 중복됩니다."),
     NOT_VALID_INSPECTION_TIME("유효하지 않는 점검 시간입니다."),
-    NOT_INSPECTION_TIME("현재 점검 시간이 아닙니다.");
+    NOT_INSPECTION_TIME("현재 점검 시간이 아닙니다."),
+    AWS_SERVER_EXCEPTION("AWS 서버에서 예외가 발생했습니다. : %s");
 
     private final String message;
 
