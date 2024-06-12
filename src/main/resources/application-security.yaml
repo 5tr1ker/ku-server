@@ -29,7 +29,7 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: developer-psj
+      bucket: kku-saver
     stack.auto: false
     region.static: ap-northeast-2
     credentials:

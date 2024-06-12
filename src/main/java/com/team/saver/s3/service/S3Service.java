@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.team.saver.common.dto.ErrorMessage.AWS_SERVER_EXCEPTION;
@@ -22,6 +24,19 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.region.static}")
+    private String region;
+
+    public List<String> uploadMultipleImage(List<MultipartFile> multipartFileList) {
+        List<String> result = new ArrayList<>();
+
+        for(MultipartFile multipartFile : multipartFileList) {
+            result.add(uploadImage(multipartFile));
+        }
+
+        return result;
+    }
+
     public String uploadImage(MultipartFile multipartFile) {
         String fileName = UUID.randomUUID().toString();
 
@@ -29,7 +44,7 @@ public class S3Service {
         metadata.setContentType(multipartFile.getContentType());
         metadata.setContentLength(multipartFile.getSize());
 
-        String imageUrl = "https://" + bucket + "/" + fileName;
+        String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucket ,region , fileName);
         try{
             amazonS3Client.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
         } catch (IOException e) {
@@ -41,6 +56,12 @@ public class S3Service {
 
     public void deleteImage(String fileName) {
         amazonS3Client.deleteObject(bucket, fileName);
+    }
+
+    public void deleteMultipleImage(List<String> fileNameList) {
+        for(String fileName : fileNameList) {
+            deleteImage(fileName);
+        }
     }
 
 }
