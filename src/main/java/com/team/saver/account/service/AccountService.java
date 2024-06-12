@@ -31,15 +31,6 @@ public class AccountService {
         if(!isStudentEmail(request.getSchoolEmail())) {
             throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
         }
-        isExistsSchoolEmail(request.getSchoolEmail());
-
-        mailService.sendMail(request.getSchoolEmail());
-    }
-
-    public void sendCodeInOrderToReCertStudent(SchoolCertRequest request) {
-        if(!isStudentEmail(request.getSchoolEmail())) {
-            throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
-        }
 
         mailService.sendMail(request.getSchoolEmail());
     }
@@ -47,12 +38,9 @@ public class AccountService {
     @Transactional
     public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailRequest request) {
         mailService.checkVerificationCode(request);
+        isExistsSchoolEmail(request.getSchoolEmail());
 
         updateRoleToStudent(currentUser, request);
-    }
-
-    public void checkCodeInOrderToReCertStudent(MailRequest request) {
-        mailService.checkVerificationCode(request);
     }
 
     protected void updateRoleToStudent(CurrentUser currentUser, MailRequest request) {
