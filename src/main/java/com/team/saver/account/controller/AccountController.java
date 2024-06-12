@@ -62,27 +62,11 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/re-cert/student/send-mail")
-    @Operation(summary = "새로운 계정을 대상으로 기존에 인증된 학생 메일 재전송 API ( 기존과 다르게 학교 이메일 존재 여부를 확인 안함 )")
-    public ResponseEntity sendCodeInOrderToReCertStudent(@RequestBody SchoolCertRequest request) {
-        accountService.sendCodeInOrderToReCertStudent(request);
-
-        return ResponseEntity.ok().build();
-    }
-
     @PatchMapping("/cert/student/code-check")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                               @RequestBody MailRequest request) {
         accountService.checkCodeInOrderToCertStudent(currentUser, request);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/re-cert/student/code-check")
-    @Operation(summary = "새로운 계정을 대상으로 기존에 인증된 학생으로 권한 변경을 위한 메일 확인 API")
-    public ResponseEntity checkCodeInOrderToReCertStudent(@RequestBody MailRequest request) {
-        accountService.checkCodeInOrderToReCertStudent(request);
 
         return ResponseEntity.ok().build();
     }
