@@ -25,3 +25,13 @@ spring:
       port: 6379
       host: 127.0.0.1
       password: password
+
+cloud:
+  aws:
+    s3:
+      bucket: developer-psj
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIAZI2LEA4VMLJS3AER
+      secretKey: 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
