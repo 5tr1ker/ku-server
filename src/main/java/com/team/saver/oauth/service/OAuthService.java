@@ -41,17 +41,9 @@ public class OAuthService {
         Account account = accountRepository.findByEmail(new_account.getEmail())
                 .orElseGet(() -> accountRepository.save(new_account));
 
-        isEqualsOAuthServer(account, request);
-
         updateLoginCount(account);
 
         return jwtTokenProvider.login(response, account.getEmail(), account.getRole());
-    }
-
-    private void isEqualsOAuthServer(Account account, OAuthRequest request) {
-        if(!account.getOAuthType().getType().equals(request.getType().getType())) {
-            throw new CustomRuntimeException(ANOTHER_OAUTH_SERVER, account.getOAuthType().getType(), account.getEmail());
-        }
     }
 
     @Transactional
