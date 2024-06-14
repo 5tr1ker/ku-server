@@ -7,40 +7,30 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseMessage {
-    private String code;
-    private String message;
+    private String responseCode;
+    private String responseMessage;
+    private Integer errorCode;
     private Object data;
 
-    private ResponseMessage(String code , String message) {
-        this.code = code;
-        this.message = message;
-    }
-
     private ResponseMessage(ResponseCode responseCode , Object data) {
-        this.code = responseCode.getCode();
-        this.message = responseCode.getMessage();
+        this.responseCode = responseCode.getCode();
+        this.responseMessage = responseCode.getMessage();
         this.data = data;
     }
 
-    private ResponseMessage(String code, String message, Object data) {
-        this.code = code;
-        this.message = message;
+    private ResponseMessage(String responseCode, int errorCode, String responseMessage, Object data) {
+        this.responseCode = responseCode;
+        this.responseMessage = responseMessage;
+        this.errorCode = errorCode;
         this.data = data;
-    }
-
-    public static ResponseMessage of(ResponseCode responseCode) {
-        return new ResponseMessage(responseCode.getCode() , responseCode.getMessage());
-    }
-
-    public static ResponseMessage of(ResponseCode responseCode , String message) {
-        return new ResponseMessage(responseCode.getCode() , message);
     }
 
     public static ResponseMessage of(ResponseCode responseCode, Object data) {
         return new ResponseMessage(responseCode , data);
     }
 
-    public static ResponseMessage of(ResponseCode responseCode, String message, Object data) {
-        return new ResponseMessage(responseCode.getCode(), message, data);
+    public static ResponseMessage of(ResponseCode responseCode,int errorCode , String message, Object data) {
+        return new ResponseMessage(responseCode.getCode() ,errorCode ,message ,data);
     }
+
 }

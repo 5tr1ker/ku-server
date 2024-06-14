@@ -13,7 +13,7 @@ public class GeneralExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity handleExceptionHandler(CustomRuntimeException e) {
-        ResponseMessage message = ResponseMessage.of(REQUEST_FAIL , e.getMessage(), e.getData());
+        ResponseMessage message = ResponseMessage.of(REQUEST_FAIL, e.getErrorMessage().getErrorCode(), e.getMessage(), e.getData());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
