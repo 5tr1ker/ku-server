@@ -66,7 +66,7 @@ public class AccountService {
             return;
         }
 
-        throw new CustomRuntimeException(EXIST_SCHOOL_EMAIL, account.getOAuthType().getType_kr());
+        throw new CustomRuntimeException(EXIST_SCHOOL_EMAIL, account.getEmail(), account.getEmail());
     }
 
     private boolean isStudentEmail(String email) {

@@ -12,12 +12,4 @@ public class OAuthRequest {
 
     private String accessToken;
 
-
-    public static OAuthRequest createEntity(OAuthTransferRequest request) {
-        return OAuthRequest.builder()
-                .type(request.getType())
-                .accessToken(request.getAccessToken())
-                .build();
-    }
-
 }
