@@ -87,7 +87,7 @@ public class Account implements UserDetails {
         this.schoolEmail = schoolEmail;
     }
 
-    public void updateOAuthInfo(Account account) {
+    public void transferAccountInfo(Account account) {
         this.oAuthType = account.getOAuthType();
         this.email = account.getEmail();
     }

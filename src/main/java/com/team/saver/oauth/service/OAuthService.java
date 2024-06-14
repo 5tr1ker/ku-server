@@ -2,6 +2,7 @@ package com.team.saver.oauth.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.dto.OAuthRequest;
@@ -81,11 +82,14 @@ public class OAuthService {
     }
 
     @Transactional
-    public void accountTransfer(OAuthTransferRequest request) {
+    public void accountTransfer(OAuthTransferRequest request, CurrentUser currentUser) {
         Account targetAccount = accountRepository.findByEmail(request.getTargetEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        Account new_account = createAccountFromOAuthRequest(OAuthRequest.createEntity(request));
-        targetAccount.updateOAuthInfo(new_account);
+        Account currentAccount = accountRepository.findByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+
+        targetAccount.transferAccountInfo(currentAccount);
+        accountRepository.delete(currentAccount);
     }
 }

@@ -1,10 +1,13 @@
 package com.team.saver.oauth.controller;
 
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.LogIn;
 import com.team.saver.oauth.dto.OAuthRequest;
 import com.team.saver.oauth.dto.OAuthTransferRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +29,9 @@ public class OAuthController {
     }
 
     @PatchMapping("/transfer")
-    @Operation(summary = "OAuth 새로운 계정 이전")
-    public ResponseEntity accountTransfer(@RequestBody OAuthTransferRequest request) {
-        oAuthService.accountTransfer(request);
+    @Operation(summary = "[ 로그인 ] OAuth 새로운 계정 이전")
+    public ResponseEntity accountTransfer(@RequestBody OAuthTransferRequest request, @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        oAuthService.accountTransfer(request, currentUser);
 
         return ResponseEntity.ok().build();
     }
