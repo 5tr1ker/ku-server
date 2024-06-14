@@ -82,10 +82,10 @@ public class OAuthService {
 
     @Transactional
     public void accountTransfer(OAuthTransferRequest request) {
-        Account previousAccount = accountRepository.findByEmail(request.getPreviousEmail())
+        Account targetAccount = accountRepository.findByEmail(request.getTargetEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
         Account new_account = createAccountFromOAuthRequest(OAuthRequest.createEntity(request));
-        previousAccount.updateOAuthInfo(new_account);
+        targetAccount.updateOAuthInfo(new_account);
     }
 }

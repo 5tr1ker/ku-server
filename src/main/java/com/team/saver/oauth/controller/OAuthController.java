@@ -6,7 +6,6 @@ import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

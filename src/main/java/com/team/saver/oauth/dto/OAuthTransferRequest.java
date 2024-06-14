@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class OAuthTransferRequest {
 
-    private String previousEmail;
+    private String targetEmail;
 
     private OAuthType type;
 
