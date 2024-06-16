@@ -94,11 +94,9 @@ public class OrderService {
         return orderRepository.findOrderByUserEmail(currentUser.getEmail());
     }
 
-    public void getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {
-        OrderDetailResponse result = orderRepository.getOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
+    public OrderDetailResponse getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {
+        return orderRepository.getOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER_DETAIL));
-
-
     }
 
 }
