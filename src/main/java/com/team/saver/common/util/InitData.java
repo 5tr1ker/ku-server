@@ -96,7 +96,7 @@ public class InitData implements CommandLineRunner {
         market.addMenu(menu5);
         Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
         for(int i = 0; i < 5; i++) {
-            double randomData = random.nextDouble(100);
+            int randomData = random.nextInt(10) * 1000;
 
             Coupon coupon = Coupon.builder()
                     .couponName("couponName" + i)

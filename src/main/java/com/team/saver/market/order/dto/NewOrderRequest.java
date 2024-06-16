@@ -11,7 +11,7 @@ public class NewOrderRequest {
 
     private long couponId;
 
-    private List<Long> menuId;
+    private List<Long> menuIdList;
 
     private String deliveryAddress;
 

@@ -28,10 +28,10 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private Market market;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<OrderMenu> orderMenuList;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private OrderDetail orderDetail;
 
     public static Order createEntity(Market market, Account account) {
