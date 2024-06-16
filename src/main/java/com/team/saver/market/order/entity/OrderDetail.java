@@ -19,7 +19,7 @@ public class OrderDetail {
     private long orderDetailId;
 
     @Setter
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "orderDetail")
     private Order order;
 
     @CreationTimestamp
