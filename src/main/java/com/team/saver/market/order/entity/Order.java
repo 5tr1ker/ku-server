@@ -23,15 +23,30 @@ public class Order {
     private long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Account user;
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Market market;
 
     @OneToMany
-    private List<OrderMenu> orderMenuName;
+    private List<OrderMenu> orderMenuList;
 
     @OneToOne
     private OrderDetail orderDetail;
 
+    public static Order createEntity(Market market, Account account) {
+        return Order.builder()
+                .market(market)
+                .account(account)
+                .build();
+    }
+
+    public void addOrderMenu(OrderMenu menu) {
+        orderMenuList.add(menu);
+    }
+
+    public void setOrderDetail(OrderDetail orderDetail) {
+        this.orderDetail = orderDetail;
+        orderDetail.setOrder(this);
+    }
 }

@@ -29,7 +29,7 @@ public class Coupon {
 
     @Builder.Default
     @Column(nullable = false)
-    private double saleRate = 0.0;
+    private int saleRate = 0;
 
     public static Coupon createEntity(CouponCreateRequest request) {
         return Coupon.builder()

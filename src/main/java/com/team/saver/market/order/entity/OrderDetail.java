@@ -1,10 +1,8 @@
 package com.team.saver.market.order.entity;
 
+import com.team.saver.market.order.dto.NewOrderRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -20,6 +18,7 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderDetailId;
 
+    @Setter
     @OneToOne(mappedBy = "order")
     private Order order;
 
@@ -39,5 +38,17 @@ public class OrderDetail {
     private int discountAmount;
 
     private int finalPrice;
+
+    public static OrderDetail createEntity(NewOrderRequest request, String orderNumber, int orderPrice, int discountAmount) {
+        return OrderDetail.builder()
+                .deliveryAddress(request.getDeliveryAddress())
+                .deliveryAddressDetail(request.getDeliveryAddressDetail())
+                .phoneNumber(request.getPhoneNumber())
+                .orderNumber(orderNumber)
+                .orderPrice(orderPrice)
+                .discountAmount(discountAmount)
+                .finalPrice(orderPrice - discountAmount)
+                .build();
+    }
 
 }
