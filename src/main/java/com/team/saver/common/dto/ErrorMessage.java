@@ -32,7 +32,9 @@ public enum ErrorMessage {
     EXIST_INSPECTION_TIME(-23, "해당 점검 시간은 중복됩니다."),
     NOT_VALID_INSPECTION_TIME(-24, "유효하지 않는 점검 시간입니다."),
     NOT_INSPECTION_TIME(-25, "현재 점검 시간이 아닙니다."),
-    AWS_SERVER_EXCEPTION(-26, "AWS 서버에서 예외가 발생했습니다. : %s");
+    AWS_SERVER_EXCEPTION(-26, "AWS 서버에서 예외가 발생했습니다. : %s"),
+    NOT_FOUND_ORDER(-27, "주문 데이터를 찾을 수 없습니다."),
+    NOT_FOUND_ORDER_DETAIL(-28, "주문 상세 데이터를 찾을 수 없습니다.");
 
     private final int errorCode;
     private final String message;

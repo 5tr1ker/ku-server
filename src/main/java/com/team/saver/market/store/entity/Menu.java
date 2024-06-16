@@ -23,4 +23,7 @@ public class Menu {
     @Column(nullable = false)
     private String menuName;
 
+    @Column(nullable = false)
+    private boolean isActivate;
+
 }

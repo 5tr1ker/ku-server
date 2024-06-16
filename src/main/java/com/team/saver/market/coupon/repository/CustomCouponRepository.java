@@ -22,4 +22,5 @@ public interface CustomCouponRepository {
 
     long countUsedCouponByEmail(String email);
 
+    Optional<Coupon> findByIdAndMarketId(long couponId, long marketId);
 }

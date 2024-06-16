@@ -98,4 +98,15 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .where(downloadCoupon.isUsage.eq(true))
                 .fetchOne();
     }
+
+    @Override
+    public Optional<Coupon> findByIdAndMarketId(long couponId, long marketId) {
+        Coupon result = jpaQueryFactory.select(coupon)
+                .from(coupon)
+                .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
+                .where(coupon.couponId.eq(couponId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 }

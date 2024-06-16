@@ -9,7 +9,7 @@ public class CouponCreateRequest {
 
     private String couponDescription;
 
-    private double saleRate;
+    private int saleRate;
 
     private long marketId;
 
