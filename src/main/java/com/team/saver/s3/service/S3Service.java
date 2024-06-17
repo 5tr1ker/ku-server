@@ -10,10 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import static com.team.saver.common.dto.ErrorMessage.AWS_SERVER_EXCEPTION;
+import static com.team.saver.common.dto.ErrorMessage.NOT_IMAGE_FILE;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,16 @@ public class S3Service {
     }
 
     public String uploadImage(MultipartFile multipartFile) {
+        String fileName = multipartFile.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+            return uploadFile(multipartFile);
+        }
+
+        throw new CustomRuntimeException(NOT_IMAGE_FILE);
+    }
+
+    private String uploadFile(MultipartFile multipartFile) {
         String fileName = UUID.randomUUID().toString();
 
         ObjectMetadata metadata= new ObjectMetadata();

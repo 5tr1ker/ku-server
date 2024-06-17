@@ -36,6 +36,6 @@ public class MarketResponse {
 
     private long reviewCount;
 
-    private double maxDiscountRate;
+    private int maxDiscountRate;
 
 }
