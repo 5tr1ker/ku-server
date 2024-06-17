@@ -19,4 +19,10 @@ public class AttractionTag {
     @Column(nullable = false)
     private String tagContent;
 
+    public static AttractionTag createEntity(String tagContent) {
+        return AttractionTag.builder()
+                .tagContent(tagContent)
+                .build();
+    }
+
 }
