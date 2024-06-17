@@ -40,13 +40,13 @@ public class S3Service {
     }
 
     public String uploadImage(MultipartFile multipartFile) {
-        String[] imageName = multipartFile.getOriginalFilename().split(".");
-        String extension = imageName[imageName.length - 1];
-        if(!extension.equals("jpg") || !extension.equals("png") || !extension.equals("jpeg")) {
-            throw new CustomRuntimeException(NOT_IMAGE_FILE);
+        String fileName = multipartFile.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+            return uploadFile(multipartFile);
         }
 
-        return uploadFile(multipartFile);
+        throw new CustomRuntimeException(NOT_IMAGE_FILE);
     }
 
     private String uploadFile(MultipartFile multipartFile) {
