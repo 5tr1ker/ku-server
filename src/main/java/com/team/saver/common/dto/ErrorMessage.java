@@ -35,7 +35,10 @@ public enum ErrorMessage {
     AWS_SERVER_EXCEPTION(-26, "AWS 서버에서 예외가 발생했습니다. : %s"),
     NOT_FOUND_ORDER(-27, "주문 데이터를 찾을 수 없습니다."),
     NOT_FOUND_ORDER_DETAIL(-28, "주문 상세 데이터를 찾을 수 없습니다."),
-    NOT_IMAGE_FILE(-29, "이미지 파일 확장자가 아닙니다.");
+    NOT_IMAGE_FILE(-29, "이미지 파일 확장자가 아닙니다."),
+    TOKEN_EXPIRE(-30, "토큰 유효기간이 경과했습니다."),
+    UNKNOWN_EXCEPTION(-31, "알 수 없는 예외가 발생했습니다."),
+    BODY_DATA_MISSING(-32, "데이터 일부가 누락되었습니다.");
 
     private final int errorCode;
     private final String message;
