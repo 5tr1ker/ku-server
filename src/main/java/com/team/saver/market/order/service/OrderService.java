@@ -39,11 +39,11 @@ public class OrderService {
     private final MenuRepository menuRepository;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, NewOrderRequest request) {
-        Order order = createOrder(currentUser.getEmail(), request.getMarketId());
+    public void addOrder(CurrentUser currentUser, long marketId, NewOrderRequest request) {
+        Order order = createOrder(currentUser.getEmail(), marketId);
         int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIdList()));
 
-        OrderDetail orderDetail = createOrderDetail(request, totalPrice);
+        OrderDetail orderDetail = createOrderDetail(request, marketId, totalPrice);
         order.setOrderDetail(orderDetail);
 
         orderRepository.save(order);
@@ -62,8 +62,8 @@ public class OrderService {
         return Order.createEntity(market, account);
     }
 
-    private OrderDetail createOrderDetail(NewOrderRequest request, int totalPrice) {
-        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), request.getMarketId());
+    private OrderDetail createOrderDetail(NewOrderRequest request, long marketId , int totalPrice) {
+        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), marketId);
 
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
 

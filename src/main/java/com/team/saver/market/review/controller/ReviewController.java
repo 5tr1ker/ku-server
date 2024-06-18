@@ -16,28 +16,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/review")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping
+    @GetMapping("/markets/{marketId}/reviews")
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@RequestParam long marketId, @RequestParam SortType sortType) {
+    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sortType) {
         List<ReviewResponse> result = reviewService.findByMarketId(marketId, sortType);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/statistics")
+    @GetMapping("/markets/{marketId}/statistics")
     @Operation(summary = "리뷰 총 평점 및 점수 별 갯수 통계 가져오기")
-    public ResponseEntity findReviewStatisticsByMarketId(@RequestParam long marketId) {
+    public ResponseEntity findReviewStatisticsByMarketId(@PathVariable long marketId) {
         ReviewStatisticsResponse result = reviewService.findReviewStatisticsByMarketId(marketId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/top")
+    @GetMapping("/markets/reviews/top")
     @Operation(summary = "BEST 리뷰 가져오기")
     public ResponseEntity findBestReview(Pageable pageable) {
         List<ReviewResponse> result = reviewService.findBestReview(pageable);
@@ -45,7 +44,7 @@ public class ReviewController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/{reviewId}/recommendation")
+    @PostMapping("/markets/reviews/{reviewId}/recommendation")
     @Operation(summary = "[ 로그인 ] 리뷰 추천하기")
     public ResponseEntity recommendReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                           @PathVariable long reviewId) {
@@ -54,7 +53,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/written-user")
+    @GetMapping("/markets/reviews/written-by-me")
     @Operation(summary = "[ 로그인 ] 내가 등록한 리뷰 가져오기")
     public ResponseEntity findByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<ReviewResponse> result = reviewService.findByUserEmail(currentUser);
@@ -62,16 +61,17 @@ public class ReviewController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping
+    @PostMapping("/markets/{marketId}/reviews")
     @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가")
     public ResponseEntity addReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                    @RequestBody ReviewRequest request) {
-        reviewService.addReview(currentUser, request);
+                                    @RequestBody ReviewRequest request,
+                                    @PathVariable long marketId) {
+        reviewService.addReview(currentUser ,marketId , request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{reviewId}")
+    @PatchMapping("/markets/reviews/{reviewId}")
     @Operation(summary = "[ 로그인 ] 리뷰 수정")
     public ResponseEntity updateReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long reviewId,
@@ -82,7 +82,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("/markets/reviews/{reviewId}")
     @Operation(summary = "[ 로그인 ] 리뷰 삭제")
     public ResponseEntity deleteReview(@PathVariable long reviewId,
                                        @Parameter(hidden = true) @LogIn CurrentUser currentUser) {

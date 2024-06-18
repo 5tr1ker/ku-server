@@ -11,6 +11,4 @@ public class ReviewRequest {
 
     private int score;
 
-    private long marketId;
-
 }
