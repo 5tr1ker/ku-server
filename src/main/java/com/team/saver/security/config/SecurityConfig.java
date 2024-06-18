@@ -1,5 +1,6 @@
 package com.team.saver.security.config;
 
+import com.team.saver.common.exception.FilterExceptionHandler;
 import com.team.saver.security.jwt.support.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final FilterExceptionHandler filterExceptionHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,6 +34,8 @@ public class SecurityConfig {
 //                .requestMatchers("/admin/**").hasRole("ADMIN")
 //                .requestMatchers("/**").hasRole("NORMAL");
                 .requestMatchers("/**").permitAll();
+
+        http.addFilterBefore(filterExceptionHandler, UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

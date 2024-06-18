@@ -5,8 +5,6 @@ import lombok.Getter;
 @Getter
 public class NewPartnerResponse {
 
-    private long partnerRequestId;
-
     private String message;
 
 }

@@ -3,7 +3,6 @@ package com.team.saver.market.order.service;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
-import com.team.saver.common.dto.ErrorMessage;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.repository.CouponRepository;
@@ -22,8 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
 
@@ -38,11 +39,11 @@ public class OrderService {
     private final MenuRepository menuRepository;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, NewOrderRequest request) {
-        Order order = createOrder(currentUser.getEmail(), request.getMarketId());
+    public void addOrder(CurrentUser currentUser, long marketId, NewOrderRequest request) {
+        Order order = createOrder(currentUser.getEmail(), marketId);
         int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIdList()));
 
-        OrderDetail orderDetail = createOrderDetail(request, totalPrice);
+        OrderDetail orderDetail = createOrderDetail(request, marketId, totalPrice);
         order.setOrderDetail(orderDetail);
 
         orderRepository.save(order);
@@ -61,12 +62,23 @@ public class OrderService {
         return Order.createEntity(market, account);
     }
 
-    private OrderDetail createOrderDetail(NewOrderRequest request, int totalPrice) {
-        Coupon coupon = couponRepository.findByIdAndMarketId(request.getCouponId(), request.getMarketId())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
+    private OrderDetail createOrderDetail(NewOrderRequest request, long marketId , int totalPrice) {
+        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), marketId);
+
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
 
-        return OrderDetail.createEntity(request, orderNumber, totalPrice, coupon.getSaleRate());
+        return OrderDetail.createEntity(request, orderNumber, totalPrice, saleRate);
+    }
+
+    private int getSaleRateByCouponIdAndMarketId(long couponId, long marketId) {
+        if(couponId != 0) {
+            Coupon coupon = couponRepository.findByIdAndMarketId(couponId, marketId)
+                    .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
+
+            return coupon.getSaleRate();
+        }
+
+        return 0;
     }
 
     private int addOrderMenuAndReturnTotalPrice(Order order, List<Menu> menuList) {
@@ -91,12 +103,18 @@ public class OrderService {
     }
 
     public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser) {
-        return orderRepository.findOrderByUserEmail(currentUser.getEmail());
+        List<Order> result = orderRepository.findOrderDataByUserEmail(currentUser.getEmail());
+
+        return result.stream().map(OrderResponse::createEntity)
+                .collect(Collectors.toList());
     }
 
     public OrderDetailResponse getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {
-        return orderRepository.getOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
+        OrderDetailResponse result = orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER_DETAIL));
+
+        result.setOrderMenu(orderRepository.findOrderMenuByOrderId(orderId));
+        return result;
     }
 
 }

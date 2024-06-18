@@ -17,20 +17,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/coupon")
 public class CouponController {
 
     private final CouponService couponService;
 
-    @GetMapping
+    @GetMapping("/v1/markets/{marketId}/coupons")
     @Operation(summary = "marketId 로 다운로드 가능한 쿠폰 모두 조회")
-    public ResponseEntity findCouponByMarketId(@RequestParam long marketId) {
+    public ResponseEntity findCouponByMarketId(@PathVariable long marketId) {
         List<CouponResponse> result = couponService.findCouponByMarketId(marketId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/download")
+    @GetMapping("/v1/markets/coupons/downloads")
     @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 조회")
     public ResponseEntity findDownloadCouponByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<DownloadCouponResponse> result = couponService.findDownloadCouponByUserEmail(currentUser);
@@ -38,7 +37,7 @@ public class CouponController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/{couponId}/download")
+    @PostMapping("/v1/markets/coupons/{couponId}/downloads")
     @Operation(summary = "[ 로그인 ] 쿠폰 다운로드")
     public ResponseEntity downloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                          @PathVariable long couponId) {
@@ -48,17 +47,18 @@ public class CouponController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping
+    @PostMapping("/v1/markets/{marketId}/coupons")
     @Operation(summary = "[ 로그인 ] 새로운 쿠폰 생성")
     public ResponseEntity createCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                       @PathVariable long marketId,
                                        @RequestBody CouponCreateRequest request) {
 
-        couponService.createCoupon(currentUser, request);
+        couponService.createCoupon(currentUser,marketId , request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{couponId}")
+    @DeleteMapping("/v1/markets/coupons/{couponId}")
     @Operation(summary = "[ 로그인 ] 생성한 쿠폰 삭제")
     public ResponseEntity deleteCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long couponId) {
@@ -68,7 +68,7 @@ public class CouponController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/download/{downloadCouponId}")
+    @PatchMapping("/v1/markets/coupons/downloads/{downloadCouponId}")
     @Operation(summary = "[ 로그인 ] 사용한 쿠폰으로 수정")
     public ResponseEntity updateCouponUsage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long downloadCouponId) {

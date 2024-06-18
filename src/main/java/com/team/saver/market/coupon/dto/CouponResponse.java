@@ -13,6 +13,6 @@ public class CouponResponse {
 
     private String couponDescription;
 
-    private double saleRate;
+    private int saleRate;
 
 }

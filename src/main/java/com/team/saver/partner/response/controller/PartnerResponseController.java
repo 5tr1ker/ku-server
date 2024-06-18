@@ -13,21 +13,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/partner/response")
 public class PartnerResponseController {
 
     private final PartnerResponseService partnerResponseService;
 
-    @PostMapping
+    @PostMapping("/v1/partners/requests/{partnerRequestId}/responses")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 응답 남기기")
     public ResponseEntity addPartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                             @RequestBody NewPartnerResponse response) {
-        partnerResponseService.addPartnerResponse(currentUser, response);
+                                             @RequestBody NewPartnerResponse response,
+                                             @PathVariable long partnerRequestId) {
+        partnerResponseService.addPartnerResponse(currentUser ,partnerRequestId, response);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{responseId}")
+    @DeleteMapping("/v1/partners/requests/responses/{responseId}")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 댓글 삭제")
     public ResponseEntity deletePartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                 @PathVariable long responseId) {

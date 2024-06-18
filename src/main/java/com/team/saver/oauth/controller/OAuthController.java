@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/account/oauth")
 public class OAuthController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping("/sign-in")
+    @PostMapping("/v1/account/oauth/sign-in")
     @Operation(summary = "OAuth 로그인")
     public ResponseEntity signIn(HttpServletResponse response, @RequestBody OAuthRequest request) {
         Token result = oAuthService.SignInOAuthAccount(response, request);
@@ -28,7 +27,7 @@ public class OAuthController {
         return ResponseEntity.ok(result);
     }
 
-    @PatchMapping("/transfer")
+    @PatchMapping("/v1/account/oauth/transfer")
     @Operation(summary = "[ 로그인 ] OAuth 새로운 계정 이전")
     public ResponseEntity accountTransfer(@RequestBody OAuthTransferRequest request, @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         oAuthService.accountTransfer(request, currentUser);

@@ -7,8 +7,6 @@ import java.util.List;
 @Getter
 public class NewOrderRequest {
 
-    private long marketId;
-
     private long couponId;
 
     private List<Long> menuIdList;

@@ -44,8 +44,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(CurrentUser currentUser, ReviewRequest request) {
-        Market market = marketRepository.findById(request.getMarketId())
+    public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request) {
+        Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         Account account = accountService.getProfile(currentUser);

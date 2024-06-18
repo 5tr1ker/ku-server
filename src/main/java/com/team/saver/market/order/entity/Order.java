@@ -4,11 +4,9 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "order_tb")
+@ToString
 public class Order {
 
     @Id
@@ -29,8 +28,9 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private Market market;
 
+    @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<OrderMenu> orderMenuList;
+    private List<OrderMenu> orderMenuList = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private OrderDetail orderDetail;

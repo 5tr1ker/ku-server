@@ -15,12 +15,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/attraction")
 public class AttractionController {
 
     private final AttractionService attractionService;
 
-    @PostMapping
+    @PostMapping("/v1/attractions")
     @Operation(summary = "관광 시설 등록")
     public ResponseEntity addAttraction(@RequestPart NewAttractionRequest request,
                                         @RequestPart MultipartFile imageFile) {
@@ -29,7 +28,7 @@ public class AttractionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{attractionId}")
+    @DeleteMapping("/v1/attractions/{attractionId}")
     @Operation(summary = "관광 시설 제거")
     public ResponseEntity deleteAttraction(@PathVariable long attractionId) {
         attractionService.deleteAttraction(attractionId);
@@ -37,7 +36,7 @@ public class AttractionController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping
+    @GetMapping("/v1/attractions")
     @Operation(summary = "관광 시설 조회")
     public ResponseEntity getAttraction(Pageable pageable) {
         List<AttractionResponse> result = attractionService.getAttraction(pageable);

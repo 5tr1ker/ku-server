@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/account")
 public class AccountController {
 
     private final AccountService accountService;
@@ -27,7 +26,7 @@ public class AccountController {
     private final AccountRepository accountRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/sign-in")
+    @PostMapping("/v1/accounts/sign-in")
     @Operation(summary = "테스트를 위한 로그인 API")
     public ResponseEntity signIn(@RequestParam String email, HttpServletResponse response) {
         Account account = accountRepository.findByEmail(email).get();
@@ -37,7 +36,7 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/v1/accounts/logout")
     @Operation(summary = "로그아웃 API")
     public ResponseEntity logout(HttpServletResponse response) {
         jwtTokenProvider.deleteJwtCookieFromResponse(response);
@@ -45,7 +44,7 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/v1/accounts/profiles")
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         Account result = accountService.getProfile(currentUser);
@@ -53,7 +52,7 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/cert/student/send-mail")
+    @PostMapping("/v1/accounts/certs/students/send-mail")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API")
     public ResponseEntity sendCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                      @RequestBody SchoolCertRequest request) {
@@ -62,7 +61,7 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/cert/student/code-check")
+    @PatchMapping("/v1/accounts/certs/students/code-check")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                               @RequestBody MailRequest request) {

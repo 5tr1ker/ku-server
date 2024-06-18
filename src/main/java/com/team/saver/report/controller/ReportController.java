@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/report")
 public class ReportController {
 
     private final ReportService reportService;
 
-    @PostMapping
+    @PostMapping("/v1/reports")
     @Operation(summary = "[ 로그인 ] 컨텐츠 신고 API")
     public ResponseEntity addReport(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestBody ReportRequest request) {
