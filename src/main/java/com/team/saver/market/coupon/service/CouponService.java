@@ -51,8 +51,8 @@ public class CouponService {
     }
 
     @Transactional
-    public void createCoupon(CurrentUser currentUser, CouponCreateRequest request) {
-        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), request.getMarketId())
+    public void createCoupon(CurrentUser currentUser ,long marketId ,CouponCreateRequest request) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
         Coupon coupon = Coupon.createEntity(request);

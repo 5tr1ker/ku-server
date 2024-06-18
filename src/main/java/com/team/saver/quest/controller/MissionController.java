@@ -18,12 +18,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mission")
 public class MissionController {
 
     private final MissionService missionService;
 
-    @GetMapping
+    @GetMapping("/v1/missions")
     @Operation(summary = "[ 로그인 ] 미션 데이터 목록 가져오기")
     public ResponseEntity getMissionByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<MissionResponse> result = missionService.getMissionByEmail(currentUser);
@@ -31,7 +30,7 @@ public class MissionController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/level")
+    @GetMapping("/v1/missions/level")
     @Operation(summary = "[ 로그인 ] 미션 수행으로 인한 레벨가져오기")
     public ResponseEntity getMissionLevelByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         MissionLevelResponse result = missionService.getMissionLevelByEmail(currentUser);

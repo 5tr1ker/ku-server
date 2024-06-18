@@ -25,8 +25,8 @@ public class PartnerResponseService {
     private final AccountService accountService;
 
     @Transactional
-    public void addPartnerResponse(CurrentUser currentUser, NewPartnerResponse response) {
-        PartnerRequest request = partnerRequestRepository.findById(response.getPartnerRequestId())
+    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, NewPartnerResponse response) {
+        PartnerRequest request = partnerRequestRepository.findById(partnerRequestId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
         Account account = accountService.getProfile(currentUser);
 

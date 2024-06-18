@@ -26,12 +26,11 @@ import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PARTNER_REQUEST;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/partner/request")
 public class PartnerRequestController {
 
     private final PartnerRequestService partnerRequestService;
 
-    @PostMapping
+    @PostMapping("/v1/partners/requests")
     @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API")
     public ResponseEntity requestNewPartner(@RequestBody NewPartnerRequest request
             , @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
@@ -40,7 +39,7 @@ public class PartnerRequestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping
+    @GetMapping("/v1/partners/requests")
     @Operation(summary = "요청된 모든 파트너십 데이터 가져오기")
     public ResponseEntity findAllEntity(Pageable pageable) {
         List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(pageable);
@@ -48,7 +47,7 @@ public class PartnerRequestController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/{partnerRequestId}/recommendation")
+    @PostMapping("/v1/partners/requests/{partnerRequestId}/recommendation")
     @Operation(summary = "[ 로그인 ] 파트너쉽 추천 API")
     public ResponseEntity requestPartnerRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                        @PathVariable long partnerRequestId) {

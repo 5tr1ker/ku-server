@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/security")
 public class SecurityController {
 
     private final SecurityService securityService;
 
-    @GetMapping("/is-connect")
+    @GetMapping("/v1/security/is-connect")
     @Operation(summary = "서버와 연결 여부 확인 API [ 서버 점검 여부 ]")
     public ResponseEntity checkConnection() {
         ResponseMessage result = securityService.isInspectionTime();
@@ -28,7 +27,7 @@ public class SecurityController {
         return ResponseEntity.badRequest().body(result);
     }
 
-    @PostMapping("/inspection")
+    @PostMapping("/v1/security/inspection")
     @Operation(summary = "새로운 점검 시간 설정")
     public ResponseEntity setInspection(@RequestBody InspectionTimeRequest request) {
         securityService.setInspectionTime(request);
@@ -36,7 +35,7 @@ public class SecurityController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/inspection")
+    @DeleteMapping("/v1/security/inspection")
     @Operation(summary = "현재 점검 시간 제거")
     public ResponseEntity deleteInspection() {
         securityService.deleteInspection();
@@ -44,7 +43,7 @@ public class SecurityController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/inspection")
+    @PatchMapping("/v1/security/inspection")
     @Operation(summary = "현재 점검 중인 시간 변경")
     public ResponseEntity updateInspection(@RequestBody InspectionTimeRequest request) {
         securityService.updateInspection(request);

@@ -18,12 +18,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/popular-search-word")
 public class PopularSearchController {
 
     private final PopularSearchService popularSearchService;
 
-    @GetMapping
+    @GetMapping("/v1/popular-search-word")
     @Operation(summary = "인기 검색어 조회")
     public ResponseEntity getPopularSearchWord(@RequestParam int size) {
         List<SearchWordScoreDto.Node> result = popularSearchService.getPopularSearchWord(size);
@@ -31,7 +30,7 @@ public class PopularSearchController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping
+    @PostMapping("/v1/popular-search-word")
     @Operation(summary = "[ 로그인 ] 인기 검색어 업데이트 및 등록")
     public ResponseEntity addSearchWordToRedis(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                @RequestBody PopularSearchRequest request) {

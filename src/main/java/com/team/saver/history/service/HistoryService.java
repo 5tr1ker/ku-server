@@ -52,11 +52,11 @@ public class HistoryService {
     }
 
     @Transactional
-    public void deleteHistoryByAccountAndHistoryId(CurrentUser currentUser, HistoryDeleteRequest historyRequest) {
+    public void deleteHistoryByAccountAndHistoryId(CurrentUser currentUser, long historyId) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        historyRepository.deleteHistoryByAccountAndHistoryId(account, historyRequest.getHistoryId());
+        historyRepository.deleteHistoryByAccountAndHistoryId(account, historyId);
     }
 
 }
