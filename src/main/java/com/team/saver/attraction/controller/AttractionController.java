@@ -37,7 +37,7 @@ public class AttractionController {
     }
 
     @GetMapping("/v1/attractions")
-    @Operation(summary = "관광 시설 조회")
+    @Operation(summary = "모든 관광 시설 조회")
     public ResponseEntity getAttraction(Pageable pageable) {
         List<AttractionResponse> result = attractionService.getAttraction(pageable);
 
