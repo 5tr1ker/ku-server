@@ -1,13 +1,20 @@
 package com.team.saver.market.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderResponse {
 
     private long orderId;
@@ -18,5 +25,14 @@ public class OrderResponse {
     private String marketName;
 
     private List<OrderMenu> orderMenu;
+
+    public static OrderResponse createEntity(Order order) {
+        return OrderResponse.builder()
+                .orderId(order.getOrderId())
+                .orderDate(order.getOrderDetail().getOrderDateTime())
+                .marketName(order.getMarket().getMarketName())
+                .orderMenu(order.getOrderMenuList())
+                .build();
+    }
 
 }

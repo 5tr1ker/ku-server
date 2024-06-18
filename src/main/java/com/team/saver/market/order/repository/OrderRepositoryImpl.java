@@ -5,17 +5,17 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.dto.OrderDetailResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
+import com.team.saver.market.order.entity.OrderMenu;
 import lombok.RequiredArgsConstructor;
-
-import static com.team.saver.market.order.entity.QOrderMenu.orderMenu;
-import static com.team.saver.market.store.entity.QMenu.menu;
-import static com.team.saver.market.store.entity.QMarket.market;
-import static com.team.saver.market.order.entity.QOrderDetail.orderDetail;
-import static com.team.saver.account.entity.QAccount.account;
-import static com.team.saver.market.order.entity.QOrder.order;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.team.saver.account.entity.QAccount.account;
+import static com.team.saver.market.order.entity.QOrder.order;
+import static com.team.saver.market.order.entity.QOrderDetail.orderDetail;
+import static com.team.saver.market.order.entity.QOrderMenu.orderMenu;
+import static com.team.saver.market.store.entity.QMarket.market;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements CustomOrderRepository {
@@ -34,29 +34,23 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
     }
 
     @Override
-    public List<OrderResponse> findOrderByUserEmail(String email) {
-        return jpaQueryFactory.select(Projections.constructor(OrderResponse.class,
-                        order.orderId,
-                        orderDetail.orderDateTime,
-                        market.marketName,
-                        orderMenu
-                ))
+    public List<Order> findOrderDataByUserEmail(String email) {
+        return jpaQueryFactory.select(order)
+                .from(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenuList, orderMenu)
-                .from(order)
+                .innerJoin(order.orderMenuList, orderMenu).fetchJoin()
                 .fetch();
     }
 
     @Override
-    public Optional<OrderDetailResponse> getOrderDetailByOrderIdAndEmail(long orderId, String email) {
+    public Optional<OrderDetailResponse> findOrderDetailByOrderIdAndEmail(long orderId, String email) {
         OrderDetailResponse result = jpaQueryFactory.select(Projections.constructor(
                         OrderDetailResponse.class,
                         order.orderId,
                         market.marketName,
                         market.marketId,
-                        orderMenu,
                         orderDetail.orderDateTime,
                         orderDetail.orderNumber,
                         orderDetail.deliveryAddress,
@@ -70,10 +64,18 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenuList, orderMenu)
                 .where(order.orderId.eq(orderId))
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<OrderMenu> findOrderMenuByOrderId(long orderId) {
+        return jpaQueryFactory.select(orderMenu)
+                .from(order)
+                .innerJoin(order.orderMenuList, orderMenu)
+                .where(order.orderId.eq(orderId))
+                .fetch();
     }
 }
