@@ -3,6 +3,7 @@ package com.team.saver.market.store.controller;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
 import com.team.saver.market.store.dto.*;
+import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.service.MarketService;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ public class MarketController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/v1/markets/{marketId}")
+    @GetMapping("/v1/markets/{marketId}/details")
     @Operation(summary = "해당 Market의 상세 정보 가져오기")
     public ResponseEntity findMarketDetailById(@PathVariable long marketId) {
         MarketDetailResponse result = marketService.findMarketDetailById(marketId);
@@ -38,7 +39,7 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/v1/markets/{marketId}/menu")
+    @GetMapping("/v1/markets/{marketId}/menus")
     @Operation(summary = "해당 Market의 메뉴 정보 가져오기")
     public ResponseEntity findMarketMenuById(@PathVariable long marketId) {
         List<MenuResponse> result = marketService.findMarketMenuById(marketId);
@@ -46,42 +47,46 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/v1/markets/recommend")
+    @GetMapping("/v1/markets/recommendation")
     @Operation(summary = "Market 추천 알고리즘으로 추천 받기")
-    public ResponseEntity recommendMarket(@RequestBody MarketRecommendRequest request) {
-        List<MarketResponse> result = recommendAlgorithm.recommendMarket(request);
+    public ResponseEntity recommendMarket(@RequestParam long marketCount) {
+        List<MarketResponse> result = recommendAlgorithm.recommendMarket(marketCount);
 
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/v1/markets/search")
+    @GetMapping("/v1/markets")
     @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ")
-    public ResponseEntity findAllMarket(@RequestBody SearchMarketRequest request) {
+    public ResponseEntity findAllMarket(SearchMarketRequest request) {
         List<MarketResponse> result = marketService.findAllMarket(request);
 
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/v1/markets/search-by-market-name/")
+    @GetMapping("/v1/markets/{marketName}")
     @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
-    public ResponseEntity findMarketBySearch(@RequestBody SearchByNameRequest request) {
-        List<MarketResponse> result = marketService.findMarketByMarketName(request);
+    public ResponseEntity findMarketBySearch(SearchMarketRequest request,
+                                             @PathVariable String marketName) {
+        List<MarketResponse> result = marketService.findMarketByMarketName(request, marketName);
 
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/v1/markets/category/search")
-    @Operation(summary = "해당 category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
-    public ResponseEntity findMarketByMainCategory(@RequestBody SearchByCategoryRequest request) {
-        List<MarketResponse> result = marketService.findMarketByMainCategory(request);
+    @GetMapping("/v1/markets/categories/{categoryData}")
+    @Operation(summary = "category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    public ResponseEntity findMarketByMainCategory(SearchMarketRequest request,
+                                                   @PathVariable MainCategory categoryData) {
+        List<MarketResponse> result = marketService.findMarketByMainCategory(request, categoryData);
 
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/v1/markets/search/name-category")
-    @Operation(summary = "해당 category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
-    public ResponseEntity findMarketByMainCategoryAndMarketName(@RequestBody SearchByCategoryAndNameRequest request) {
-        List<MarketResponse> result = marketService.findMarketByMainCategoryAndMarketName(request);
+    @GetMapping("/v1/markets/{marketName}/categories/{categoryData}")
+    @Operation(summary = "category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    public ResponseEntity findMarketByMainCategoryAndMarketName(SearchMarketRequest request,
+                                                                @PathVariable MainCategory categoryData,
+                                                                @PathVariable String marketName) {
+        List<MarketResponse> result = marketService.findMarketByMainCategoryAndMarketName(request, categoryData, marketName);
 
         return ResponseEntity.ok(result);
     }

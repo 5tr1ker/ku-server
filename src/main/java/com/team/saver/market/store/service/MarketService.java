@@ -5,10 +5,7 @@ import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.store.dto.*;
-import com.team.saver.market.store.entity.Classification;
-import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.MarketClassification;
-import com.team.saver.market.store.entity.QMarket;
+import com.team.saver.market.store.entity.*;
 import com.team.saver.market.store.repository.ClassificationRepository;
 import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
@@ -39,18 +36,18 @@ public class MarketService {
         return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null);
     }
 
-    public List<MarketResponse> findMarketByMarketName(SearchByNameRequest request) {
+    public List<MarketResponse> findMarketByMarketName(SearchMarketRequest request, String marketName) {
         QMarket market = new QMarket("market");
 
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(request.getMarketName()));
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(marketName));
     }
 
-    public List<MarketResponse> findMarketByMainCategory(SearchByCategoryRequest request) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(request.getCategory()));
+    public List<MarketResponse> findMarketByMainCategory(SearchMarketRequest request, MainCategory category) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(category));
     }
 
-    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchByCategoryAndNameRequest request) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(request.getCategory()).and(market.marketName.contains(request.getMarketName())));
+    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchMarketRequest request, MainCategory categoryData, String marketName) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)));
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
