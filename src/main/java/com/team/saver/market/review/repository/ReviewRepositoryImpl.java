@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
@@ -28,10 +29,12 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
 
     @Override
     public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier) {
+
         return jpaQueryFactory.select(Projections.constructor(
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
+                        reviewImage.imageUrl,
                         account.email,
                         review.content,
                         review.writeTime,
@@ -43,6 +46,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender)
+                .leftJoin(review.reviewImage, reviewImage)
                 .groupBy(review)
                 .orderBy(orderSpecifier)
                 .fetch();
@@ -65,6 +69,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
+                        reviewImage.imageUrl,
                         account.email,
                         review.content,
                         review.writeTime,
@@ -76,6 +81,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
                 .leftJoin(review.recommender, reviewRecommender)
+                .leftJoin(review.reviewImage, reviewImage)
                 .groupBy(review)
                 .fetch();
     }
@@ -97,6 +103,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         ReviewResponse.class,
                         review.reviewId,
                         account.accountId,
+                        reviewImage.imageUrl,
                         account.email,
                         review.content,
                         review.writeTime,
@@ -108,6 +115,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender)
+                .leftJoin(review.reviewImage, reviewImage)
                 .groupBy(review)
                 .orderBy(reviewRecommender.count().desc(), review.content.length().desc())
                 .offset(pageable.getOffset())

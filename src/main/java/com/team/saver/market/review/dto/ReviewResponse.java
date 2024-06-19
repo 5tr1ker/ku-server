@@ -14,6 +14,8 @@ public class ReviewResponse {
 
     private long reviewerId;
 
+    private String reviewImage;
+
     private String reviewerEmail;
 
     private String reviewContent;

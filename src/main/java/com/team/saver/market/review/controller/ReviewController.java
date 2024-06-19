@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -64,9 +65,10 @@ public class ReviewController {
     @PostMapping("/v1/markets/{marketId}/reviews")
     @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가")
     public ResponseEntity addReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                    @RequestBody ReviewRequest request,
-                                    @PathVariable long marketId) {
-        reviewService.addReview(currentUser ,marketId , request);
+                                    @PathVariable long marketId,
+                                    @RequestPart ReviewRequest request,
+                                    @RequestPart List<MultipartFile> images) {
+        reviewService.addReview(currentUser , marketId , request , images);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
