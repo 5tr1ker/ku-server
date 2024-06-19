@@ -1,11 +1,15 @@
 package com.team.saver.common.init;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
-import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
@@ -13,16 +17,41 @@ import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
 import com.team.saver.search.popular.util.SearchWordScheduler;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+
+import static com.team.saver.common.dto.ErrorMessage.AWS_SERVER_EXCEPTION;
+
+@AllArgsConstructor
+class StoreData {
+    String storeName;
+
+    String tag;
+
+    String imageName;
+}
+
+@AllArgsConstructor
+class ReviewData {
+    String title;
+
+    String data;
+
+    String imageName;
+}
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +61,13 @@ public class InitData implements CommandLineRunner {
     private final MarketRepository marketRepository;
     private final RecommendAlgorithm recommendAlgorithm;
     private final SearchWordScheduler searchWordScheduler;
+    private final AmazonS3Client amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
+    @Value("${cloud.aws.region.static}")
+    private String region;
 
     public void settingInitData() {
         // init Data-Start
@@ -41,9 +77,36 @@ public class InitData implements CommandLineRunner {
         // init Data-End
     }
 
+    private void deleteAllObjectsInBucket() throws Exception {
+        List<S3ObjectSummary> s3objects = amazonS3Client.listObjects(bucketName).getObjectSummaries();
+
+        for(S3ObjectSummary object : s3objects) {
+            amazonS3Client.deleteObject(bucketName, object.getKey());
+        }
+    }
+
+    private String uploadFile(File file) {
+        String fileName = UUID.randomUUID().toString();
+
+        ObjectMetadata metadata= new ObjectMetadata();
+        metadata.setContentType("image/png");
+        metadata.setContentLength(file.length());
+
+        String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName ,region , fileName);
+        try{
+            amazonS3Client.putObject(bucketName, fileName, new FileInputStream(file) , metadata);
+        } catch (IOException e) {
+            throw new CustomRuntimeException(AWS_SERVER_EXCEPTION, e.getMessage());
+        }
+
+        return imageUrl;
+    }
+
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        deleteAllObjectsInBucket();
+
         Random random = new Random();
         accountRepository.deleteAll();
         marketRepository.deleteAll();
@@ -72,90 +135,109 @@ public class InitData implements CommandLineRunner {
 
         accountRepository.save(account2);
 
-        Market market = Market.builder()
-                .marketName("marketName")
-                .marketDescription("description")
-                .detailAddress("address")
-                .mainCategory(MainCategory.RESTAURANT)
-                .locationY(123.451)
-                .locationX(431.176)
-                .marketImage("https://ibb.co/0DSt7KN")
-                .partner(account)
-                .closeTime(LocalTime.now())
-                .openTime(LocalTime.now())
-                .marketPhone("01012341234")
-                .build();
+        List<StoreData> storeData = new ArrayList<>();
+        storeData.add(new StoreData("짱돌" , "치킨.안주.주류", "Rectangle 2208.png"));
+        storeData.add(new StoreData("피자나라 치킨공주" , "치킨.피자.안주.주류", "Rectangle 2269.png"));
+        storeData.add(new StoreData("태권치킨" , "치킨.안주.주류", "Rectangle 2270.png"));
+        storeData.add(new StoreData("스시마당" , "초밥.우동.냉모밀.덮밥", "Rectangle 2208-1.png"));
+        storeData.add(new StoreData("BHC치킨" , "치킨.안주.주류", "Rectangle 2412.png"));
+        storeData.add(new StoreData("장충동 왕족발보쌈" , "족발.보쌈", "Rectangle 2413.png"));
+        storeData.add(new StoreData("버거킹" , "햄버거.음료", "Rectangle 2415.png"));
+        storeData.add(new StoreData("서브웨이" , "샌드위치.음료", "Rectangle 2416.png"));
+        storeData.add(new StoreData("롯데리아" , "햄버거.음료", "Rectangle 2417.png"));
+        storeData.add(new StoreData("베스킨라빈스" , "아이스크림.음료", "Rectangle 2419.png"));
+        storeData.add(new StoreData("쭈꾸대장" , "쭈꾸미.볶음밥.계란찜.주류", "Rectangle 2420.png"));
+        storeData.add(new StoreData("KFC치킨" , "치킨.안주.주류", "Rectangle 2421.png"));
+        storeData.add(new StoreData("엽기떡볶이" , "떡볶이.튀김.마라", "Rectangle 2199.png"));
+        storeData.add(new StoreData("네네치킨" , "치킨.안주.주류", "Rectangle 2272.png"));
+        storeData.add(new StoreData("엄마집밥" , "한식.국밥.주류", "Rectangle 2423.png"));
+        storeData.add(new StoreData("왕돈까쓰" , "돈까스", "Rectangle 2426.png"));
+        storeData.add(new StoreData("이찌방라멘" , "라멘", "Rectangle 2429.png"));
+        storeData.add(new StoreData("싱싱상회" , "회.대게", "Rectangle 2432.png"));
 
-        Menu menu1 = Menu.builder().menuName("메뉴1").price(10000).build();
-        market.addMenu(menu1);
-        Menu menu2 = Menu.builder().menuName("메뉴2").price(8000).build();
-        market.addMenu(menu2);
-        Menu menu3 = Menu.builder().menuName("메뉴3").price(6000).build();
-        market.addMenu(menu3);
-        Menu menu4 = Menu.builder().menuName("메뉴4").price(18000).build();
-        market.addMenu(menu4);
-        Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
-        market.addMenu(menu5);
-        Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
-        review1.addReviewImage("https://ibb.co/0DSt7KN");
-        review1.addReviewImage("https://ibb.co/0DSt7KN");
-        review1.addReviewImage("https://ibb.co/0DSt7KN");
-
-        for (int i = 0; i < 5; i++) {
-            int randomData = random.nextInt(10) * 1000;
-
-            Coupon coupon = Coupon.builder()
-                    .couponName("couponName" + i)
-                    .couponDescription("couponDescription")
-                    .market(market)
-                    .saleRate(randomData)
-                    .build();
-
-            market.addCoupon(coupon);
-        }
-        marketRepository.save(market);
-        market.addReview(review1);
-
-        for (int i = 0; i < 30; i++) {
+        for(StoreData data : storeData) {
             double randomX = random.nextDouble(99999);
             double randomY = random.nextDouble(99999);
-            int reviewCount = random.nextInt(30);
+            File image = new File("src/main/resources/images/" + data.imageName);
 
-            Market market_20 = Market.builder()
-                    .marketName("MarketName " + (i + 1))
-                    .marketDescription("Market Description" + (i + 1))
-                    .detailAddress("세부주소 101-1003 45로")
+            Market market = Market.builder()
+                    .marketName(data.storeName)
+                    .marketDescription(data.tag)
+                    .detailAddress("충청북도 충주시 단월동")
                     .mainCategory(MainCategory.RESTAURANT)
                     .locationY(randomX)
                     .locationX(randomY)
-                    .marketImage("https://ibb.co/0DSt7KN")
+                    .marketImage(uploadFile(image))
                     .partner(account)
                     .closeTime(LocalTime.now())
                     .openTime(LocalTime.now())
                     .marketPhone("01012341234")
                     .build();
 
-            for (int j = 0; j < reviewCount; j++) {
-                int randomScore = random.nextInt(5) + 1;
+            // classification
 
-                Review reviewData = Review
+            // Menu
+            int priceRandom = random.nextInt(20);
+            Menu menu1 = Menu.builder().menuName("메뉴1").price(priceRandom * 1000).build();
+            market.addMenu(menu1);
+            Menu menu2 = Menu.builder().menuName("메뉴2").price(priceRandom * 1500).build();
+            market.addMenu(menu2);
+            Menu menu3 = Menu.builder().menuName("메뉴3").price(priceRandom * 1400).build();
+            market.addMenu(menu3);
+            Menu menu4 = Menu.builder().menuName("메뉴4").price(priceRandom * 2000).build();
+            market.addMenu(menu4);
+            Menu menu5 = Menu.builder().menuName("메뉴5").price(priceRandom * 3000).build();
+            market.addMenu(menu5);
+
+            // Coupon
+            for (int i = 0; i < 5; i++) {
+                int randomData = random.nextInt(10) * 1000;
+
+                Coupon coupon = Coupon.builder()
+                        .couponName("쿠폰 이름 " + i)
+                        .couponDescription("쿠폰 설명")
+                        .market(market)
+                        .saleRate(randomData)
+                        .build();
+
+                market.addCoupon(coupon);
+            }
+
+            // Review
+            int reviewCount = random.nextInt(12) + 1;
+            List<ReviewData> reviewDataList = new ArrayList<>();
+            reviewDataList.add(new ReviewData("너무 맛있어요!! " , "여러분 여기 진짜 맛집이에요!!!! 너모너모 맛있어요ㅠ 잎사이 쿠폰으로 어디서도 보지 못한 할인을 받아서 가격도 착해오!!" , "Rectangle 2221.png"));
+            reviewDataList.add(new ReviewData("파스타가 이쁘고 알바생이 맛있어요!! " , "하,, 파스타가 이렇게 귀여워도 되는거예요?여기서 처음 시켜봤는데 귀여운 음식만 한가득이라 고민만 오조오억번 했답니당,,," , "Rectangle 2221-1.png"));
+            reviewDataList.add(new ReviewData("이... 이게무슨! " , "긴말 필요없습니다.. 연어 환장하시는 분은 꼭 사드세요.. 젭알.....8ㅅ8" , "Rectangle 2435.png"));
+            //String reviewImage[] = new String[]{"Rectangle 2221.png" , "Rectangle 2221-1.png" , "Rectangle 2435.png"};
+
+            for (int i = 0; i < reviewCount; i++) {
+                int randomScore = random.nextInt(5) + 1;
+                int imageCount = random.nextInt(2);
+                ReviewData reviewData = reviewDataList.get(i % reviewDataList.size());
+
+                Review review = Review
                         .builder()
                         .reviewer(account)
-                        .title("title " + randomScore)
-                        .content("content " + randomScore)
+                        .title(reviewData.title)
+                        .content(reviewData.data)
                         .score(randomScore)
                         .build();
 
-                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
-                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
-                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
+                File fileImage = new File("src/main/resources/images/" + reviewData.imageName);
+                review.addReviewImage(uploadFile(fileImage));
 
-                market_20.addReview(reviewData);
+//                for(int j = 0; j < imageCount; j++) {
+//                    fileImage = new File("src/main/resources/images/" + reviewImage[j % reviewImage.length]);
+//
+//                    review.addReviewImage(uploadFile(fileImage));
+//                }
+
+                market.addReview(review);
             }
-
-            marketRepository.save(market_20);
-
-            settingInitData();
+            marketRepository.save(market);
         }
+
+        settingInitData();
     }
 }
