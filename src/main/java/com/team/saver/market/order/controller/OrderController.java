@@ -40,7 +40,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/v1/markets/orders")
+    @GetMapping("/v1/markets/orders/me")
     @Operation(summary = "[ 로그인 ] 나의 주문 목록 모두 가져오기")
     public ResponseEntity findOrderByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<OrderResponse> result = orderService.findOrderByUserEmail(currentUser);

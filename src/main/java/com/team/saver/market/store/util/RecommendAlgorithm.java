@@ -1,7 +1,6 @@
 package com.team.saver.market.store.util;
 
 import com.team.saver.market.store.dto.MarketRecommend;
-import com.team.saver.market.store.dto.MarketRecommendRequest;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,8 @@ public class RecommendAlgorithm {
     private final MarketRepository marketRepository;
     private final MarketRecommend marketRecommend;
 
-    public List<MarketResponse> recommendMarket(MarketRecommendRequest request) {
-        return marketRecommend.getMarket(request.getMarketCount());
+    public List<MarketResponse> recommendMarket(long marketCount) {
+        return marketRecommend.getMarket(marketCount);
     }
 
     @Scheduled(cron = "0 0 0 1/1 * ?")

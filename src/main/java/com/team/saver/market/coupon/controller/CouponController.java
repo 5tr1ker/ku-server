@@ -68,8 +68,8 @@ public class CouponController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/v1/markets/coupons/downloads/{downloadCouponId}")
-    @Operation(summary = "[ 로그인 ] 사용한 쿠폰으로 수정")
+    @PatchMapping("/v1/markets/coupons/{downloadCouponId}/use")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰을 사용한 쿠폰으로 수정")
     public ResponseEntity updateCouponUsage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long downloadCouponId) {
 
