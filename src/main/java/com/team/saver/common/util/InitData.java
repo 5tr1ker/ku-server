@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 @Component
@@ -95,7 +97,11 @@ public class InitData implements CommandLineRunner {
         Menu menu5 = Menu.builder().menuName("메뉴5").price(21000).build();
         market.addMenu(menu5);
         Review review1 = Review.builder().reviewer(account).title("title1").content("content1").score(1).build();
-        for(int i = 0; i < 5; i++) {
+        review1.addReviewImage("https://ibb.co/0DSt7KN");
+        review1.addReviewImage("https://ibb.co/0DSt7KN");
+        review1.addReviewImage("https://ibb.co/0DSt7KN");
+
+        for (int i = 0; i < 5; i++) {
             int randomData = random.nextInt(10) * 1000;
 
             Coupon coupon = Coupon.builder()
@@ -132,13 +138,19 @@ public class InitData implements CommandLineRunner {
             for (int j = 0; j < reviewCount; j++) {
                 int randomScore = random.nextInt(5) + 1;
 
-                market_20.addReview(Review
+                Review reviewData = Review
                         .builder()
                         .reviewer(account)
                         .title("title " + randomScore)
                         .content("content " + randomScore)
                         .score(randomScore)
-                        .build());
+                        .build();
+
+                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
+                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
+                reviewData.addReviewImage("https://ibb.co/0DSt7KN");
+
+                market_20.addReview(reviewData);
             }
 
             marketRepository.save(market_20);

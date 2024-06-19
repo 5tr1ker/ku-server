@@ -10,10 +10,13 @@ import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.s3.service.S3Service;
+import jakarta.mail.Multipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MarketRepository marketRepository;
     private final AccountService accountService;
+    private final S3Service s3Service;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
         return reviewRepository.findByMarketId(marketId, sortType.getFirstOrderSpecifier(), sortType.getSecondOrderSpecifier());
@@ -44,14 +48,23 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request) {
+    public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request , List<MultipartFile> images) {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         Account account = accountService.getProfile(currentUser);
         Review review = Review.createEntity(account, request);
 
+        addReviewImage(review, images);
         market.addReview(review);
+    }
+
+    private void addReviewImage(Review review, List<MultipartFile> images) {
+        for(MultipartFile multipartFile : images) {
+            String imageUrl = s3Service.uploadImage(multipartFile);
+
+            review.addReviewImage(imageUrl);
+        }
     }
 
     @Transactional
