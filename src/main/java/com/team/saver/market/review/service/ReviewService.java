@@ -4,6 +4,8 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.order.entity.Order;
+import com.team.saver.market.order.repository.OrderRepository;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
@@ -29,6 +31,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MarketRepository marketRepository;
     private final AccountService accountService;
+    private final OrderRepository orderRepository;
     private final S3Service s3Service;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
@@ -51,9 +54,11 @@ public class ReviewService {
     public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request , List<MultipartFile> images) {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
-
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER));
         Account account = accountService.getProfile(currentUser);
-        Review review = Review.createEntity(account, request);
+
+        Review review = Review.createEntity(account, request, order);
 
         addReviewImage(review, images);
         market.addReview(review);

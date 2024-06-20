@@ -23,8 +23,8 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/{marketId}/reviews")
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sortType) {
-        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sortType);
+    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sort) {
+        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sort);
 
         return ResponseEntity.ok(result);
     }

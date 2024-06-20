@@ -102,8 +102,8 @@ public class OrderService {
         orderRepository.delete(order);
     }
 
-    public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser) {
-        List<Order> result = orderRepository.findOrderDataByUserEmail(currentUser.getEmail());
+    public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser, boolean existReview) {
+        List<Order> result = orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
 
         return result.stream().map(OrderResponse::createEntity)
                 .collect(Collectors.toList());

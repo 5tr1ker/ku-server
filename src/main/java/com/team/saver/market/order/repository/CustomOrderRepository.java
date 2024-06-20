@@ -11,7 +11,7 @@ public interface CustomOrderRepository {
 
     Optional<Order> findByIdAndUserEmail(String email, long orderId);
 
-    List<Order> findOrderDataByUserEmail(String email);
+    List<Order> findOrderDataByUserEmail(String email, boolean existReview);
 
     Optional<OrderDetailResponse> findOrderDetailByOrderIdAndEmail(long orderId, String email);
 
