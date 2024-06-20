@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.team.saver.common.dto.ErrorMessage.EXIST_CLASSIFICATION;
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_MARKET;
+import static com.team.saver.common.dto.ErrorMessage.*;
 import static com.team.saver.market.store.entity.QMarket.market;
 
 @Service
@@ -93,5 +92,13 @@ public class MarketService {
 
     public List<MenuResponse> findMarketMenuById(long marketId) {
         return marketRepository.findMarketMenuById(marketId);
+    }
+
+    @Transactional
+    public void modifyEventMessage(DataRequest request, CurrentUser currentUser, long marketId) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
+                .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
+
+        market.setEventMessage(request.getData());
     }
 }

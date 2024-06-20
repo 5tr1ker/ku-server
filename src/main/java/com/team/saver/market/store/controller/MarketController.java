@@ -64,6 +64,16 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
+    @PatchMapping("/v1/markets/{marketId}/event-message")
+    @Operation(summary = "[ 로그인 ] Market의 이벤트 메세지 변경")
+    public ResponseEntity modifyEventMessage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                             @PathVariable long marketId,
+                                             @RequestBody DataRequest request) {
+        marketService.modifyEventMessage(request, currentUser, marketId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/v1/markets/{marketName}")
     @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketBySearch(SearchMarketRequest request,
