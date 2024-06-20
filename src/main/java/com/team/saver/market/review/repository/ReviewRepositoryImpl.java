@@ -3,9 +3,8 @@ package com.team.saver.market.review.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.market.review.dto.ReviewResponse;
-import com.team.saver.market.review.dto.ReviewStatistics;
-import com.team.saver.market.review.dto.ReviewStatisticsResponse;
+import com.team.saver.market.review.dto.*;
+import com.team.saver.market.review.entity.QReview;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
+import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
 import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.market.store.entity.QMarket.market;
 
@@ -28,7 +29,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier) {
+    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier... orderSpecifier) {
 
         return jpaQueryFactory.select(Projections.constructor(
                         ReviewResponse.class,
@@ -153,5 +154,18 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .fetchOne();
 
         return ReviewStatisticsResponse.createDto(results, averageScore);
+    }
+
+    @Override
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
+        return jpaQueryFactory
+                .selectFrom(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .transform(groupBy(review.reviewId).list(
+                        Projections.constructor(PhotoReviewResponse.class,
+                                list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
+                                , review.reviewId)
+                ));
     }
 }

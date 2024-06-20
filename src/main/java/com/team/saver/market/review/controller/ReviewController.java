@@ -84,6 +84,14 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/v1/markets/{marketId}/reviews/images")
+    @Operation(summary = "포토리뷰 가져오기")
+    public ResponseEntity findAllReviewImageByMarketId(@PathVariable long marketId) {
+        List<PhotoReviewResponse> result = reviewService.findAllReviewImageByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/v1/markets/reviews/{reviewId}")
     @Operation(summary = "[ 로그인 ] 리뷰 삭제")
     public ResponseEntity deleteReview(@PathVariable long reviewId,

@@ -13,7 +13,6 @@ import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.s3.service.S3Service;
-import jakarta.mail.Multipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,9 +49,8 @@ public class ReviewService {
         review.update(request);
     }
 
-    public List<PhotoReviewResponse> getAllReviewImageByMarketId(long marketId) {
-
-        return null;
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
+        return reviewRepository.findAllReviewImageByMarketId(marketId);
     }
 
     @Transactional

@@ -108,7 +108,7 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        deleteAllObjectsInBucket();
+        // deleteAllObjectsInBucket();
 
         Random random = new Random();
         accountRepository.deleteAll();
