@@ -50,6 +50,11 @@ public class ReviewService {
         review.update(request);
     }
 
+    public List<PhotoReviewResponse> getAllReviewImageByMarketId(long marketId) {
+
+        return null;
+    }
+
     @Transactional
     public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request , List<MultipartFile> images) {
         Market market = marketRepository.findById(marketId)
@@ -58,6 +63,9 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER));
         Account account = accountService.getProfile(currentUser);
 
+        if(reviewRepository.findByOrderAndMarket(order, market).isPresent()) {
+            throw new CustomRuntimeException(IS_EXISTS_REVIEW);
+        }
         Review review = Review.createEntity(account, request, order);
 
         addReviewImage(review, images);
