@@ -4,6 +4,7 @@ import com.team.saver.market.store.dto.MarketRecommend;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

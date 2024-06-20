@@ -9,6 +9,7 @@ import com.team.saver.market.store.util.RecommendAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,17 +58,28 @@ public class MarketController {
 
     @GetMapping("/v1/markets")
     @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ")
-    public ResponseEntity findAllMarket(SearchMarketRequest request) {
-        List<MarketResponse> result = marketService.findAllMarket(request);
+    public ResponseEntity findAllMarket(SearchMarketRequest request, Pageable pageable) {
+        List<MarketResponse> result = marketService.findAllMarket(request, pageable);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/v1/markets/{marketId}/event-message")
+    @Operation(summary = "[ 로그인 ] Market의 이벤트 메세지 변경")
+    public ResponseEntity modifyEventMessage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                             @PathVariable long marketId,
+                                             @RequestBody DataRequest request) {
+        marketService.modifyEventMessage(request, currentUser, marketId);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/v1/markets/{marketName}")
     @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketBySearch(SearchMarketRequest request,
-                                             @PathVariable String marketName) {
-        List<MarketResponse> result = marketService.findMarketByMarketName(request, marketName);
+                                             @PathVariable String marketName,
+                                             Pageable pageable) {
+        List<MarketResponse> result = marketService.findMarketByMarketName(request, marketName, pageable);
 
         return ResponseEntity.ok(result);
     }
@@ -75,8 +87,9 @@ public class MarketController {
     @GetMapping("/v1/markets/categories/{categoryData}")
     @Operation(summary = "category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketByMainCategory(SearchMarketRequest request,
-                                                   @PathVariable MainCategory categoryData) {
-        List<MarketResponse> result = marketService.findMarketByMainCategory(request, categoryData);
+                                                   @PathVariable MainCategory categoryData,
+                                                   Pageable pageable) {
+        List<MarketResponse> result = marketService.findMarketByMainCategory(request, categoryData, pageable);
 
         return ResponseEntity.ok(result);
     }
@@ -85,8 +98,9 @@ public class MarketController {
     @Operation(summary = "category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketByMainCategoryAndMarketName(SearchMarketRequest request,
                                                                 @PathVariable MainCategory categoryData,
-                                                                @PathVariable String marketName) {
-        List<MarketResponse> result = marketService.findMarketByMainCategoryAndMarketName(request, categoryData, marketName);
+                                                                @PathVariable String marketName,
+                                                                Pageable pageable) {
+        List<MarketResponse> result = marketService.findMarketByMainCategoryAndMarketName(request, categoryData, marketName, pageable);
 
         return ResponseEntity.ok(result);
     }

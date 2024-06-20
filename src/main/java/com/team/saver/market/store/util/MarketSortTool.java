@@ -6,6 +6,7 @@ import com.team.saver.market.store.dto.DistanceRequest;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,19 +24,19 @@ public class MarketSortTool {
 
     private final MarketRepository marketRepository;
 
-    public List<MarketResponse> sortMarket(SortType sort, DistanceRequest request, BooleanExpression conditional) {
+    public List<MarketResponse> sortMarket(SortType sort, DistanceRequest request, BooleanExpression conditional, Pageable pageable) {
         if (sort.equals(SortType.NEAR_DISTANCE)) {
-            List<MarketResponse> marketResponse = marketRepository.findMarketsByConditional(conditional);
+            List<MarketResponse> marketResponse = marketRepository.findMarketsByConditional(conditional, pageable);
 
             return sortByDistance(marketResponse, request);
         } else if (sort.equals(HIGHEST_DISCOUNT)) {
-            return marketRepository.findMarketsAndSort(HIGHEST_DISCOUNT.getOrderSpecifier(), conditional);
+            return marketRepository.findMarketsAndSort(HIGHEST_DISCOUNT.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(HIGHEST_REVIEW_RATED)) {
-            return marketRepository.findMarketsAndSort(HIGHEST_REVIEW_RATED.getOrderSpecifier(), conditional);
+            return marketRepository.findMarketsAndSort(HIGHEST_REVIEW_RATED.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(MANY_REVIEW_COUNT)) {
-            return marketRepository.findMarketsAndSort(MANY_REVIEW_COUNT.getOrderSpecifier(), conditional);
+            return marketRepository.findMarketsAndSort(MANY_REVIEW_COUNT.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(RECENTLY_UPLOAD)) {
-            return marketRepository.findMarketsAndSort(RECENTLY_UPLOAD.getOrderSpecifier(), conditional);
+            return marketRepository.findMarketsAndSort(RECENTLY_UPLOAD.getOrderSpecifier(), conditional, pageable);
         }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);

@@ -32,6 +32,8 @@ public class MarketDetailResponse {
 
     private String detailAddress;
 
+    private String eventMessage;
+
     private LocalTime openTime;
 
     private LocalTime closeTime;

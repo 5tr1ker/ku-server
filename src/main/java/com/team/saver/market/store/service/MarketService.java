@@ -11,6 +11,7 @@ import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.team.saver.common.dto.ErrorMessage.EXIST_CLASSIFICATION;
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_MARKET;
+import static com.team.saver.common.dto.ErrorMessage.*;
 import static com.team.saver.market.store.entity.QMarket.market;
 
 @Service
@@ -32,22 +32,22 @@ public class MarketService {
     private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
 
-    public List<MarketResponse> findAllMarket(SearchMarketRequest request) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null);
+    public List<MarketResponse> findAllMarket(SearchMarketRequest request, Pageable pageable) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null, pageable);
     }
 
-    public List<MarketResponse> findMarketByMarketName(SearchMarketRequest request, String marketName) {
+    public List<MarketResponse> findMarketByMarketName(SearchMarketRequest request, String marketName, Pageable pageable) {
         QMarket market = new QMarket("market");
 
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(marketName));
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(marketName), pageable);
     }
 
-    public List<MarketResponse> findMarketByMainCategory(SearchMarketRequest request, MainCategory category) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(category));
+    public List<MarketResponse> findMarketByMainCategory(SearchMarketRequest request, MainCategory category, Pageable pageable) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(category), pageable);
     }
 
-    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchMarketRequest request, MainCategory categoryData, String marketName) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)));
+    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchMarketRequest request, MainCategory categoryData, String marketName, Pageable pageable) {
+        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)), pageable);
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
@@ -92,5 +92,13 @@ public class MarketService {
 
     public List<MenuResponse> findMarketMenuById(long marketId) {
         return marketRepository.findMarketMenuById(marketId);
+    }
+
+    @Transactional
+    public void modifyEventMessage(DataRequest request, CurrentUser currentUser, long marketId) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
+                .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
+
+        market.setEventMessage(request.getData());
     }
 }

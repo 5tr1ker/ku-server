@@ -26,6 +26,8 @@ public class MarketResponse {
 
     private String detailAddress;
 
+    private String eventMessage;
+
     private LocalTime openTime;
 
     private LocalTime closeTime;

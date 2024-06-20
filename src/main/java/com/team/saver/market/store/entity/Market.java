@@ -5,10 +5,7 @@ import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.store.dto.MarketRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -68,6 +65,9 @@ public class Market {
 
     @Column(nullable = false)
     private String detailAddress;
+
+    @Setter
+    private String eventMessage;
 
     private LocalTime openTime;
 

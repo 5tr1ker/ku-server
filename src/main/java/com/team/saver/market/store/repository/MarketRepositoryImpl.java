@@ -10,6 +10,7 @@ import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.dto.MenuResponse;
 import com.team.saver.market.store.entity.Market;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.eventMessage,
                         market.openTime,
                         market.closeTime,
                         market.closedDays,
@@ -51,7 +53,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public List<MarketResponse> findMarketsByConditional(BooleanExpression conditional) {
+    public List<MarketResponse> findMarketsByConditional(BooleanExpression conditional, Pageable pageable) {
         return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
@@ -61,6 +63,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.eventMessage,
                         market.openTime,
                         market.closeTime,
                         market.closedDays,
@@ -73,11 +76,13 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
                 .where(conditional)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 
     @Override
-    public List<MarketResponse> findMarketsAndSort(OrderSpecifier orderSpecifier, BooleanExpression conditional) {
+    public List<MarketResponse> findMarketsAndSort(OrderSpecifier orderSpecifier, BooleanExpression conditional, Pageable pageable) {
         JPAQuery<MarketResponse> query = jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
@@ -87,6 +92,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.eventMessage,
                         market.openTime,
                         market.closeTime,
                         market.closedDays,
@@ -98,7 +104,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .orderBy(orderSpecifier);
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
         if (conditional != null) {
             query.where(conditional);
@@ -118,6 +126,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketDescription,
                         market.minimumOrderPrice,
                         market.detailAddress,
+                        market.eventMessage,
                         market.openTime,
                         market.closeTime,
                         market.closedDays,

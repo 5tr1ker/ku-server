@@ -2,6 +2,7 @@ package com.team.saver.market.store.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
