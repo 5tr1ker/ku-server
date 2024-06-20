@@ -42,6 +42,9 @@ class StoreData {
     String tag;
 
     String imageName;
+
+    String eventMessage;
+
 }
 
 @AllArgsConstructor
@@ -136,24 +139,24 @@ public class InitData implements CommandLineRunner {
         accountRepository.save(account2);
 
         List<StoreData> storeData = new ArrayList<>();
-        storeData.add(new StoreData("짱돌" , "치킨.안주.주류", "Rectangle 2208.png"));
-        storeData.add(new StoreData("피자나라 치킨공주" , "치킨.피자.안주.주류", "Rectangle 2269.png"));
-        storeData.add(new StoreData("태권치킨" , "치킨.안주.주류", "Rectangle 2270.png"));
-        storeData.add(new StoreData("스시마당" , "초밥.우동.냉모밀.덮밥", "Rectangle 2208-1.png"));
-        storeData.add(new StoreData("BHC치킨" , "치킨.안주.주류", "Rectangle 2412.png"));
-        storeData.add(new StoreData("장충동 왕족발보쌈" , "족발.보쌈", "Rectangle 2413.png"));
-        storeData.add(new StoreData("버거킹" , "햄버거.음료", "Rectangle 2415.png"));
-        storeData.add(new StoreData("서브웨이" , "샌드위치.음료", "Rectangle 2416.png"));
-        storeData.add(new StoreData("롯데리아" , "햄버거.음료", "Rectangle 2417.png"));
-        storeData.add(new StoreData("베스킨라빈스" , "아이스크림.음료", "Rectangle 2419.png"));
-        storeData.add(new StoreData("쭈꾸대장" , "쭈꾸미.볶음밥.계란찜.주류", "Rectangle 2420.png"));
-        storeData.add(new StoreData("KFC치킨" , "치킨.안주.주류", "Rectangle 2421.png"));
-        storeData.add(new StoreData("엽기떡볶이" , "떡볶이.튀김.마라", "Rectangle 2199.png"));
-        storeData.add(new StoreData("네네치킨" , "치킨.안주.주류", "Rectangle 2272.png"));
-        storeData.add(new StoreData("엄마집밥" , "한식.국밥.주류", "Rectangle 2423.png"));
-        storeData.add(new StoreData("왕돈까쓰" , "돈까스", "Rectangle 2426.png"));
-        storeData.add(new StoreData("이찌방라멘" , "라멘", "Rectangle 2429.png"));
-        storeData.add(new StoreData("싱싱상회" , "회.대게", "Rectangle 2432.png"));
+        storeData.add(new StoreData("짱돌" , "치킨.안주.주류", "Rectangle 2208.png" , "첫 구매시 3,000원 \n"));
+        storeData.add(new StoreData("피자나라 치킨공주" , "치킨.피자.안주.주류", "Rectangle 2269.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중!"));
+        storeData.add(new StoreData("태권치킨" , "치킨.안주.주류", "Rectangle 2270.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중!"));
+        storeData.add(new StoreData("스시마당" , "초밥.우동.냉모밀.덮밥", "Rectangle 2208-1.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
+        storeData.add(new StoreData("BHC치킨" , "치킨.안주.주류", "Rectangle 2412.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
+        storeData.add(new StoreData("장충동 왕족발보쌈" , "족발.보쌈", "Rectangle 2413.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
+        storeData.add(new StoreData("버거킹" , "햄버거.음료", "Rectangle 2415.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
+        storeData.add(new StoreData("서브웨이" , "샌드위치.음료", "Rectangle 2416.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중!"));
+        storeData.add(new StoreData("롯데리아" , "햄버거.음료", "Rectangle 2417.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
+        storeData.add(new StoreData("베스킨라빈스" , "아이스크림.음료", "Rectangle 2419.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오! \n 그럼 맛없게 먹겠냐"));
+        storeData.add(new StoreData("쭈꾸대장" , "쭈꾸미.볶음밥.계란찜.주류", "Rectangle 2420.png" , "잎 사이가 정말 좋아요 \n 정말 맛있어요! \n 사장님이 정말 맛있습니다."));
+        storeData.add(new StoreData("KFC치킨" , "치킨.안주.주류", "Rectangle 2421.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
+        storeData.add(new StoreData("엽기떡볶이" , "떡볶이.튀김.마라", "Rectangle 2199.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
+        storeData.add(new StoreData("네네치킨" , "치킨.안주.주류", "Rectangle 2272.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
+        storeData.add(new StoreData("엄마집밥" , "한식.국밥.주류", "Rectangle 2423.png" , "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니"));
+        storeData.add(new StoreData("왕돈까쓰" , "돈까스", "Rectangle 2426.png" , "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니 \n 라항항항항항항하"));
+        storeData.add(new StoreData("이찌방라멘" , "라멘", "Rectangle 2429.png" , "잎 사이가 정말 좋아요"));
+        storeData.add(new StoreData("싱싱상회" , "회.대게", "Rectangle 2432.png" , "하하"));
 
         for(StoreData data : storeData) {
             double randomX = random.nextDouble(99999);
@@ -167,6 +170,7 @@ public class InitData implements CommandLineRunner {
                     .mainCategory(MainCategory.RESTAURANT)
                     .locationY(randomX)
                     .locationX(randomY)
+                    .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
                     .closeTime(LocalTime.now())
