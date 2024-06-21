@@ -50,11 +50,7 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_UPDATE_WRITER));
 
         if(images != null) {
-            for(MultipartFile multipartFile : images) {
-                String imageUrl = s3Service.uploadImage(multipartFile);
-
-                review.addReviewImage(imageUrl);
-            }
+            addReviewImage(review, images);
         }
         reviewImageRepository.deleteById(request.getRemoveImageId());
 
