@@ -223,7 +223,6 @@ public class InitData implements CommandLineRunner {
                 Review review = Review
                         .builder()
                         .reviewer(account)
-                        .title(reviewData.title)
                         .content(reviewData.data)
                         .score(randomScore)
                         .build();

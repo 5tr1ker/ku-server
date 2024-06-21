@@ -77,9 +77,10 @@ public class ReviewController {
     @Operation(summary = "[ 로그인 ] 리뷰 수정")
     public ResponseEntity updateReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long reviewId,
-                                       @RequestBody ReviewUpdateRequest request) {
+                                       @RequestPart ReviewUpdateRequest request,
+                                       @RequestPart(required = false) List<MultipartFile> images) {
 
-        reviewService.updateReview(currentUser, reviewId, request);
+        reviewService.updateReview(currentUser, reviewId, request, images);
 
         return ResponseEntity.ok().build();
     }

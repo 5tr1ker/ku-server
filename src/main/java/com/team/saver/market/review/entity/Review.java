@@ -33,9 +33,6 @@ public class Review {
     private LocalDateTime writeTime;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "review")
@@ -51,6 +48,9 @@ public class Review {
     private int score;
 
     @Builder.Default
+    private boolean isDelete = false;
+
+    @Builder.Default
     @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "review")
     private List<ReviewRecommender> recommender = new ArrayList<>();
 
@@ -61,7 +61,6 @@ public class Review {
     public static Review createEntity(Account account, ReviewRequest request, Order order) {
         Review review = Review.builder()
                 .reviewer(account)
-                .title(request.getTitle())
                 .order(order)
                 .content(request.getContent())
                 .score(request.getScore())
@@ -84,5 +83,9 @@ public class Review {
     public void update(ReviewUpdateRequest request) {
         this.content = request.getContent();
         this.score = request.getScore();
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 }
