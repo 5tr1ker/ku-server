@@ -7,6 +7,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.attraction.entity.Attraction;
+import com.team.saver.attraction.entity.AttractionTag;
+import com.team.saver.attraction.entity.AttractionTagRelationShip;
+import com.team.saver.attraction.repository.AttractionRepository;
+import com.team.saver.attraction.repository.AttractionTagRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
@@ -56,6 +61,15 @@ class ReviewData {
     String imageName;
 }
 
+@AllArgsConstructor
+class AttractionData {
+    String description;
+
+    String tags[];
+
+    String imageName;
+}
+
 @Component
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
@@ -64,6 +78,8 @@ public class InitData implements CommandLineRunner {
     private final MarketRepository marketRepository;
     private final RecommendAlgorithm recommendAlgorithm;
     private final SearchWordScheduler searchWordScheduler;
+    private final AttractionRepository attractionRepository;
+    private final AttractionTagRepository attractionTagRepository;
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -83,7 +99,7 @@ public class InitData implements CommandLineRunner {
     private void deleteAllObjectsInBucket() throws Exception {
         List<S3ObjectSummary> s3objects = amazonS3Client.listObjects(bucketName).getObjectSummaries();
 
-        for(S3ObjectSummary object : s3objects) {
+        for (S3ObjectSummary object : s3objects) {
             amazonS3Client.deleteObject(bucketName, object.getKey());
         }
     }
@@ -91,13 +107,13 @@ public class InitData implements CommandLineRunner {
     private String uploadFile(File file) {
         String fileName = UUID.randomUUID().toString();
 
-        ObjectMetadata metadata= new ObjectMetadata();
+        ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("image/png");
         metadata.setContentLength(file.length());
 
-        String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName ,region , fileName);
-        try{
-            amazonS3Client.putObject(bucketName, fileName, new FileInputStream(file) , metadata);
+        String imageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        try {
+            amazonS3Client.putObject(bucketName, fileName, new FileInputStream(file), metadata);
         } catch (IOException e) {
             throw new CustomRuntimeException(AWS_SERVER_EXCEPTION, e.getMessage());
         }
@@ -108,7 +124,7 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // deleteAllObjectsInBucket();
+        deleteAllObjectsInBucket();
 
         Random random = new Random();
         accountRepository.deleteAll();
@@ -139,26 +155,26 @@ public class InitData implements CommandLineRunner {
         accountRepository.save(account2);
 
         List<StoreData> storeData = new ArrayList<>();
-        storeData.add(new StoreData("짱돌" , "치킨.안주.주류", "Rectangle 2208.png" , "첫 구매시 3,000원 \n"));
-        storeData.add(new StoreData("피자나라 치킨공주" , "치킨.피자.안주.주류", "Rectangle 2269.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중!"));
-        storeData.add(new StoreData("태권치킨" , "치킨.안주.주류", "Rectangle 2270.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중!"));
-        storeData.add(new StoreData("스시마당" , "초밥.우동.냉모밀.덮밥", "Rectangle 2208-1.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
-        storeData.add(new StoreData("BHC치킨" , "치킨.안주.주류", "Rectangle 2412.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
-        storeData.add(new StoreData("장충동 왕족발보쌈" , "족발.보쌈", "Rectangle 2413.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
-        storeData.add(new StoreData("버거킹" , "햄버거.음료", "Rectangle 2415.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
-        storeData.add(new StoreData("서브웨이" , "샌드위치.음료", "Rectangle 2416.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중!"));
-        storeData.add(new StoreData("롯데리아" , "햄버거.음료", "Rectangle 2417.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
-        storeData.add(new StoreData("베스킨라빈스" , "아이스크림.음료", "Rectangle 2419.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오! \n 그럼 맛없게 먹겠냐"));
-        storeData.add(new StoreData("쭈꾸대장" , "쭈꾸미.볶음밥.계란찜.주류", "Rectangle 2420.png" , "잎 사이가 정말 좋아요 \n 정말 맛있어요! \n 사장님이 정말 맛있습니다."));
-        storeData.add(new StoreData("KFC치킨" , "치킨.안주.주류", "Rectangle 2421.png" , "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
-        storeData.add(new StoreData("엽기떡볶이" , "떡볶이.튀김.마라", "Rectangle 2199.png" , "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
-        storeData.add(new StoreData("네네치킨" , "치킨.안주.주류", "Rectangle 2272.png" , "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
-        storeData.add(new StoreData("엄마집밥" , "한식.국밥.주류", "Rectangle 2423.png" , "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니"));
-        storeData.add(new StoreData("왕돈까쓰" , "돈까스", "Rectangle 2426.png" , "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니 \n 라항항항항항항하"));
-        storeData.add(new StoreData("이찌방라멘" , "라멘", "Rectangle 2429.png" , "잎 사이가 정말 좋아요"));
-        storeData.add(new StoreData("싱싱상회" , "회.대게", "Rectangle 2432.png" , "하하"));
+        storeData.add(new StoreData("짱돌", "치킨.안주.주류", "Rectangle 2208.png", "첫 구매시 3,000원 \n"));
+        storeData.add(new StoreData("피자나라 치킨공주", "치킨.피자.안주.주류", "Rectangle 2269.png", "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중!"));
+        storeData.add(new StoreData("태권치킨", "치킨.안주.주류", "Rectangle 2270.png", "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중!"));
+        storeData.add(new StoreData("스시마당", "초밥.우동.냉모밀.덮밥", "Rectangle 2208-1.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
+        storeData.add(new StoreData("BHC치킨", "치킨.안주.주류", "Rectangle 2412.png", "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
+        storeData.add(new StoreData("장충동 왕족발보쌈", "족발.보쌈", "Rectangle 2413.png", "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
+        storeData.add(new StoreData("버거킹", "햄버거.음료", "Rectangle 2415.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
+        storeData.add(new StoreData("서브웨이", "샌드위치.음료", "Rectangle 2416.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중!"));
+        storeData.add(new StoreData("롯데리아", "햄버거.음료", "Rectangle 2417.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오!"));
+        storeData.add(new StoreData("베스킨라빈스", "아이스크림.음료", "Rectangle 2419.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 맛있게 드세오! \n 그럼 맛없게 먹겠냐"));
+        storeData.add(new StoreData("쭈꾸대장", "쭈꾸미.볶음밥.계란찜.주류", "Rectangle 2420.png", "잎 사이가 정말 좋아요 \n 정말 맛있어요! \n 사장님이 정말 맛있습니다."));
+        storeData.add(new StoreData("KFC치킨", "치킨.안주.주류", "Rectangle 2421.png", "첫 구매시 3,000원 \n" + "할인 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다."));
+        storeData.add(new StoreData("엽기떡볶이", "떡볶이.튀김.마라", "Rectangle 2199.png", "리뷰 작성 시 음료 1개\n" + "무료 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고"));
+        storeData.add(new StoreData("네네치킨", "치킨.안주.주류", "Rectangle 2272.png", "선착순 100명 10% 할인\n" + "쿠폰 증정 이벤트 진행 중! \n 대충 메세지 임을 알려줍니다. \n 이건 말도 안된다고 \n 아잇 정말 맛업ㅈㅅ어 죽겠네 "));
+        storeData.add(new StoreData("엄마집밥", "한식.국밥.주류", "Rectangle 2423.png", "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니"));
+        storeData.add(new StoreData("왕돈까쓰", "돈까스", "Rectangle 2426.png", "\"선착순 100명 10% 할인\\n\" + \"쿠폰 증정 이벤트 진행 중! \\n 대충 메세지 임을 알려줍니다. \\n 이건 말도 안된다고 \\n 아잇 정말 맛업ㅈㅅ어 죽겠네 \n 어그로 끌지마라 임니니니니 \n 라항항항항항항하"));
+        storeData.add(new StoreData("이찌방라멘", "라멘", "Rectangle 2429.png", "잎 사이가 정말 좋아요"));
+        storeData.add(new StoreData("싱싱상회", "회.대게", "Rectangle 2432.png", "하하"));
 
-        for(StoreData data : storeData) {
+        for (StoreData data : storeData) {
             double randomX = random.nextDouble(99999);
             double randomY = random.nextDouble(99999);
             File image = new File("src/main/resources/images/" + data.imageName);
@@ -210,9 +226,9 @@ public class InitData implements CommandLineRunner {
             // Review
             int reviewCount = random.nextInt(12) + 1;
             List<ReviewData> reviewDataList = new ArrayList<>();
-            reviewDataList.add(new ReviewData("너무 맛있어요!! " , "여러분 여기 진짜 맛집이에요!!!! 너모너모 맛있어요ㅠ 잎사이 쿠폰으로 어디서도 보지 못한 할인을 받아서 가격도 착해오!!" , "Rectangle 2221.png"));
-            reviewDataList.add(new ReviewData("파스타가 이쁘고 알바생이 맛있어요!! " , "하,, 파스타가 이렇게 귀여워도 되는거예요?여기서 처음 시켜봤는데 귀여운 음식만 한가득이라 고민만 오조오억번 했답니당,,," , "Rectangle 2221-1.png"));
-            reviewDataList.add(new ReviewData("이... 이게무슨! " , "긴말 필요없습니다.. 연어 환장하시는 분은 꼭 사드세요.. 젭알.....8ㅅ8" , "Rectangle 2435.png"));
+            reviewDataList.add(new ReviewData("너무 맛있어요!! ", "여러분 여기 진짜 맛집이에요!!!! 너모너모 맛있어요ㅠ 잎사이 쿠폰으로 어디서도 보지 못한 할인을 받아서 가격도 착해오!!", "Rectangle 2221.png"));
+            reviewDataList.add(new ReviewData("파스타가 이쁘고 알바생이 맛있어요!! ", "하,, 파스타가 이렇게 귀여워도 되는거예요?여기서 처음 시켜봤는데 귀여운 음식만 한가득이라 고민만 오조오억번 했답니당,,,", "Rectangle 2221-1.png"));
+            reviewDataList.add(new ReviewData("이... 이게무슨! ", "긴말 필요없습니다.. 연어 환장하시는 분은 꼭 사드세요.. 젭알.....8ㅅ8", "Rectangle 2435.png"));
             //String reviewImage[] = new String[]{"Rectangle 2221.png" , "Rectangle 2221-1.png" , "Rectangle 2435.png"};
 
             for (int i = 0; i < reviewCount; i++) {
@@ -239,6 +255,37 @@ public class InitData implements CommandLineRunner {
                 market.addReview(review);
             }
             marketRepository.save(market);
+        }
+
+        // 관광 명소
+        List<AttractionData> attractionData = new ArrayList<>();
+        attractionData.add(new AttractionData("스카이캡슐 반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        attractionData.add(new AttractionData("튤립정원 축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        attractionData.add(new AttractionData("양떼목장 체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        attractionData.add(new AttractionData("데이트하기 좋은 호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+
+        for (AttractionData data : attractionData) {
+            File fileImage = new File("src/main/resources/images/" + data.imageName);
+            String imageUrl = uploadFile(fileImage);
+
+            Attraction attraction = Attraction.builder()
+                    .description(data.description)
+                    .imageUrl(imageUrl)
+                    .build();
+
+            for (String tag : data.tags) {
+                AttractionTag attractionTag = AttractionTag.builder()
+                        .tagContent(tag)
+                        .build();
+                attractionTagRepository.save(attractionTag);
+
+                attraction.addTag(AttractionTagRelationShip.builder()
+                        .attractionTag(attractionTag)
+                        .attraction(attraction)
+                        .build());
+            }
+
+            attractionRepository.save(attraction);
         }
 
         settingInitData();

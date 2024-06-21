@@ -22,8 +22,8 @@ public class AttractionController {
     @PostMapping("/v1/attractions")
     @Operation(summary = "관광 시설 등록")
     public ResponseEntity addAttraction(@RequestPart NewAttractionRequest request,
-                                        @RequestPart MultipartFile imageFile) {
-        attractionService.addAttraction(request, imageFile);
+                                        @RequestPart MultipartFile image) {
+        attractionService.addAttraction(request, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
