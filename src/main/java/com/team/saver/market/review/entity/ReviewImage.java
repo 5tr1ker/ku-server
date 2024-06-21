@@ -21,6 +21,9 @@ public class ReviewImage {
 
     private String imageUrl;
 
+    @Builder.Default
+    private boolean isDelete = false;
+
     public static ReviewImage createEntity(String imageUrl) {
         return ReviewImage.builder()
                 .imageUrl(imageUrl)

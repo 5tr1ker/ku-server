@@ -1,5 +1,6 @@
 package com.team.saver.common.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.common.util.CurrentUserArgumentResolver;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -50,7 +51,7 @@ public class UtilConfig implements WebMvcConfigurer {
 
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
-        return new JPAQueryFactory(entityManager);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 
 }

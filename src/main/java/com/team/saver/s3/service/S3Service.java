@@ -76,4 +76,10 @@ public class S3Service {
         }
     }
 
+    private String getObjectNameByUri(String imageUrl) {
+        String url[] = imageUrl.split("/");
+
+        return url[url.length - 1];
+    }
+
 }

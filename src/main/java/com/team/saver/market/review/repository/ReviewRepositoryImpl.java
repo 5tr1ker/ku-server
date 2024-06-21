@@ -1,11 +1,10 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.market.review.dto.ReviewResponse;
-import com.team.saver.market.review.dto.ReviewStatistics;
-import com.team.saver.market.review.dto.ReviewStatisticsResponse;
+import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
+import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
 import static com.team.saver.market.review.entity.QReviewRecommender.reviewRecommender;
 import static com.team.saver.market.store.entity.QMarket.market;
 
@@ -28,28 +29,31 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier ...orderSpecifier) {
-
-        return jpaQueryFactory.select(Projections.constructor(
-                        ReviewResponse.class,
-                        review.reviewId,
-                        account.accountId,
-                        reviewImage.imageUrl,
-                        account.email,
-                        review.content,
-                        review.writeTime,
-                        market.marketId,
-                        market.marketName,
-                        review.score,
-                        reviewRecommender.count()
-                )).from(review)
+    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier... orderSpecifier) {
+        return jpaQueryFactory
+                .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
-                .leftJoin(review.recommender, reviewRecommender)
-                .leftJoin(review.reviewImage, reviewImage)
-                .groupBy(review)
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
                 .orderBy(orderSpecifier)
-                .fetch();
+                .where(review.isDelete.eq(false))
+                .transform(groupBy(review.reviewId)
+                        .list(Projections.constructor(
+                                ReviewResponse.class,
+                                review.reviewId,
+                                account.accountId,
+                                account.email,
+                                review.content,
+                                review.writeTime,
+                                market.marketId,
+                                market.marketName,
+                                review.score,
+                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                list(Projections.constructor(ReviewImageResponse.class,
+                                        reviewImage.reviewImageId,
+                                        reviewImage.imageUrl))
+                        ))
+                );
     }
 
     @Override
@@ -57,7 +61,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
         Review result = jpaQueryFactory.select(review)
                 .from(review)
                 .innerJoin(review.reviewer, account).on(account.email.eq(reviewerEmail))
-                .where(review.reviewId.eq(reviewId))
+                .where(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -65,25 +69,29 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
 
     @Override
     public List<ReviewResponse> findByUserEmail(String email) {
-        return jpaQueryFactory.select(Projections.constructor(
-                        ReviewResponse.class,
-                        review.reviewId,
-                        account.accountId,
-                        reviewImage.imageUrl,
-                        account.email,
-                        review.content,
-                        review.writeTime,
-                        market.marketId,
-                        market.marketName,
-                        review.score,
-                        reviewRecommender.count()
-                )).from(review)
+        return jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
-                .leftJoin(review.recommender, reviewRecommender)
-                .leftJoin(review.reviewImage, reviewImage)
-                .groupBy(review)
-                .fetch();
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .orderBy(review.reviewId.desc())
+                .where(review.isDelete.eq(false))
+                .transform(groupBy(review.reviewId)
+                        .list(Projections.constructor(
+                                ReviewResponse.class,
+                                review.reviewId,
+                                account.accountId,
+                                account.email,
+                                review.content,
+                                review.writeTime,
+                                market.marketId,
+                                market.marketName,
+                                review.score,
+                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                list(Projections.constructor(ReviewImageResponse.class,
+                                        reviewImage.reviewImageId,
+                                        reviewImage.imageUrl))
+                        ))
+                );
     }
 
     @Override
@@ -91,7 +99,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
         ReviewRecommender result = jpaQueryFactory.select(reviewRecommender)
                 .from(reviewRecommender)
                 .innerJoin(reviewRecommender.account, account).on(account.email.eq(email))
-                .innerJoin(reviewRecommender.review, review).on(review.reviewId.eq(reviewId))
+                .innerJoin(reviewRecommender.review, review).on(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -99,28 +107,34 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
 
     @Override
     public List<ReviewResponse> findBestReview(Pageable pageable) {
-        return jpaQueryFactory.select(Projections.constructor(
-                        ReviewResponse.class,
-                        review.reviewId,
-                        account.accountId,
-                        reviewImage.imageUrl,
-                        account.email,
-                        review.content,
-                        review.writeTime,
-                        market.marketId,
-                        market.marketName,
-                        review.score,
-                        reviewRecommender.count()
-                )).from(review)
+        return jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
-                .leftJoin(review.recommender, reviewRecommender)
-                .leftJoin(review.reviewImage, reviewImage)
-                .groupBy(review)
-                .orderBy(reviewRecommender.count().desc(), review.content.length().desc())
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .orderBy(new OrderSpecifier<>(Order.DESC, jpaQueryFactory.select(reviewRecommender.count())
+                                .from(reviewRecommender)
+                                .where(reviewRecommender.review.eq(review))),
+                        review.content.length().desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .where(review.isDelete.eq(false))
+                .transform(groupBy(review.reviewId)
+                        .list(Projections.constructor(
+                                ReviewResponse.class,
+                                review.reviewId,
+                                account.accountId,
+                                account.email,
+                                review.content,
+                                review.writeTime,
+                                market.marketId,
+                                market.marketName,
+                                review.score,
+                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                list(Projections.constructor(ReviewImageResponse.class,
+                                        reviewImage.reviewImageId,
+                                        reviewImage.imageUrl))
+                        ))
+                );
     }
 
     @Override
@@ -128,6 +142,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
         return jpaQueryFactory.select(review.count())
                 .from(review)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .where(review.isDelete.eq(false))
                 .fetchOne();
     }
 
@@ -140,7 +155,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                     .select(review.count())
                     .from(review)
                     .innerJoin(review.market, market).on(market.marketId.eq(marketId))
-                    .where(review.score.eq(num))
+                    .where(review.score.eq(num).and(review.isDelete.eq(false)))
                     .fetchOne();
 
             return new ReviewStatistics(num, count);
@@ -150,8 +165,23 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .select(review.score.avg())
                 .from(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .where(review.isDelete.eq(false))
                 .fetchOne();
 
         return ReviewStatisticsResponse.createDto(results, averageScore);
+    }
+
+    @Override
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
+        return jpaQueryFactory
+                .selectFrom(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .where(review.isDelete.eq(false))
+                .transform(groupBy(review.reviewId).list(
+                        Projections.constructor(PhotoReviewResponse.class,
+                                list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
+                                , review.reviewId)
+                ));
     }
 }

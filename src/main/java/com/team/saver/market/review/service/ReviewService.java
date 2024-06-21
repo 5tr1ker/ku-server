@@ -4,14 +4,17 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.order.entity.Order;
+import com.team.saver.market.order.repository.OrderRepository;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.review.entity.ReviewImage;
 import com.team.saver.market.review.entity.ReviewRecommender;
+import com.team.saver.market.review.repository.ReviewImageRepository;
 import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.s3.service.S3Service;
-import jakarta.mail.Multipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MarketRepository marketRepository;
     private final AccountService accountService;
+    private final OrderRepository orderRepository;
+    private final ReviewImageRepository reviewImageRepository;
     private final S3Service s3Service;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
@@ -40,20 +45,34 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(CurrentUser currentUser, long reviewId, ReviewUpdateRequest request) {
+    public void updateReview(CurrentUser currentUser, long reviewId, ReviewUpdateRequest request, List<MultipartFile> images) {
         Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_UPDATE_WRITER));
 
+        if(images != null) {
+            addReviewImage(review, images);
+        }
+        reviewImageRepository.deleteById(request.getRemoveImageId());
+
         review.update(request);
+    }
+
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
+        return reviewRepository.findAllReviewImageByMarketId(marketId);
     }
 
     @Transactional
     public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request , List<MultipartFile> images) {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
-
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER));
         Account account = accountService.getProfile(currentUser);
-        Review review = Review.createEntity(account, request);
+
+        if(reviewRepository.findByOrderAndMarket(order, market).isPresent()) {
+            throw new CustomRuntimeException(IS_EXISTS_REVIEW);
+        }
+        Review review = Review.createEntity(account, request, order);
 
         addReviewImage(review, images);
         market.addReview(review);
@@ -72,7 +91,7 @@ public class ReviewService {
         Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
-        reviewRepository.delete(review);
+        review.delete();
     }
 
     @Transactional

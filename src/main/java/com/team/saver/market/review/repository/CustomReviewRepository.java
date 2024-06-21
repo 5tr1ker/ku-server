@@ -1,8 +1,8 @@
 package com.team.saver.market.review.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.team.saver.market.review.dto.PhotoReviewResponse;
 import com.team.saver.market.review.dto.ReviewResponse;
-import com.team.saver.market.review.dto.ReviewStatistics;
 import com.team.saver.market.review.dto.ReviewStatisticsResponse;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
@@ -26,5 +26,7 @@ public interface CustomReviewRepository {
     long countReviewByEmail(String email);
 
     ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId);
+
+    List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId);
 
 }

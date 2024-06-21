@@ -1,6 +1,7 @@
 package com.team.saver.market.review.entity;
 
 import com.team.saver.account.entity.Account;
+import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.review.dto.ReviewRequest;
 import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.store.entity.Market;
@@ -32,10 +33,11 @@ public class Review {
     private LocalDateTime writeTime;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String content;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "review")
+    @JoinColumn
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
@@ -46,6 +48,9 @@ public class Review {
     private int score;
 
     @Builder.Default
+    private boolean isDelete = false;
+
+    @Builder.Default
     @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "review")
     private List<ReviewRecommender> recommender = new ArrayList<>();
 
@@ -53,13 +58,17 @@ public class Review {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true)
     private List<ReviewImage> reviewImage = new ArrayList<>();
 
-    public static Review createEntity(Account account, ReviewRequest request) {
-        return Review.builder()
+    public static Review createEntity(Account account, ReviewRequest request, Order order) {
+        Review review = Review.builder()
                 .reviewer(account)
-                .title(request.getTitle())
+                .order(order)
                 .content(request.getContent())
                 .score(request.getScore())
                 .build();
+
+        order.setReview(review);
+
+        return review;
     }
 
     public void addReviewImage(String imageUrl) {
@@ -74,5 +83,9 @@ public class Review {
     public void update(ReviewUpdateRequest request) {
         this.content = request.getContent();
         this.score = request.getScore();
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 }

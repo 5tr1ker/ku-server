@@ -23,8 +23,8 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/{marketId}/reviews")
     @Operation(summary = "마켓에 등록된 리뷰 가져오기")
-    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sortType) {
-        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sortType);
+    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sort) {
+        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sort);
 
         return ResponseEntity.ok(result);
     }
@@ -77,11 +77,20 @@ public class ReviewController {
     @Operation(summary = "[ 로그인 ] 리뷰 수정")
     public ResponseEntity updateReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long reviewId,
-                                       @RequestBody ReviewUpdateRequest request) {
+                                       @RequestPart ReviewUpdateRequest request,
+                                       @RequestPart(required = false) List<MultipartFile> images) {
 
-        reviewService.updateReview(currentUser, reviewId, request);
+        reviewService.updateReview(currentUser, reviewId, request, images);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/v1/markets/{marketId}/reviews/images")
+    @Operation(summary = "포토리뷰 가져오기")
+    public ResponseEntity findAllReviewImageByMarketId(@PathVariable long marketId) {
+        List<PhotoReviewResponse> result = reviewService.findAllReviewImageByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/v1/markets/reviews/{reviewId}")

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -13,8 +14,6 @@ public class ReviewResponse {
     private long reviewId;
 
     private long reviewerId;
-
-    private String reviewImage;
 
     private String reviewerEmail;
 
@@ -30,5 +29,7 @@ public class ReviewResponse {
     private int score;
 
     private long recommendCount;
+
+    private List<ReviewImageResponse> images;
 
 }
