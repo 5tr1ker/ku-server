@@ -1,5 +1,7 @@
 package com.team.saver.event.entity;
 
+import com.team.saver.event.dto.EventCreateRequest;
+import com.team.saver.event.dto.EventUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +37,29 @@ public class Event {
     private LocalDate eventEndDate;
 
     @Column(nullable = false)
-    private boolean isEarlyTermination;
+    @Builder.Default
+    private boolean isDelete = false;
+
+    public void delete() {
+        isDelete = true;
+    }
+
+    public static Event createEntity(EventCreateRequest request, String imageUrl) {
+        return Event.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .imageUrl(imageUrl)
+                .eventStartDate(request.getEventStartDate())
+                .eventEndDate(request.getEventEndDate())
+                .build();
+    }
+
+    public void update(EventUpdateRequest request, String imageUrl) {
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.imageUrl = imageUrl;
+        this.eventStartDate = request.getEventStartDate();
+        this.eventEndDate = request.getEventEndDate();
+    }
 
 }

@@ -66,8 +66,10 @@ public class S3Service {
         return imageUrl;
     }
 
-    public void deleteImage(String fileName) {
-        amazonS3Client.deleteObject(bucket, fileName);
+    public void deleteImage(String imageUrl) {
+        String objectName = getObjectNameByUri(imageUrl);
+
+         amazonS3Client.deleteObject(bucket, objectName);
     }
 
     public void deleteMultipleImage(List<String> fileNameList) {
