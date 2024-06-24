@@ -25,8 +25,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
                                 event.title,
                                 event.imageUrl,
                                 event.eventStartDate,
-                                event.eventEndDate,
-                                event.isEarlyTermination
+                                event.eventEndDate
                         )
                 ).from(event)
                 .where(event.isDelete.eq(false))
@@ -44,8 +43,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
                                 event.description,
                                 event.imageUrl,
                                 event.eventStartDate,
-                                event.eventEndDate,
-                                event.isEarlyTermination
+                                event.eventEndDate
                         )
                 ).from(event)
                 .where(event.eventId.eq(eventId).and(event.isDelete.eq(false)))

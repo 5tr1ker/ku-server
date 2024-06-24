@@ -24,6 +24,4 @@ public class EventDetailResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDate eventEndDate;
 
-    private boolean isEarlyTermination;
-
 }
