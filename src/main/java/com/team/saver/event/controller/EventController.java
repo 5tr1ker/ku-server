@@ -50,7 +50,7 @@ public class EventController {
     @Operation(summary = "이벤트 데이터 수정")
     public ResponseEntity updateEvent(@PathVariable long eventId,
                                       @RequestPart EventUpdateRequest request,
-                                      @RequestPart MultipartFile image) {
+                                      @RequestPart(required = false) MultipartFile image) {
         eventService.updateEvent(eventId, request, image);
 
         return ResponseEntity.status(HttpStatus.OK).build();

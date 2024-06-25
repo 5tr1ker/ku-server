@@ -10,6 +10,7 @@ import com.team.saver.event.repository.EventRepository;
 import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_EVENT;
 
+@Service
 @RequiredArgsConstructor
 public class EventService {
 
@@ -28,7 +30,8 @@ public class EventService {
     }
 
     public EventDetailResponse findEventDetail(long eventId) {
-        return eventRepository.findEventDetail(eventId);
+        return eventRepository.findEventDetail(eventId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_EVENT));
     }
 
     @Transactional

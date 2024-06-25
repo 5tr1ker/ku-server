@@ -7,8 +7,6 @@ import java.time.LocalDate;
 @Getter
 public class EventCreateRequest {
 
-    private long eventId;
-
     private String title;
 
     private String description;

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.saver.event.entity.QEvent.event;
 
@@ -35,8 +36,8 @@ public class EventRepositoryImpl implements CustomEventRepository {
     }
 
     @Override
-    public EventDetailResponse findEventDetail(long eventId) {
-        return jpaQueryFactory.select(
+    public Optional<EventDetailResponse> findEventDetail(long eventId) {
+        EventDetailResponse result = jpaQueryFactory.select(
                         Projections.constructor(EventDetailResponse.class,
                                 event.eventId,
                                 event.title,
@@ -48,5 +49,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
                 ).from(event)
                 .where(event.eventId.eq(eventId).and(event.isDelete.eq(false)))
                 .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }
