@@ -2,7 +2,7 @@ package com.team.saver.partner.response.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.partner.response.dto.NewPartnerResponse;
+import com.team.saver.partner.response.dto.PartnerResponseCreateRequest;
 import com.team.saver.partner.response.service.PartnerResponseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +20,7 @@ public class PartnerResponseController {
     @PostMapping("/v1/partners/requests/{partnerRequestId}/responses")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 응답 남기기")
     public ResponseEntity addPartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                             @RequestBody NewPartnerResponse response,
+                                             @RequestBody PartnerResponseCreateRequest response,
                                              @PathVariable long partnerRequestId) {
         partnerResponseService.addPartnerResponse(currentUser ,partnerRequestId, response);
 

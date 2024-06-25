@@ -2,8 +2,8 @@ package com.team.saver.oauth.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.oauth.dto.OAuthRequest;
-import com.team.saver.oauth.dto.OAuthTransferRequest;
+import com.team.saver.oauth.dto.OAuthAccountCreateRequest;
+import com.team.saver.oauth.dto.OAuthInfoTransferRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ public class OAuthController {
 
     @PostMapping("/v1/account/oauth/sign-in")
     @Operation(summary = "OAuth 로그인")
-    public ResponseEntity signIn(HttpServletResponse response, @RequestBody OAuthRequest request) {
+    public ResponseEntity signIn(HttpServletResponse response, @RequestBody OAuthAccountCreateRequest request) {
         Token result = oAuthService.SignInOAuthAccount(response, request);
 
         return ResponseEntity.ok(result);
@@ -29,7 +29,7 @@ public class OAuthController {
 
     @PatchMapping("/v1/account/oauth/transfer")
     @Operation(summary = "[ 로그인 ] OAuth 새로운 계정 이전")
-    public ResponseEntity accountTransfer(@RequestBody OAuthTransferRequest request, @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+    public ResponseEntity accountTransfer(@RequestBody OAuthInfoTransferRequest request, @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         oAuthService.accountTransfer(request, currentUser);
 
         return ResponseEntity.ok().build();

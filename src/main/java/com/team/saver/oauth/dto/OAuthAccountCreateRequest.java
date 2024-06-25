@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OAuthRequest {
+public class OAuthAccountCreateRequest {
 
     private OAuthType type;
 

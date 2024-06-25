@@ -150,7 +150,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         List<Integer> numbers = IntStream.rangeClosed(1, 5).boxed().collect(Collectors.toList());
 
-        List<ReviewStatistics> results = numbers.stream().map(num -> {
+        List<ReviewStatisticsData> results = numbers.stream().map(num -> {
             long count = jpaQueryFactory
                     .select(review.count())
                     .from(review)
@@ -158,7 +158,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                     .where(review.score.eq(num).and(review.isDelete.eq(false)))
                     .fetchOne();
 
-            return new ReviewStatistics(num, count);
+            return new ReviewStatisticsData(num, count);
         }).collect(Collectors.toList());
 
         double averageScore = jpaQueryFactory

@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.time.LocalTime;
 
 @Getter
-public class InspectionTimeRequest {
+public class InspectionTimeCreateRequest {
 
     private LocalTime start;
 

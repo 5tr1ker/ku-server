@@ -4,9 +4,10 @@ import com.team.saver.market.store.entity.MainCategory;
 import lombok.Getter;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
-public class MarketRequest {
+public class MarketCreateRequest {
 
     private MainCategory mainCategory;
 
@@ -28,6 +29,6 @@ public class MarketRequest {
 
     private String marketPhone;
 
-    private String[] classifications;
+    private List<String> classifications;
 
 }

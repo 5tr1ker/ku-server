@@ -5,7 +5,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.mail.dto.MailRequest;
+import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.mail.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,14 +36,14 @@ public class AccountService {
     }
 
     @Transactional
-    public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailRequest request) {
+    public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailSendRequest request) {
         mailService.checkVerificationCode(request);
         isExistsSchoolEmail(request.getSchoolEmail());
 
         updateRoleToStudent(currentUser, request);
     }
 
-    protected void updateRoleToStudent(CurrentUser currentUser, MailRequest request) {
+    protected void updateRoleToStudent(CurrentUser currentUser, MailSendRequest request) {
         Account account = getProfile(currentUser);
 
         updateToleToStudent(account, request.getSchoolEmail());

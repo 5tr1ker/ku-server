@@ -4,7 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.partner.request.dto.NewPartnerRequest;
+import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -27,7 +27,7 @@ public class PartnerRequestService {
     private final AccountService accountService;
 
     @Transactional
-    public void requestNewPartner(NewPartnerRequest request, CurrentUser currentUser) {
+    public void requestNewPartner(PartnerRequestCreateRequest request, CurrentUser currentUser) {
         Account account = accountService.getProfile(currentUser);
 
         PartnerRequest partnerRequest = PartnerRequest.createEntity(account, request);

@@ -4,7 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.report.dto.ReportRequest;
+import com.team.saver.report.dto.ReportCreateRequest;
 import com.team.saver.report.entity.Report;
 import com.team.saver.report.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ReportService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void addReport(CurrentUser currentUser, ReportRequest request) {
+    public void addReport(CurrentUser currentUser, ReportCreateRequest request) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 

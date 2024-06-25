@@ -1,6 +1,6 @@
 package com.team.saver.quest.entity;
 
-import com.team.saver.quest.dto.MissionRequest;
+import com.team.saver.quest.dto.MissionCreateRequest;
 import com.team.saver.quest.util.MissionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ public class Mission {
     @Column(nullable = false)
     private long increaseExp;
 
-    public static Mission createEntity(MissionRequest request) {
+    public static Mission createEntity(MissionCreateRequest request) {
         return Mission.builder()
                 .increaseExp(request.getIncreaseExp())
                 .initExp(request.getInitExp())

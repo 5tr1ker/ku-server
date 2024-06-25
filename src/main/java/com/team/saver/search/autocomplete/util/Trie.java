@@ -1,6 +1,6 @@
 package com.team.saver.search.autocomplete.util;
 
-import com.team.saver.search.autocomplete.dto.UtilInitDto;
+import com.team.saver.search.autocomplete.dto.WordResponse;
 import com.team.saver.search.autocomplete.entity.AutoComplete;
 import com.team.saver.search.autocomplete.repository.AutoCompleteRepository;
 import lombok.RequiredArgsConstructor;
@@ -127,8 +127,8 @@ public class Trie {
         return new Node(autoComplete);
     }
 
-    public List<UtilInitDto> searchComplete(String searchWord) {
-        List<UtilInitDto> result = new ArrayList<>();
+    public List<WordResponse> searchComplete(String searchWord) {
+        List<WordResponse> result = new ArrayList<>();
         Node node = this.rootNode;
 
         for(int i = 0; i < searchWord.length(); i++) {
@@ -152,7 +152,7 @@ public class Trie {
             Node currentNode = queue.poll();
 
             if(currentNode.isContainWord) {
-                result.add(new UtilInitDto(currentNode.word, currentNode.frequency));
+                result.add(new WordResponse(currentNode.word, currentNode.frequency));
             }
 
             for(String str : currentNode.childedNode.keySet()) {
@@ -160,9 +160,9 @@ public class Trie {
             }
         }
 
-        Collections.sort(result, new Comparator<UtilInitDto>() {
+        Collections.sort(result, new Comparator<WordResponse>() {
             @Override
-            public int compare(UtilInitDto o1, UtilInitDto o2) {
+            public int compare(WordResponse o1, WordResponse o2) {
                 return o2.getFrequency() - o1.getFrequency();
             }
         });

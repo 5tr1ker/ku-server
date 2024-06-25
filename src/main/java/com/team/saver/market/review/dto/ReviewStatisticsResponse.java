@@ -9,12 +9,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ReviewStatisticsResponse {
 
-    List<ReviewStatistics> reviewStatistics;
+    private List<ReviewStatisticsData> reviewStatisticData;
 
-    double averageScore;
+    private double averageScore;
 
-    public static ReviewStatisticsResponse createDto(List<ReviewStatistics> reviewStatistics, double averageScore) {
-        return new ReviewStatisticsResponse(reviewStatistics, averageScore);
+    public static ReviewStatisticsResponse createDto(List<ReviewStatisticsData> reviewStatisticData, double averageScore) {
+        return new ReviewStatisticsResponse(reviewStatisticData, averageScore);
     }
 
 }

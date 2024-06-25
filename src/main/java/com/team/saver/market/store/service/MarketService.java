@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
@@ -32,21 +30,21 @@ public class MarketService {
     private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
 
-    public List<MarketResponse> findAllMarket(SearchMarketRequest request, Pageable pageable) {
+    public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
         return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null, pageable);
     }
 
-    public List<MarketResponse> findMarketByMarketName(SearchMarketRequest request, String marketName, Pageable pageable) {
+    public List<MarketResponse> findMarketByMarketName(MarketSearchRequest request, String marketName, Pageable pageable) {
         QMarket market = new QMarket("market");
 
         return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(marketName), pageable);
     }
 
-    public List<MarketResponse> findMarketByMainCategory(SearchMarketRequest request, MainCategory category, Pageable pageable) {
+    public List<MarketResponse> findMarketByMainCategory(MarketSearchRequest request, MainCategory category, Pageable pageable) {
         return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(category), pageable);
     }
 
-    public List<MarketResponse> findMarketByMainCategoryAndMarketName(SearchMarketRequest request, MainCategory categoryData, String marketName, Pageable pageable) {
+    public List<MarketResponse> findMarketByMainCategoryAndMarketName(MarketSearchRequest request, MainCategory categoryData, String marketName, Pageable pageable) {
         return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)), pageable);
     }
 
@@ -56,11 +54,11 @@ public class MarketService {
     }
 
     @Transactional
-    public void addMarket(CurrentUser currentUser, MarketRequest request) {
+    public void addMarket(CurrentUser currentUser, MarketCreateRequest request) {
         Account account = accountService.getProfile(currentUser);
 
         Market market = Market.createEntity(account, request, "image");
-        for (String classification : new HashSet<>(Arrays.asList(request.getClassifications()))) {
+        for (String classification : request.getClassifications()) {
             Classification classificationEntity = getClassificationEntity(classification);
 
             MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
@@ -95,10 +93,10 @@ public class MarketService {
     }
 
     @Transactional
-    public void modifyEventMessage(DataRequest request, CurrentUser currentUser, long marketId) {
+    public void modifyEventMessage(MarketEventUpdateRequest request, CurrentUser currentUser, long marketId) {
         Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
-        market.setEventMessage(request.getData());
+        market.setEventMessage(request.getMessage());
     }
 }

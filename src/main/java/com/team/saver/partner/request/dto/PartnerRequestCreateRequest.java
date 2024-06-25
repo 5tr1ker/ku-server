@@ -3,7 +3,7 @@ package com.team.saver.partner.request.dto;
 import lombok.Getter;
 
 @Getter
-public class NewPartnerRequest {
+public class PartnerRequestCreateRequest {
 
     private String requestMarketName;
 

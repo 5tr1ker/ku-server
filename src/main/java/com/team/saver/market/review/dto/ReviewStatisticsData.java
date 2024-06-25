@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ReviewStatistics {
+public class ReviewStatisticsData {
 
     private int score;
 

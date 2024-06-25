@@ -4,8 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.history.dto.HistoryDeleteRequest;
-import com.team.saver.history.dto.HistoryRequest;
+import com.team.saver.history.dto.HistoryCreateRequest;
 import com.team.saver.history.dto.HistoryResponse;
 import com.team.saver.history.entity.History;
 import com.team.saver.history.repository.HistoryRepository;
@@ -32,12 +31,12 @@ public class HistoryService {
     }
 
     @Transactional
-    public void addHistoryByAccount(CurrentUser currentUser, HistoryRequest historyRequest) {
+    public void addHistoryByAccount(CurrentUser currentUser, HistoryCreateRequest historyCreateRequest) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
-        History history = historyRepository.findByAccountAndContent(account, historyRequest.getContent())
-                .orElseGet(() -> History.createEntity(account, historyRequest.getContent()));
+        History history = historyRepository.findByAccountAndContent(account, historyCreateRequest.getContent())
+                .orElseGet(() -> History.createEntity(account, historyCreateRequest.getContent()));
 
         history.updateTime();
         historyRepository.save(history);

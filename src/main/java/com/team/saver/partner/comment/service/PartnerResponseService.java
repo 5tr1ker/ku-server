@@ -6,7 +6,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
-import com.team.saver.partner.response.dto.NewPartnerResponse;
+import com.team.saver.partner.response.dto.PartnerResponseCreateRequest;
 import com.team.saver.partner.response.entity.PartnerResponse;
 import com.team.saver.partner.response.repository.PartnerResponseRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class PartnerResponseService {
     private final AccountService accountService;
 
     @Transactional
-    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, NewPartnerResponse response) {
+    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, PartnerResponseCreateRequest response) {
         PartnerRequest request = partnerRequestRepository.findById(partnerRequestId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
         Account account = accountService.getProfile(currentUser);

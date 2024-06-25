@@ -3,7 +3,7 @@ package com.team.saver.security.util.inspection.service;
 import com.team.saver.common.dto.ResponseCode;
 import com.team.saver.common.dto.ResponseMessage;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.security.util.inspection.dto.InspectionTimeRequest;
+import com.team.saver.security.util.inspection.dto.InspectionTimeCreateRequest;
 import com.team.saver.security.util.inspection.dto.InspectionTimeResponse;
 import com.team.saver.security.util.inspection.entity.InspectionTime;
 import com.team.saver.security.util.inspection.repository.InspectionTimeRepository;
@@ -36,7 +36,7 @@ public class SecurityService {
         return null;
     }
 
-    public void setInspectionTime(InspectionTimeRequest request) {
+    public void setInspectionTime(InspectionTimeCreateRequest request) {
         LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), request.getStart());
         LocalDateTime endTime = LocalDateTime.of(LocalDate.now(), request.getEnd());
         isValidInspectionTime(startTime, endTime);
@@ -67,7 +67,7 @@ public class SecurityService {
     }
 
     @Transactional
-    public void updateInspection(InspectionTimeRequest request) {
+    public void updateInspection(InspectionTimeCreateRequest request) {
         LocalDateTime now = LocalDateTime.now();
 
         InspectionTime inspectionTime = inspectionTimeRepository.findByInspectionStartLessThanEqualAndInspectionEndGreaterThanEqual(now, now)

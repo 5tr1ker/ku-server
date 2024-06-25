@@ -1,8 +1,8 @@
-package com.team.saver.market.store.dto;
+package com.team.saver.market.store.util;
 
+import com.team.saver.market.store.dto.MarketResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 @Component
-public class MarketRecommend {
+public class MarketRecommendContainer {
 
     private PriorityQueue<Node> queue = new PriorityQueue<>(new NodeComparator());
 

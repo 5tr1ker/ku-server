@@ -1,7 +1,7 @@
 package com.team.saver.mail.service;
 
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.mail.dto.MailRequest;
+import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.mail.entity.Mail;
 import com.team.saver.mail.repository.MailRepository;
 import com.team.saver.mail.util.MailUtil;
@@ -46,14 +46,14 @@ public class MailService {
     }
 
     @Transactional
-    public void checkVerificationCode(MailRequest request) {
+    public void checkVerificationCode(MailSendRequest request) {
         if(isCorrectVerificationCode(request)) {
-            mailRepository.deleteById(request.getSchoolEmail());
+            mailRepository.deleteById(request.getEmail());
         }
     }
 
-    private boolean isCorrectVerificationCode(MailRequest request) {
-        Mail mailCert = mailRepository.findById(request.getSchoolEmail())
+    private boolean isCorrectVerificationCode(MailSendRequest request) {
+        Mail mailCert = mailRepository.findById(request.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_MATCHED_CODE));
 
         if(!mailCert.isCorrectVerificationCode(request.getCode())) {

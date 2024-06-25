@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class NewAttractionRequest {
+public class AttractionCreateRequest {
 
     private String description;
 

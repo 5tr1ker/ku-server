@@ -2,7 +2,7 @@ package com.team.saver.market.order.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.market.order.dto.NewOrderRequest;
+import com.team.saver.market.order.dto.OrderCreateRequest;
 import com.team.saver.market.order.dto.OrderDetailResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.service.OrderService;
@@ -24,7 +24,7 @@ public class OrderController {
     @PostMapping("/v1/markets/{marketId}/orders")
     @Operation(summary = "[ 로그인 ] 주문 목록 추가")
     public ResponseEntity addOrder(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                   @RequestBody NewOrderRequest request,
+                                   @RequestBody OrderCreateRequest request,
                                    @PathVariable long marketId) {
         orderService.addOrder(currentUser ,marketId , request);
 

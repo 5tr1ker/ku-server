@@ -6,7 +6,7 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.mail.dto.MailRequest;
+import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
@@ -64,7 +64,7 @@ public class AccountController {
     @PatchMapping("/v1/accounts/certs/students/code-check")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                              @RequestBody MailRequest request) {
+                                              @RequestBody MailSendRequest request) {
         accountService.checkCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();

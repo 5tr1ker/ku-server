@@ -4,7 +4,7 @@ import com.team.saver.account.entity.UserRole;
 import lombok.Getter;
 
 @Getter
-public class UpdateRoleRequest {
+public class RoleUpdateRequest {
 
     private UserRole userRole;
 

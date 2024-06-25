@@ -3,8 +3,8 @@ package com.team.saver.market.store.dto;
 import lombok.Getter;
 
 @Getter
-public class DataRequest {
+public class MarketEventUpdateRequest {
 
-    private String data;
+    private String message;
 
 }

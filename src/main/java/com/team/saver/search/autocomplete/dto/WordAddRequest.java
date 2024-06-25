@@ -1,13 +1,10 @@
 package com.team.saver.search.autocomplete.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public class UtilInitDto {
+public class WordAddRequest {
 
     private String word;
-    private int frequency;
 
 }

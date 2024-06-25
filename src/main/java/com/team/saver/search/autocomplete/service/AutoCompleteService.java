@@ -1,7 +1,7 @@
 package com.team.saver.search.autocomplete.service;
 
-import com.team.saver.search.autocomplete.dto.AutoCompleteRequest;
-import com.team.saver.search.autocomplete.dto.UtilInitDto;
+import com.team.saver.search.autocomplete.dto.WordAddRequest;
+import com.team.saver.search.autocomplete.dto.WordResponse;
 import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,11 @@ public class AutoCompleteService {
     private final Trie trie;
 
     @Transactional
-    public void addSearchWord(AutoCompleteRequest request) {
+    public void addSearchWord(WordAddRequest request) {
         trie.insert(request.getWord());
     }
 
-    public List<UtilInitDto> findSearchComplete(String word) {
+    public List<WordResponse> findSearchComplete(String word) {
         return trie.searchComplete(word);
     }
 }

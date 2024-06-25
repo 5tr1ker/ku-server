@@ -3,7 +3,7 @@ package com.team.saver.report.dto;
 import lombok.Getter;
 
 @Getter
-public class ReportRequest {
+public class ReportCreateRequest {
 
     private String content;
 

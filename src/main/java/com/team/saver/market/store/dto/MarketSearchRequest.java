@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Data
 @Getter
-public class SearchMarketRequest {
+public class MarketSearchRequest {
 
     private SortType sort;
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class NewOrderRequest {
+public class OrderCreateRequest {
 
     private long couponId;
 

@@ -3,7 +3,7 @@ package com.team.saver.oauth.dto;
 import lombok.Getter;
 
 @Getter
-public class OAuthTransferRequest {
+public class OAuthInfoTransferRequest {
 
     private String targetEmail;
 

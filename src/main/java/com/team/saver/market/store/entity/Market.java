@@ -3,7 +3,7 @@ package com.team.saver.market.store.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
-import com.team.saver.market.store.dto.MarketRequest;
+import com.team.saver.market.store.dto.MarketCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -96,7 +96,7 @@ public class Market {
         menus.add(menu);
     }
 
-    public static Market createEntity(Account account, MarketRequest request, String marketImage) {
+    public static Market createEntity(Account account, MarketCreateRequest request, String marketImage) {
         return Market.builder()
                 .mainCategory(request.getMainCategory())
                 .partner(account)

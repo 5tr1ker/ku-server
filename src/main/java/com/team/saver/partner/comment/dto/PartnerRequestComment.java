@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class ResponseData {
+public class PartnerRequestComment {
 
     private long responseId;
 
@@ -20,8 +20,8 @@ public class ResponseData {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime writeTime;
 
-    public static ResponseData createResponseData(PartnerResponse response) {
-        return new ResponseData(response.getPartnerResponseId()
+    public static PartnerRequestComment createResponseData(PartnerResponse response) {
+        return new PartnerRequestComment(response.getPartnerResponseId()
                 , response.getMessage()
                 , response.getWriter().getEmail()
                 , response.getWriteTime());

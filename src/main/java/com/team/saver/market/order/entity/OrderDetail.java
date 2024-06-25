@@ -1,6 +1,6 @@
 package com.team.saver.market.order.entity;
 
-import com.team.saver.market.order.dto.NewOrderRequest;
+import com.team.saver.market.order.dto.OrderCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,7 +39,7 @@ public class OrderDetail {
 
     private int finalPrice;
 
-    public static OrderDetail createEntity(NewOrderRequest request, String orderNumber, int orderPrice, int discountAmount) {
+    public static OrderDetail createEntity(OrderCreateRequest request, String orderNumber, int orderPrice, int discountAmount) {
         return OrderDetail.builder()
                 .deliveryAddress(request.getDeliveryAddress())
                 .deliveryAddressDetail(request.getDeliveryAddressDetail())

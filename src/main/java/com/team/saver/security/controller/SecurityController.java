@@ -1,7 +1,7 @@
 package com.team.saver.security.controller;
 
 import com.team.saver.common.dto.ResponseMessage;
-import com.team.saver.security.util.inspection.dto.InspectionTimeRequest;
+import com.team.saver.security.util.inspection.dto.InspectionTimeCreateRequest;
 import com.team.saver.security.util.inspection.service.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class SecurityController {
 
     @PostMapping("/v1/security/inspection")
     @Operation(summary = "새로운 점검 시간 설정")
-    public ResponseEntity setInspection(@RequestBody InspectionTimeRequest request) {
+    public ResponseEntity setInspection(@RequestBody InspectionTimeCreateRequest request) {
         securityService.setInspectionTime(request);
 
         return ResponseEntity.ok().build();
@@ -45,7 +45,7 @@ public class SecurityController {
 
     @PatchMapping("/v1/security/inspection")
     @Operation(summary = "현재 점검 중인 시간 변경")
-    public ResponseEntity updateInspection(@RequestBody InspectionTimeRequest request) {
+    public ResponseEntity updateInspection(@RequestBody InspectionTimeCreateRequest request) {
         securityService.updateInspection(request);
 
         return ResponseEntity.ok().build();

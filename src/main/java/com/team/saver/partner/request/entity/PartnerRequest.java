@@ -1,8 +1,8 @@
 package com.team.saver.partner.request.entity;
 
 import com.team.saver.account.entity.Account;
-import com.team.saver.partner.request.dto.NewPartnerRequest;
-import com.team.saver.partner.response.entity.PartnerResponse;
+import com.team.saver.partner.comment.entity.PartnerComment;
+import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,13 +52,13 @@ public class PartnerRequest {
 
     @OneToMany(mappedBy = "partnerRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
-    private List<PartnerResponse> partnerResponse = new ArrayList<>();
+    private List<PartnerComment> partnerComment = new ArrayList<>();
 
     @OneToMany(mappedBy = "partnerRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<PartnerRecommender> partnerRecommenders = new ArrayList<>();
 
-    public static PartnerRequest createEntity(Account account, NewPartnerRequest request) {
+    public static PartnerRequest createEntity(Account account, PartnerRequestCreateRequest request) {
         return PartnerRequest.builder()
                 .requestMarketName(request.getRequestMarketName())
                 .marketAddress(request.getMarketAddress())
@@ -70,8 +70,8 @@ public class PartnerRequest {
                 .build();
     }
 
-    public void addPartnerResponse(PartnerResponse response) {
-        partnerResponse.add(response);
+    public void addPartnerResponse(PartnerComment response) {
+        partnerComment.add(response);
         response.setPartnerRequest(this);
     }
 

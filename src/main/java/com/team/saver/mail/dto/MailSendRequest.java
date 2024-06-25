@@ -3,9 +3,9 @@ package com.team.saver.mail.dto;
 import lombok.Getter;
 
 @Getter
-public class MailRequest {
+public class MailSendRequest {
 
-    private String schoolEmail;
+    private String email;
 
     private String code;
 
