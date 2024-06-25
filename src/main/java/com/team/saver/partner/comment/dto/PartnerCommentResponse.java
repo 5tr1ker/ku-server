@@ -1,7 +1,7 @@
-package com.team.saver.partner.response.dto;
+package com.team.saver.partner.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team.saver.partner.response.entity.PartnerResponse;
+import com.team.saver.partner.comment.entity.PartnerComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class PartnerRequestComment {
+public class PartnerCommentResponse {
 
     private long responseId;
 
@@ -20,8 +20,8 @@ public class PartnerRequestComment {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime writeTime;
 
-    public static PartnerRequestComment createResponseData(PartnerResponse response) {
-        return new PartnerRequestComment(response.getPartnerResponseId()
+    public static PartnerCommentResponse createResponseData(PartnerComment response) {
+        return new PartnerCommentResponse(response.getPartnerCommentId()
                 , response.getMessage()
                 , response.getWriter().getEmail()
                 , response.getWriteTime());

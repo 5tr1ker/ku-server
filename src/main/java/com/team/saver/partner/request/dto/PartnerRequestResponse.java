@@ -2,7 +2,7 @@ package com.team.saver.partner.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team.saver.partner.request.entity.PartnerRequest;
-import com.team.saver.partner.comment.dto.PartnerRequestComment;
+import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,11 +31,11 @@ public class PartnerRequestResponse {
 
     private long recommendCount;
 
-    private List<PartnerRequestComment> resultMessage;
+    private List<PartnerCommentResponse> resultMessage;
 
     public static PartnerRequestResponse createResponse(PartnerRequest request) {
-        List<PartnerRequestComment> messageList = request.getPartnerComment().stream()
-                .map(PartnerRequestComment::createResponseData)
+        List<PartnerCommentResponse> messageList = request.getPartnerComment().stream()
+                .map(PartnerCommentResponse::createResponseData)
                 .collect(Collectors.toList());
 
         return PartnerRequestResponse.builder()

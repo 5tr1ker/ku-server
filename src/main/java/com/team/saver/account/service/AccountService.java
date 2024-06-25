@@ -38,7 +38,7 @@ public class AccountService {
     @Transactional
     public void checkCodeInOrderToCertStudent(CurrentUser currentUser, MailSendRequest request) {
         mailService.checkVerificationCode(request);
-        isExistsSchoolEmail(request.getSchoolEmail());
+        isExistsSchoolEmail(request.getEmail());
 
         updateRoleToStudent(currentUser, request);
     }
@@ -46,7 +46,7 @@ public class AccountService {
     protected void updateRoleToStudent(CurrentUser currentUser, MailSendRequest request) {
         Account account = getProfile(currentUser);
 
-        updateToleToStudent(account, request.getSchoolEmail());
+        updateToleToStudent(account, request.getEmail());
     }
 
     private void updateToleToStudent(Account account, String schoolEmail) {

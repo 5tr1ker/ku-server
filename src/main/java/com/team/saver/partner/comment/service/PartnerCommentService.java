@@ -1,14 +1,14 @@
-package com.team.saver.partner.response.service;
+package com.team.saver.partner.comment.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
-import com.team.saver.partner.response.dto.PartnerResponseCreateRequest;
-import com.team.saver.partner.response.entity.PartnerResponse;
-import com.team.saver.partner.response.repository.PartnerResponseRepository;
+import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
+import com.team.saver.partner.comment.repository.PartnerCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,28 +18,28 @@ import static com.team.saver.common.dto.ErrorMessage.ONLY_DELETE_WRITER;
 
 @Service
 @RequiredArgsConstructor
-public class PartnerResponseService {
+public class PartnerCommentService {
 
     private final PartnerRequestRepository partnerRequestRepository;
-    private final PartnerResponseRepository partnerResponseRepository;
+    private final PartnerCommentRepository partnerCommentRepository;
     private final AccountService accountService;
 
     @Transactional
-    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, PartnerResponseCreateRequest response) {
+    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, PartnerCommentCreateRequest response) {
         PartnerRequest request = partnerRequestRepository.findById(partnerRequestId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
         Account account = accountService.getProfile(currentUser);
 
-        PartnerResponse result = PartnerResponse.createEntity(response.getMessage(), account);
+        PartnerComment result = PartnerComment.createEntity(response.getMessage(), account);
 
         request.addPartnerResponse(result);
     }
 
     @Transactional
-    public void deletePartnerResponse(CurrentUser currentUser, long responseId) {
-        PartnerResponse result = partnerResponseRepository.findByEmailAndResponseId(currentUser.getEmail(), responseId)
+    public void deletePartnerResponse(CurrentUser currentUser, long commentId) {
+        PartnerComment result = partnerCommentRepository.findByEmailAndResponseId(currentUser.getEmail(), commentId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
-        partnerResponseRepository.delete(result);
+        partnerCommentRepository.delete(result);
     }
 }

@@ -1,9 +1,9 @@
-package com.team.saver.partner.response.controller;
+package com.team.saver.partner.comment.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.partner.response.dto.PartnerResponseCreateRequest;
-import com.team.saver.partner.response.service.PartnerResponseService;
+import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
+import com.team.saver.partner.comment.service.PartnerCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -13,25 +13,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class PartnerResponseController {
+public class PartnerCommentController {
 
-    private final PartnerResponseService partnerResponseService;
+    private final PartnerCommentService partnerCommentService;
 
-    @PostMapping("/v1/partners/requests/{partnerRequestId}/responses")
+    @PostMapping("/v1/partners/requests/{partnerRequestId}/comments")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 응답 남기기")
     public ResponseEntity addPartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                             @RequestBody PartnerResponseCreateRequest response,
+                                             @RequestBody PartnerCommentCreateRequest response,
                                              @PathVariable long partnerRequestId) {
-        partnerResponseService.addPartnerResponse(currentUser ,partnerRequestId, response);
+        partnerCommentService.addPartnerResponse(currentUser ,partnerRequestId, response);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/v1/partners/requests/responses/{responseId}")
+    @DeleteMapping("/v1/partners/requests/comments/{commentId}")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 댓글 삭제")
     public ResponseEntity deletePartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                                @PathVariable long responseId) {
-        partnerResponseService.deletePartnerResponse(currentUser, responseId);
+                                                @PathVariable long commentId) {
+        partnerCommentService.deletePartnerResponse(currentUser, commentId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

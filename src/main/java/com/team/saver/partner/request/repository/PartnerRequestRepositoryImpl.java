@@ -27,7 +27,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser)
                 .leftJoin(partnerRequest.partnerRecommenders)
-                .leftJoin(partnerRequest.partnerResponse)
+                .leftJoin(partnerRequest.partnerComment)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

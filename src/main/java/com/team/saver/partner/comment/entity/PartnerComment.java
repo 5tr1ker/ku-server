@@ -1,4 +1,4 @@
-package com.team.saver.partner.response.entity;
+package com.team.saver.partner.comment.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PartnerResponse {
+public class PartnerComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long partnerResponseId;
+    private long partnerCommentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
@@ -34,8 +34,8 @@ public class PartnerResponse {
     @JoinColumn(nullable = false)
     private Account writer;
 
-    public static PartnerResponse createEntity(String message, Account account) {
-        return PartnerResponse.builder()
+    public static PartnerComment createEntity(String message, Account account) {
+        return PartnerComment.builder()
                 .message(message)
                 .writer(account)
                 .build();
