@@ -15,7 +15,6 @@ public class PartnerCommentRepositoryImpl implements CustomPartnerCommentReposit
 
     @Override
     public Optional<PartnerComment> findByEmailAndCommentId(String email, long responseId) {
-
         PartnerComment result = jpaQueryFactory.select(partnerComment)
                 .from(partnerComment)
                 .innerJoin(partnerComment.writer, account).on(account.email.eq(email))

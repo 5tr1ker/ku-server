@@ -37,7 +37,7 @@ public class PartnerCommentService {
 
     @Transactional
     public void deletePartnerResponse(CurrentUser currentUser, long commentId) {
-        PartnerComment result = partnerCommentRepository.findByEmailAndResponseId(currentUser.getEmail(), commentId)
+        PartnerComment result = partnerCommentRepository.findByEmailAndCommentId(currentUser.getEmail(), commentId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
         partnerCommentRepository.delete(result);

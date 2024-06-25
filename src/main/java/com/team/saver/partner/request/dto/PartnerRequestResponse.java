@@ -22,7 +22,7 @@ public class PartnerRequestResponse {
 
     private String marketAddress;
 
-    private long requestUserKey;
+    private long requestUserId;
 
     private String requestUserEmail;
 
@@ -33,21 +33,5 @@ public class PartnerRequestResponse {
 
     private List<PartnerCommentResponse> resultMessage;
 
-    public static PartnerRequestResponse createResponse(PartnerRequest request) {
-        List<PartnerCommentResponse> messageList = request.getPartnerComment().stream()
-                .map(PartnerCommentResponse::createResponseData)
-                .collect(Collectors.toList());
-
-        return PartnerRequestResponse.builder()
-                .partnerRequestId(request.getPartnerRequestId())
-                .requestMarketName(request.getRequestMarketName())
-                .marketAddress(request.getMarketAddress())
-                .requestUserKey(request.getRequestUser().getAccountId())
-                .requestUserEmail(request.getRequestUser().getEmail())
-                .writeTime(request.getWriteTime())
-                .recommendCount(request.getPartnerRecommenders().size())
-                .resultMessage(messageList)
-                .build();
-    }
 
 }

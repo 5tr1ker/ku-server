@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PartnerCommentResponse {
 
-    private long responseId;
+    private long commentId;
 
     private String message;
 
@@ -19,12 +19,5 @@ public class PartnerCommentResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime writeTime;
-
-    public static PartnerCommentResponse createResponseData(PartnerComment response) {
-        return new PartnerCommentResponse(response.getPartnerCommentId()
-                , response.getMessage()
-                , response.getWriter().getEmail()
-                , response.getWriteTime());
-    }
 
 }
