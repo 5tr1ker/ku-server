@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ReviewStatisticsResponse {
 
-    private List<ReviewStatisticsData> reviewStatisticDatas;
+    private List<ReviewStatisticsData> reviewStatisticData;
 
     private double averageScore;
 
