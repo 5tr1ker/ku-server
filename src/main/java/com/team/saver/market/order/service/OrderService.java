@@ -40,7 +40,7 @@ public class OrderService {
     @Transactional
     public void addOrder(CurrentUser currentUser, long marketId, OrderCreateRequest request) {
         Order order = createOrder(currentUser.getEmail(), marketId);
-        int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIdList()));
+        int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIds()));
 
         OrderDetail orderDetail = createOrderDetail(request, marketId, totalPrice);
         order.setOrderDetail(orderDetail);
@@ -112,7 +112,7 @@ public class OrderService {
         OrderDetailResponse result = orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER_DETAIL));
 
-        result.setOrderMenu(orderRepository.findOrderMenuByOrderId(orderId));
+        result.setOrderMenus(orderRepository.findOrderMenuByOrderId(orderId));
         return result;
     }
 
