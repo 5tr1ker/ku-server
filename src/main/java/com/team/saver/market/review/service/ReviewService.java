@@ -51,7 +51,7 @@ public class ReviewService {
         if(images != null) {
             addReviewImage(review, images);
         }
-        reviewImageRepository.deleteById(request.getRemoveImageId());
+        reviewImageRepository.deleteById(request.getRemoveImageIds());
 
         review.update(request);
     }
