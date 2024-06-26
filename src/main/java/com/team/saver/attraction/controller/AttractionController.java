@@ -1,7 +1,7 @@
 package com.team.saver.attraction.controller;
 
 import com.team.saver.attraction.dto.AttractionResponse;
-import com.team.saver.attraction.dto.NewAttractionRequest;
+import com.team.saver.attraction.dto.AttractionCreateRequest;
 import com.team.saver.attraction.service.AttractionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class AttractionController {
 
     @PostMapping("/v1/attractions")
     @Operation(summary = "관광 시설 등록")
-    public ResponseEntity addAttraction(@RequestPart NewAttractionRequest request,
+    public ResponseEntity addAttraction(@RequestPart AttractionCreateRequest request,
                                         @RequestPart MultipartFile image) {
         attractionService.addAttraction(request, image);
 

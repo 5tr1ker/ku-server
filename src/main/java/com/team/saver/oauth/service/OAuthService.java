@@ -5,8 +5,8 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.oauth.dto.AccountInfo;
-import com.team.saver.oauth.dto.OAuthRequest;
-import com.team.saver.oauth.dto.OAuthTransferRequest;
+import com.team.saver.oauth.dto.OAuthAccountCreateRequest;
+import com.team.saver.oauth.dto.OAuthInfoTransferRequest;
 import com.team.saver.oauth.support.GoogleAttribute;
 import com.team.saver.oauth.support.KakaoAttribute;
 import com.team.saver.oauth.support.NaverAttribute;
@@ -37,7 +37,7 @@ public class OAuthService {
     private final KakaoAttribute kakaoAttribute;
 
     @Transactional
-    public Token SignInOAuthAccount(HttpServletResponse response, OAuthRequest request) {
+    public Token SignInOAuthAccount(HttpServletResponse response, OAuthAccountCreateRequest request) {
         Account new_account = createAccountFromOAuthRequest(request);
         Account account = accountRepository.findByEmail(new_account.getEmail())
                 .orElseGet(() -> accountRepository.save(new_account));
@@ -54,7 +54,7 @@ public class OAuthService {
         }
     }
 
-    private Account createAccountFromOAuthRequest(OAuthRequest request) {
+    private Account createAccountFromOAuthRequest(OAuthAccountCreateRequest request) {
         OAuthAttribute attribute = findAttribute(request.getType());
 
         AccountInfo info = getUserInfo(attribute, request.getAccessToken());
@@ -82,7 +82,7 @@ public class OAuthService {
     }
 
     @Transactional
-    public void accountTransfer(OAuthTransferRequest request, CurrentUser currentUser) {
+    public void accountTransfer(OAuthInfoTransferRequest request, CurrentUser currentUser) {
         Account targetAccount = accountRepository.findByEmail(request.getTargetEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 

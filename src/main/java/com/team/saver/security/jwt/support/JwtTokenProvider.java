@@ -1,11 +1,17 @@
 package com.team.saver.security.jwt.support;
 
+import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
+import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.security.jwt.dto.Token;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -15,9 +21,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 import static com.team.saver.common.dto.ErrorMessage.TAMPERED_TOKEN;
 
 @Component
@@ -25,7 +33,7 @@ import static com.team.saver.common.dto.ErrorMessage.TAMPERED_TOKEN;
 public class JwtTokenProvider {
 
     private final UserDetailsService loginService;
-
+    private final AccountRepository accountRepository;
     private long tokenValidTime = 30 * 60 * 1000L; // 30 minutes
     private String secretKey = "FZ4617yUKJK5935th5Tyh5hs4GHS45";
     private final String DOMAIN_URL = "LOCALHOST";
@@ -46,12 +54,41 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUserPkIgnoreExpire(String token) {
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
+    }
+
+    public Token reissueToken(HttpServletResponse response, HttpServletRequest request) {
+        String token = getTokenFromCookie(request);
+        String userPk = getUserPkIgnoreExpire(token);
+        Account account = accountRepository.findByEmail(userPk)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+
+        return login(response, account.getEmail(), account.getRole());
+    }
+
     public Token login(HttpServletResponse response, String userPk, UserRole roles) {
         Token token = createJwtToken(userPk, roles);
 
         addJwtCookieAtResponse(response, token);
 
         return token;
+    }
+
+    public String getTokenFromCookie(ServletRequest request) {
+        Cookie cookies[] = ((HttpServletRequest) request).getCookies();
+
+        if(cookies != null) {
+            return Arrays.stream(cookies)
+                    .filter(c -> c.getName().equals("accessToken")).findFirst().map(Cookie::getValue)
+                    .orElse(null);
+        }
+
+        return null;
     }
 
     public Token createJwtToken(String userPk, UserRole roles) {

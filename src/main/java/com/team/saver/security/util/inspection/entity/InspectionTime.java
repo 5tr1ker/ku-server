@@ -1,6 +1,6 @@
 package com.team.saver.security.util.inspection.entity;
 
-import com.team.saver.security.util.inspection.dto.InspectionTimeRequest;
+import com.team.saver.security.util.inspection.dto.InspectionTimeCreateRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,7 +35,7 @@ public class InspectionTime {
                 .build();
     }
 
-    public void updateInspectionTime(InspectionTimeRequest request) {
+    public void updateInspectionTime(InspectionTimeCreateRequest request) {
         inspectionStart = LocalDateTime.of(LocalDate.now() , request.getStart());
         inspectionEnd = LocalDateTime.of(LocalDate.now() , request.getEnd());
     }

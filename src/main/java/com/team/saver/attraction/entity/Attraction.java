@@ -1,9 +1,8 @@
 package com.team.saver.attraction.entity;
 
-import com.team.saver.attraction.dto.NewAttractionRequest;
+import com.team.saver.attraction.dto.AttractionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
-import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Attraction {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<AttractionTagRelationShip> attractionTagRelationShips = new ArrayList<>();
 
-    public static Attraction createEntity(NewAttractionRequest request) {
+    public static Attraction createEntity(AttractionCreateRequest request) {
         return Attraction.builder()
                 .description(request.getDescription())
                 .build();

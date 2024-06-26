@@ -10,7 +10,9 @@ import lombok.Getter;
 public class MenuResponse {
 
     private long menuId;
+
     private int price;
+
     private String menuName;
 
 }

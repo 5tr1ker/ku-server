@@ -2,7 +2,7 @@ package com.team.saver.market.review.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.order.entity.Order;
-import com.team.saver.market.review.dto.ReviewRequest;
+import com.team.saver.market.review.dto.ReviewCreateRequest;
 import com.team.saver.market.review.dto.ReviewUpdateRequest;
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
@@ -58,7 +58,7 @@ public class Review {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true)
     private List<ReviewImage> reviewImage = new ArrayList<>();
 
-    public static Review createEntity(Account account, ReviewRequest request, Order order) {
+    public static Review createEntity(Account account, ReviewCreateRequest request, Order order) {
         Review review = Review.builder()
                 .reviewer(account)
                 .order(order)

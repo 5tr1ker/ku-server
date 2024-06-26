@@ -8,7 +8,6 @@ import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.repository.OrderRepository;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
-import com.team.saver.market.review.entity.ReviewImage;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.review.repository.ReviewImageRepository;
 import com.team.saver.market.review.repository.ReviewRepository;
@@ -62,7 +61,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(CurrentUser currentUser, long marketId, ReviewRequest request , List<MultipartFile> images) {
+    public void addReview(CurrentUser currentUser, long marketId, ReviewCreateRequest request , List<MultipartFile> images) {
         Market market = marketRepository.findById(marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
         Order order = orderRepository.findById(request.getOrderId())

@@ -2,7 +2,7 @@ package com.team.saver.history.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.history.dto.HistoryRequest;
+import com.team.saver.history.dto.HistoryCreateRequest;
 import com.team.saver.history.dto.HistoryResponse;
 import com.team.saver.history.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,8 +31,8 @@ public class HistoryController {
     @PostMapping("/v1/histories")
     @Operation(summary = "[ 로그인 ] History 데이터 추가")
     public ResponseEntity addHistoryByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                              @RequestBody HistoryRequest historyRequest) {
-        historyService.addHistoryByAccount(currentUser, historyRequest);
+                                              @RequestBody HistoryCreateRequest historyCreateRequest) {
+        historyService.addHistoryByAccount(currentUser, historyCreateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

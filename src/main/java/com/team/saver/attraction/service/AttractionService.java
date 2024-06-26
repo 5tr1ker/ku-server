@@ -1,7 +1,7 @@
 package com.team.saver.attraction.service;
 
 import com.team.saver.attraction.dto.AttractionResponse;
-import com.team.saver.attraction.dto.NewAttractionRequest;
+import com.team.saver.attraction.dto.AttractionCreateRequest;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.entity.AttractionTag;
 import com.team.saver.attraction.entity.AttractionTagRelationShip;
@@ -25,7 +25,7 @@ public class AttractionService {
     private final S3Service s3Service;
 
     @Transactional
-    public void addAttraction(NewAttractionRequest request, MultipartFile imageFile) {
+    public void addAttraction(AttractionCreateRequest request, MultipartFile imageFile) {
         Attraction attraction = Attraction.createEntity(request);
         String imageUrl = s3Service.uploadImage(imageFile);
 

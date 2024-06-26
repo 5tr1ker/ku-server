@@ -6,12 +6,13 @@ import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.mail.dto.MailRequest;
+import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.oauth.service.OAuthService;
 import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,14 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v1/accounts/tokens")
+    @Operation(summary = "[ 로그인 ] 토큰 재발급 API")
+    public ResponseEntity reissueToken(HttpServletResponse response, HttpServletRequest request) {
+        Token token = jwtTokenProvider.reissueToken(response, request);
+
+        return ResponseEntity.ok(token);
+    }
+
     @GetMapping("/v1/accounts/profiles")
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
@@ -55,7 +64,7 @@ public class AccountController {
     @PostMapping("/v1/accounts/certs/students/send-mail")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API")
     public ResponseEntity sendCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                     @RequestBody SchoolCertRequest request) {
+                                                       @RequestBody SchoolCertRequest request) {
         accountService.sendCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();
@@ -64,7 +73,7 @@ public class AccountController {
     @PatchMapping("/v1/accounts/certs/students/code-check")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                              @RequestBody MailRequest request) {
+                                                        @RequestBody MailSendRequest request) {
         accountService.checkCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();

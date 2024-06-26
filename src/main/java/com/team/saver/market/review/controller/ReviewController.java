@@ -66,7 +66,7 @@ public class ReviewController {
     @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가")
     public ResponseEntity addReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @PathVariable long marketId,
-                                    @RequestPart ReviewRequest request,
+                                    @RequestPart ReviewCreateRequest request,
                                     @RequestPart List<MultipartFile> images) {
         reviewService.addReview(currentUser , marketId , request , images);
 

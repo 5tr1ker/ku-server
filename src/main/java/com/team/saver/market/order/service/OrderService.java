@@ -6,7 +6,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.repository.CouponRepository;
-import com.team.saver.market.order.dto.NewOrderRequest;
+import com.team.saver.market.order.dto.OrderCreateRequest;
 import com.team.saver.market.order.dto.OrderDetailResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,7 +38,7 @@ public class OrderService {
     private final MenuRepository menuRepository;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, long marketId, NewOrderRequest request) {
+    public void addOrder(CurrentUser currentUser, long marketId, OrderCreateRequest request) {
         Order order = createOrder(currentUser.getEmail(), marketId);
         int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIdList()));
 
@@ -62,7 +61,7 @@ public class OrderService {
         return Order.createEntity(market, account);
     }
 
-    private OrderDetail createOrderDetail(NewOrderRequest request, long marketId , int totalPrice) {
+    private OrderDetail createOrderDetail(OrderCreateRequest request, long marketId , int totalPrice) {
         int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), marketId);
 
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
