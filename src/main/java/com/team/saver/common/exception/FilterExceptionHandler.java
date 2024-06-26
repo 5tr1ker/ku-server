@@ -41,7 +41,7 @@ public class FilterExceptionHandler extends GenericFilterBean {
             }
             Token token = jwtTokenProvider.reissueToken((HttpServletResponse) response, (HttpServletRequest) request);
 
-            setSuccessResponse((HttpServletResponse) response, 400, TOKEN_REISSUE, token);
+            setSuccessResponse((HttpServletResponse) response, 200, TOKEN_REISSUE, token);
         } catch (IllegalStateException e) { // 바디 데이터 누락
 
             setErrorResponse((HttpServletResponse) response, 400, BODY_DATA_MISSING, e.getMessage());
