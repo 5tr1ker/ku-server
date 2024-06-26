@@ -3,11 +3,10 @@ package com.team.saver.search.popular.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Comparator;
 
-public class SearchWordScoreDto {
+public class SearchWordScore {
 
     @Getter
     @AllArgsConstructor

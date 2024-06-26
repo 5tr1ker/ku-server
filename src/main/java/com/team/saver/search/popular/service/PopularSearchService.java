@@ -1,9 +1,8 @@
 package com.team.saver.search.popular.service;
 
 import com.team.saver.common.dto.CurrentUser;
-import com.team.saver.search.popular.dto.PopularSearchRequest;
-import com.team.saver.search.popular.dto.SearchWordScoreDto;
-import com.team.saver.search.popular.util.SearchWordScore;
+import com.team.saver.search.popular.dto.PopularSearchAddRequest;
+import com.team.saver.search.popular.dto.SearchWordScore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -16,9 +15,9 @@ import java.util.List;
 public class PopularSearchService {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final SearchWordScore searchWordScore;
+    private final com.team.saver.search.popular.util.SearchWordScore searchWordScore;
 
-    public void addSearchWordToRedis(CurrentUser currentUser, PopularSearchRequest request) {
+    public void addSearchWordToRedis(CurrentUser currentUser, PopularSearchAddRequest request) {
         String key = "searchWord=" + currentUser.getEmail() + "_" + request.getSearchWord();
         ValueOperations valueOperations = redisTemplate.opsForValue();
 
@@ -28,7 +27,7 @@ public class PopularSearchService {
 
     }
 
-    public List<SearchWordScoreDto.Node> getPopularSearchWord(int size) {
+    public List<SearchWordScore.Node> getPopularSearchWord(int size) {
         return searchWordScore.getAsList(size);
     }
 

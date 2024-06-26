@@ -1,6 +1,6 @@
 package com.team.saver.search.popular.util;
 
-import com.team.saver.search.popular.dto.SearchWordScoreDto;
+import com.team.saver.search.popular.dto.SearchWordScore;
 import com.team.saver.search.popular.entity.SearchWord;
 import com.team.saver.search.popular.repository.SearchWordRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class SearchWordScheduler {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final SearchWordRepository searchWordRepository;
-    private final SearchWordScore searchWordScore;
+    private final com.team.saver.search.popular.util.SearchWordScore searchWordScore;
 
     @Scheduled(cron = "0 0 0/1 1/1 * ?")
     @Transactional
@@ -61,16 +61,16 @@ public class SearchWordScheduler {
 
     @Transactional
     public void calculateRankingChangeValue() {
-        List<SearchWordScoreDto.Node> temp = new ArrayList<>();
+        List<SearchWordScore.Node> temp = new ArrayList<>();
 
         int rankingIndex = 1;
 
         while(!searchWordScore.isEmpty()) {
-            SearchWordScoreDto.Node searchWordDto = searchWordScore.getSearchWord();
+            SearchWordScore.Node searchWordDto = searchWordScore.getSearchWord();
 
             SearchWord searchWord = searchWordRepository.findBySearchWord(searchWordDto.getSearchWord()).get();
 
-            temp.add(new SearchWordScoreDto.Node(searchWord.getSearchWordId(),rankingIndex, searchWordDto , searchWord.getPreviousRanking() - rankingIndex));
+            temp.add(new SearchWordScore.Node(searchWord.getSearchWordId(),rankingIndex, searchWordDto , searchWord.getPreviousRanking() - rankingIndex));
             searchWord.setPreviousRanking(rankingIndex);
 
             rankingIndex += 1;
