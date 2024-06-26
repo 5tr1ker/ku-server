@@ -1,6 +1,9 @@
 package com.team.saver.security.jwt.support;
 
+import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
+import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.security.jwt.dto.Token;
 import io.jsonwebtoken.*;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.Date;
 
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 import static com.team.saver.common.dto.ErrorMessage.TAMPERED_TOKEN;
 
 @Component
@@ -25,7 +29,7 @@ import static com.team.saver.common.dto.ErrorMessage.TAMPERED_TOKEN;
 public class JwtTokenProvider {
 
     private final UserDetailsService loginService;
-
+    private final AccountRepository accountRepository;
     private long tokenValidTime = 30 * 60 * 1000L; // 30 minutes
     private String secretKey = "FZ4617yUKJK5935th5Tyh5hs4GHS45";
     private final String DOMAIN_URL = "LOCALHOST";
@@ -44,6 +48,13 @@ public class JwtTokenProvider {
 
     public String getUserPk(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Token reissueToken(HttpServletResponse response, CurrentUser currentUser) {
+        Account account = accountRepository.findByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+
+        return login(response, account.getEmail(), account.getRole());
     }
 
     public Token login(HttpServletResponse response, String userPk, UserRole roles) {

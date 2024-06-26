@@ -44,6 +44,15 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v1/accounts/tokens")
+    @Operation(summary = "토큰 재발급 API")
+    public ResponseEntity reissueToken(HttpServletResponse response,
+                                       @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        jwtTokenProvider.reissueToken(response, currentUser);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/v1/accounts/profiles")
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
@@ -55,7 +64,7 @@ public class AccountController {
     @PostMapping("/v1/accounts/certs/students/send-mail")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API")
     public ResponseEntity sendCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                     @RequestBody SchoolCertRequest request) {
+                                                       @RequestBody SchoolCertRequest request) {
         accountService.sendCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();
@@ -64,7 +73,7 @@ public class AccountController {
     @PatchMapping("/v1/accounts/certs/students/code-check")
     @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                              @RequestBody MailSendRequest request) {
+                                                        @RequestBody MailSendRequest request) {
         accountService.checkCodeInOrderToCertStudent(currentUser, request);
 
         return ResponseEntity.ok().build();
