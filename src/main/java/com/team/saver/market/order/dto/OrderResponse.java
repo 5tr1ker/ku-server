@@ -24,14 +24,14 @@ public class OrderResponse {
 
     private String marketName;
 
-    private List<OrderMenu> orderMenu;
+    private List<OrderMenu> orderMenus;
 
     public static OrderResponse createEntity(Order order) {
         return OrderResponse.builder()
                 .orderId(order.getOrderId())
                 .orderDate(order.getOrderDetail().getOrderDateTime())
                 .marketName(order.getMarket().getMarketName())
-                .orderMenu(order.getOrderMenuList())
+                .orderMenus(order.getOrderMenuList())
                 .build();
     }
 

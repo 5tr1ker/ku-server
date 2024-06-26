@@ -11,6 +11,6 @@ public class ReviewUpdateRequest {
 
     private int score;
 
-    private List<Long> removeImageId;
+    private List<Long> removeImageIds;
 
 }

@@ -20,7 +20,7 @@ public class OrderDetailResponse {
     private long marketId;
 
     @Setter
-    private List<OrderMenu> orderMenu;
+    private List<OrderMenu> orderMenus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime orderDateTime;
