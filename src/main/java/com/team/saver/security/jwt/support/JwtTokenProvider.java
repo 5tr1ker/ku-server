@@ -8,7 +8,10 @@ import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.security.jwt.dto.Token;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -18,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 
@@ -50,8 +54,10 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public Token reissueToken(HttpServletResponse response, CurrentUser currentUser) {
-        Account account = accountRepository.findByEmail(currentUser.getEmail())
+    public Token reissueToken(HttpServletResponse response, HttpServletRequest request) {
+        String token = getTokenFromCookie(request);
+        String userPk = getUserPk(token);
+        Account account = accountRepository.findByEmail(userPk)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
         return login(response, account.getEmail(), account.getRole());
@@ -63,6 +69,18 @@ public class JwtTokenProvider {
         addJwtCookieAtResponse(response, token);
 
         return token;
+    }
+
+    public String getTokenFromCookie(ServletRequest request) {
+        Cookie cookies[] = ((HttpServletRequest) request).getCookies();
+
+        if(cookies != null) {
+            return Arrays.stream(cookies)
+                    .filter(c -> c.getName().equals("accessToken")).findFirst().map(Cookie::getValue)
+                    .orElse(null);
+        }
+
+        return null;
     }
 
     public Token createJwtToken(String userPk, UserRole roles) {

@@ -12,6 +12,7 @@ import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +46,10 @@ public class AccountController {
     }
 
     @PostMapping("/v1/accounts/tokens")
-    @Operation(summary = "토큰 재발급 API")
+    @Operation(summary = "[ 토큰 필요 ] 토큰 재발급 API")
     public ResponseEntity reissueToken(HttpServletResponse response,
-                                       @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        jwtTokenProvider.reissueToken(response, currentUser);
+                                       HttpServletRequest request) {
+        jwtTokenProvider.reissueToken(response, request);
 
         return ResponseEntity.ok().build();
     }

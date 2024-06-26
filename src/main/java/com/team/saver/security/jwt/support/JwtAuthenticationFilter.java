@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = getTokenFromCookie(request);
+        String token = jwtTokenProvider.getTokenFromCookie(request);
 
         if (token != null && jwtTokenProvider.validateAccessToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
@@ -34,16 +34,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    public static String getTokenFromCookie(ServletRequest request) {
-        Cookie cookies[] = ((HttpServletRequest) request).getCookies();
 
-        if(cookies != null) {
-            return Arrays.stream(cookies)
-                    .filter(c -> c.getName().equals("accessToken")).findFirst().map(Cookie::getValue)
-                    .orElse(null);
-        }
-
-        return null;
-    }
 
 }
