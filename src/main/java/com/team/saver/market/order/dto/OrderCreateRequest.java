@@ -9,7 +9,7 @@ public class OrderCreateRequest {
 
     private long couponId;
 
-    private List<Long> menuIdList;
+    private List<Long> menuIds;
 
     private String deliveryAddress;
 

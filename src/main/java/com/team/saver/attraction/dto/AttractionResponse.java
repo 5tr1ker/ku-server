@@ -14,7 +14,7 @@ public class AttractionResponse {
 
     private String imageUrl;
 
-    private List<String> tag;
+    private List<String> tags;
 
     private String description;
 

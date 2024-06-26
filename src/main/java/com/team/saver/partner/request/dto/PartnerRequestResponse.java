@@ -31,7 +31,7 @@ public class PartnerRequestResponse {
 
     private long recommendCount;
 
-    private List<PartnerCommentResponse> resultMessage;
+    private List<PartnerCommentResponse> partnerComments;
 
 
 }
