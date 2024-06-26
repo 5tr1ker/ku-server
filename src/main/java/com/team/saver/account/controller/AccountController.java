@@ -46,12 +46,11 @@ public class AccountController {
     }
 
     @PostMapping("/v1/accounts/tokens")
-    @Operation(summary = "[ 토큰 필요 ] 토큰 재발급 API")
-    public ResponseEntity reissueToken(HttpServletResponse response,
-                                       HttpServletRequest request) {
-        jwtTokenProvider.reissueToken(response, request);
+    @Operation(summary = "[ 로그인 ] 토큰 재발급 API")
+    public ResponseEntity reissueToken(HttpServletResponse response, HttpServletRequest request) {
+        Token token = jwtTokenProvider.reissueToken(response, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(token);
     }
 
     @GetMapping("/v1/accounts/profiles")

@@ -54,9 +54,17 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUserPkIgnoreExpire(String token) {
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
+    }
+
     public Token reissueToken(HttpServletResponse response, HttpServletRequest request) {
         String token = getTokenFromCookie(request);
-        String userPk = getUserPk(token);
+        String userPk = getUserPkIgnoreExpire(token);
         Account account = accountRepository.findByEmail(userPk)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 

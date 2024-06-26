@@ -40,7 +40,8 @@ public enum ErrorMessage {
     UNKNOWN_EXCEPTION(-31, "알 수 없는 예외가 발생했습니다."),
     BODY_DATA_MISSING(-32, "데이터 일부가 누락되었습니다."),
     IS_EXISTS_REVIEW(-33, "이미 리뷰를 작성했습니다."),
-    NOT_FOUND_EVENT(-34, "이벤트 데이터를 찾을 수 없습니다.");
+    NOT_FOUND_EVENT(-34, "이벤트 데이터를 찾을 수 없습니다."),
+    TOKEN_REISSUE(-35, "새로운 토큰이 재발급 되었습니다.");
 
     private final int errorCode;
     private final String message;
