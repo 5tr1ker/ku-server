@@ -259,10 +259,10 @@ public class InitData implements CommandLineRunner {
 
         // 관광 명소
         List<AttractionData> attractionData = new ArrayList<>();
-        attractionData.add(new AttractionData("스카이캡슐 반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
-        attractionData.add(new AttractionData("튤립정원 축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
-        attractionData.add(new AttractionData("양떼목장 체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
-        attractionData.add(new AttractionData("데이트하기 좋은 호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        attractionData.add(new AttractionData("스카이캡슐\n 반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        attractionData.add(new AttractionData("튤립정원\n 축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        attractionData.add(new AttractionData("양떼목장\n 체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        attractionData.add(new AttractionData("데이트하기 좋은\n 호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
 
         for (AttractionData data : attractionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
