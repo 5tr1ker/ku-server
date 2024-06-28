@@ -137,7 +137,7 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // deleteAllObjectsInBucket();
+        deleteAllObjectsInBucket();
 
         Random random = new Random();
         accountRepository.deleteAll();
@@ -169,10 +169,13 @@ public class InitData implements CommandLineRunner {
 
         List<StoreData> storeData = new ArrayList<>();
 
-        ReviewData review1_1 = new ReviewData("맛은 평범한 듯 맛있어요. 깨끗한 기름에 튀긴 것이 느껴지고 꽈리고추, 떡, 닭똥집, 고구마 등도 함께 튀겨나오는데 구성이 혜자네요! 잘 먹었습니다^^", "chicken1.png", 4);
-        ReviewData review1_2 = new ReviewData("성시경 맛집이라는 곳이네여 줄 짧아서 먹어봤는데.. 흠 제가 치킨류 알못이라 (미쳐있는 정도가 아니라;;) 그런지 그냥 치킨 맛이었구요 그냥 고추튀김이 맛있어요", "chicken2.png", 3);
+        ReviewData review1_1 = new ReviewData("맛은 평범한 듯 맛있어요. 깨끗한 기름에 튀긴 것이 느껴지고 꽈리고추, 떡, 닭똥집, 고구마 등도 함께 튀겨나오는데 구성이 혜자네요! 잘 먹었습니다^^", 4, "chicken1.png" , "chicken23.png");
+        ReviewData review1_2 = new ReviewData("성시경 맛집이라는 곳이네여 줄 짧아서 먹어봤는데.. 흠 제가 치킨류 알못이라 (미쳐있는 정도가 아니라;;) 그런지 그냥 치킨 맛이었구요 그냥 고추튀김이 맛있어요", 3, "chicken2.png" , "chicken24.png" , "chicken25.png");
         ReviewData review1_3 = new ReviewData("옛날 시장통닭 맛이 좋습니다. 오랜 노포 느낌의 가게 분위기가 치킨과 잘 어울립니다. 혼자 주문쳐내시는 젊은 여자분, 작은 사장님이신가 ? 는 모르겠는데 일당백의 일처리에 멋있었습니다", "chicken3.png", 5);
-        storeData.add(new StoreData("짱돌", "치킨.안주.주류", "Rectangle 2208.png", "첫 구매시 3,000원 \n", Arrays.asList(review1_1, review1_2, review1_3)));
+        ReviewData review1_4 = new ReviewData("효도치킨 한남동 처음 생겼을때부터 다녔는데, 순살치킨이 강정마냥 작아지고 전 같지 않네요..", "chicken16.png", 1);
+        ReviewData review1_5 = new ReviewData("맛있는 치킨과 꽈리고추와 멸치의 궁합이 좋아 계속 들어갔던 곳 !!", 5, "chicken17.png" , "chicken18.png" , "chicken19.png" , "chicken20.png");
+        ReviewData review1_6 = new ReviewData("불친절하다는 후기를 많이봤는데 유명한 곳이라 한번 가봄. 멸치 엄청 바삭거리고 치킨도 전체적으로 간이 빡-!!!!! 짜서 무조건 콜라는 마셔야할 것 같음. ", 4, "chicken21.png" , "chicken22.png");
+        storeData.add(new StoreData("짱돌", "치킨.안주.주류", "Rectangle 2208.png", "첫 구매시 3,000원 \n", Arrays.asList(review1_1, review1_2, review1_3, review1_4, review1_5, review1_6)));
 
         ReviewData review2_1 = new ReviewData("비주얼은 좋은데 맛아…", "pizza1.png", 4);
         ReviewData review2_2 = new ReviewData("피자 - 도우가 정말 쫄깃하다, 가래떡 먹는 느낌 치즈 포함 토핑들이 신선하고 좋은 재료들로 만들었다는 느낌이 확실하게 듦 맛있게 담백해서 더부룩하지 않고 기분좋은 포만감이 든다", "pizza2.png", 5);
@@ -325,6 +328,8 @@ public class InitData implements CommandLineRunner {
 
                     review.addRecommender(reviewRecommender);
                 }
+
+                market.addReview(review);
             }
 
             marketRepository.save(market);
