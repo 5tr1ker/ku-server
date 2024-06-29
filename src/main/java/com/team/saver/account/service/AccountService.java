@@ -1,5 +1,6 @@
 package com.team.saver.account.service;
 
+import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
@@ -77,5 +78,18 @@ public class AccountService {
         return false;
     }
 
+    @Transactional
+    public void deleteAccount(CurrentUser currentUser) {
+        Account account = getProfile(currentUser);
+
+        account.delete();
+    }
+
+    @Transactional
+    public void updateAccount(CurrentUser currentUser, AccountUpdateRequest request) {
+        Account account = getProfile(currentUser);
+
+        account.update(request);
+    }
 
 }

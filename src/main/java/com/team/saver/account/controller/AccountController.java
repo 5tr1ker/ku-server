@@ -1,5 +1,6 @@
 package com.team.saver.account.controller;
 
+import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,6 +61,23 @@ public class AccountController {
         Account result = accountService.getProfile(currentUser);
 
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/v1/accounts")
+    @Operation(summary = "[ 로그인 ] 계정 탈퇴")
+    public ResponseEntity deleteAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        accountService.deleteAccount(currentUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/v1/accounts")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 정보 수정")
+    public ResponseEntity updateAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                        @RequestBody AccountUpdateRequest request) {
+        accountService.updateAccount(currentUser, request);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/v1/accounts/certs/students/send-mail")

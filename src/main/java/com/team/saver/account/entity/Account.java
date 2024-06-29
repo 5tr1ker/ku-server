@@ -1,5 +1,6 @@
 package com.team.saver.account.entity;
 
+import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.util.OAuthType;
 import jakarta.persistence.*;
@@ -53,6 +54,10 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isDelete = false;
+
     public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
         return Account.builder()
                 .email(accountInfo.getEmail())
@@ -64,6 +69,10 @@ public class Account implements UserDetails {
                 .oAuthType(type)
                 .role(UserRole.PARTNER)
                 .build();
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 
     public void updateRoleToStudent() {
@@ -125,5 +134,11 @@ public class Account implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(AccountUpdateRequest request) {
+        this.phone = request.getPhone();
+        this.age = request.getAge();
+        this.name = request.getName();
     }
 }
