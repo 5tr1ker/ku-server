@@ -2,6 +2,7 @@ package com.team.saver.market.deliveryaddress.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.deliveryaddress.dto.DeliveryAddressCreateRequest;
+import com.team.saver.market.deliveryaddress.dto.DeliveryAddressUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,4 +46,11 @@ public class DeliveryAddress {
                 .build();
     }
 
+    public void update(DeliveryAddressUpdateRequest request) {
+        this.name = request.getName();
+        this.zipCode = request.getZipCode();
+        this.address = request.getAddress();
+        this.detailAddress = request.getDetailAddress();
+        this.phone = getPhone();
+    }
 }

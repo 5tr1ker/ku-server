@@ -15,4 +15,6 @@ public class DeliveryAddressCreateRequest {
 
     private String phone;
 
+    private boolean isDefaultDeliveryAddress;
+
 }

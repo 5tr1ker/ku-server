@@ -1,9 +1,13 @@
 package com.team.saver.market.deliveryaddress.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
-public class DeliveryAddressUpdateRequest {
+public class DeliveryAddressResponse {
+
+    private long deliveryAddressId;
 
     private String name;
 
@@ -15,6 +19,6 @@ public class DeliveryAddressUpdateRequest {
 
     private String phone;
 
-    private boolean isDefaultDeliveryAddress;
+    private long isDefaultDeliveryAddress;
 
 }
