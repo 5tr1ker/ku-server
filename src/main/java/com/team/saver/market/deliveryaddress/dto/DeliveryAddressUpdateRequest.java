@@ -15,6 +15,6 @@ public class DeliveryAddressUpdateRequest {
 
     private String phone;
 
-    private boolean isDefaultDeliveryAddress;
+    private boolean defaultAddress;
 
 }

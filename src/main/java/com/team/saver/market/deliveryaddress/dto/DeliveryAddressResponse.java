@@ -19,6 +19,6 @@ public class DeliveryAddressResponse {
 
     private String phone;
 
-    private long isDefaultDeliveryAddress;
+    private boolean isDefaultDeliveryAddress;
 
 }

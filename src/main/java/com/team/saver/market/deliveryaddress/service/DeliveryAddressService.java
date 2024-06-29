@@ -29,12 +29,14 @@ public class DeliveryAddressService {
     public void addDeliveryAddress(CurrentUser currentUser, DeliveryAddressCreateRequest request) {
         Account account = accountService.getProfile(currentUser);
 
-        DeliveryAddress deliveryAddress = DeliveryAddress.createEntity(request);
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.save(DeliveryAddress.createEntity(request));
         account.addDeliveryAddress(deliveryAddress);
 
-        if(request.isDefaultDeliveryAddress()) {
+        System.out.println(request.toString());
+        if(request.isDefaultAddress()) {
             account.setDefaultDeliveryAddress(deliveryAddress);
         }
+
     }
 
     @Transactional
@@ -44,7 +46,7 @@ public class DeliveryAddressService {
 
         deliveryAddress.update(request);
 
-        if(request.isDefaultDeliveryAddress()) {
+        if(request.isDefaultAddress()) {
             Account account = accountService.getProfile(currentUser);
 
             account.setDefaultDeliveryAddress(deliveryAddress);
@@ -71,7 +73,7 @@ public class DeliveryAddressService {
     @Transactional
     public void updateDefaultDeliveryAddress(CurrentUser currentUser, long deliveryAddressId) {
         Account account = accountService.getProfile(currentUser);
-        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(deliveryAddressId)
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findByEmailAndId(account.getEmail(), deliveryAddressId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_DELIVERY_ADDRESS));
 
         account.setDefaultDeliveryAddress(deliveryAddress);

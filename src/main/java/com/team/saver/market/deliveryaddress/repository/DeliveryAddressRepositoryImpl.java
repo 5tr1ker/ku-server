@@ -1,6 +1,9 @@
 package com.team.saver.market.deliveryaddress.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.deliveryaddress.dto.DeliveryAddressResponse;
 import com.team.saver.market.deliveryaddress.entity.DeliveryAddress;
@@ -57,6 +60,8 @@ public class DeliveryAddressRepositoryImpl implements CustomDeliveryAddressRepos
     @Override
     public List<DeliveryAddressResponse> findDetailByEmail(String email) {
         QDeliveryAddress deliveryAddress2 = new QDeliveryAddress("deliveryAddress2");
+        BooleanExpression isDefaultAddress = deliveryAddress.eq(deliveryAddress2);
+        NumberTemplate<Integer> isDefaultAddressAsNumber = Expressions.numberTemplate(Integer.class, "case when {0} then 1 else 0 end", isDefaultAddress);
 
         return jpaQueryFactory.select(
                         Projections.constructor(
@@ -67,13 +72,13 @@ public class DeliveryAddressRepositoryImpl implements CustomDeliveryAddressRepos
                                 deliveryAddress.address,
                                 deliveryAddress.detailAddress,
                                 deliveryAddress.phone,
-                                deliveryAddress.eq(deliveryAddress2)
+                                isDefaultAddress
                         )
                 )
                 .from(account)
                 .innerJoin(account.deliveryAddresses , deliveryAddress)
                 .leftJoin(account.defaultDeliveryAddress, deliveryAddress2)
-                .orderBy(deliveryAddress2.deliveryAddressId.desc(), deliveryAddress.deliveryAddressId.desc())
+                .orderBy(isDefaultAddressAsNumber.desc(), deliveryAddress.deliveryAddressId.desc())
                 .where(account.email.eq(email))
                 .fetch();
     }

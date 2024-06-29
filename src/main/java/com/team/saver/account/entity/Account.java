@@ -60,7 +60,7 @@ public class Account implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     private DeliveryAddress defaultDeliveryAddress;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.PERSIST })
     private List<DeliveryAddress> deliveryAddresses;
 
     @Builder.Default
