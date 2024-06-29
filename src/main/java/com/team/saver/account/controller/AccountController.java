@@ -1,5 +1,6 @@
 package com.team.saver.account.controller;
 
+import com.team.saver.account.dto.AccountResponse;
 import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
@@ -59,7 +60,7 @@ public class AccountController {
     @GetMapping("/v1/accounts/profiles")
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        Account result = accountService.getProfile(currentUser);
+        AccountResponse result = accountService.findAccountDetail(currentUser);
 
         return ResponseEntity.ok(result);
     }
@@ -84,8 +85,8 @@ public class AccountController {
     @PatchMapping("/v1/accounts/images")
     @Operation(summary = "[ 로그인 ] 사용자 계정 이미지 수정")
     public ResponseEntity updateAccountImage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                             @RequestPart MultipartFile multipartFile) {
-        accountService.updateAccountImage(currentUser, multipartFile);
+                                             @RequestPart MultipartFile image) {
+        accountService.updateAccountImage(currentUser, image);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

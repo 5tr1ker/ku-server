@@ -1,5 +1,6 @@
 package com.team.saver.account.service;
 
+import com.team.saver.account.dto.AccountResponse;
 import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
@@ -29,6 +30,12 @@ public class AccountService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
 
         return account;
+    }
+
+    public AccountResponse findAccountDetail(CurrentUser currentUser) {
+        Account account = getProfile(currentUser);
+
+        return AccountResponse.of(account);
     }
 
     public void sendCodeInOrderToCertStudent(CurrentUser currentUser, SchoolCertRequest request) {
