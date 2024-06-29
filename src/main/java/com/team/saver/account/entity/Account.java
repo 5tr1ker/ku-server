@@ -1,5 +1,7 @@
 package com.team.saver.account.entity;
 
+import com.team.saver.account.dto.AccountUpdateRequest;
+import com.team.saver.market.deliveryaddress.entity.DeliveryAddress;
 import com.team.saver.oauth.dto.AccountInfo;
 import com.team.saver.oauth.util.OAuthType;
 import jakarta.persistence.*;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,6 +38,9 @@ public class Account implements UserDetails {
 
     private String name;
 
+    @Setter
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OAuthType oAuthType;
@@ -53,6 +59,17 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
 
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY)
+    private DeliveryAddress defaultDeliveryAddress;
+
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.PERSIST })
+    private List<DeliveryAddress> deliveryAddresses;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isDelete = false;
+
     public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
         return Account.builder()
                 .email(accountInfo.getEmail())
@@ -64,6 +81,15 @@ public class Account implements UserDetails {
                 .oAuthType(type)
                 .role(UserRole.PARTNER)
                 .build();
+    }
+
+    public void addDeliveryAddress(DeliveryAddress deliveryAddress) {
+        deliveryAddress.setAccount(this);
+        this.deliveryAddresses.add(deliveryAddress);
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 
     public void updateRoleToStudent() {
@@ -125,5 +151,11 @@ public class Account implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(AccountUpdateRequest request) {
+        this.phone = request.getPhone();
+        this.age = request.getAge();
+        this.name = request.getName();
     }
 }

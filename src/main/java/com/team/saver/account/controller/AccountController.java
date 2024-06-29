@@ -1,5 +1,7 @@
 package com.team.saver.account.controller;
 
+import com.team.saver.account.dto.AccountResponse;
+import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
@@ -15,8 +17,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,9 +60,35 @@ public class AccountController {
     @GetMapping("/v1/accounts/profiles")
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        Account result = accountService.getProfile(currentUser);
+        AccountResponse result = accountService.findAccountDetail(currentUser);
 
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/v1/accounts")
+    @Operation(summary = "[ 로그인 ] 계정 탈퇴")
+    public ResponseEntity deleteAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        accountService.deleteAccount(currentUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/v1/accounts")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 정보 수정")
+    public ResponseEntity updateAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                        @RequestBody AccountUpdateRequest request) {
+        accountService.updateAccount(currentUser, request);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/v1/accounts/images")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 이미지 수정")
+    public ResponseEntity updateAccountImage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                             @RequestPart MultipartFile image) {
+        accountService.updateAccountImage(currentUser, image);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/v1/accounts/certs/students/send-mail")
