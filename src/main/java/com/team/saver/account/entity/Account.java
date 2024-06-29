@@ -38,6 +38,9 @@ public class Account implements UserDetails {
 
     private String name;
 
+    @Setter
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OAuthType oAuthType;

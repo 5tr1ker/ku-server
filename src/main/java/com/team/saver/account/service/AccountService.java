@@ -8,9 +8,11 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.mail.service.MailService;
+import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
 
@@ -20,6 +22,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final MailService mailService;
+    private final S3Service s3Service;
 
     public Account getProfile(CurrentUser currentUser) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
@@ -92,4 +95,16 @@ public class AccountService {
         account.update(request);
     }
 
+    @Transactional
+    public void updateAccountImage(CurrentUser currentUser, MultipartFile multipartFile) {
+        Account account = getProfile(currentUser);
+
+        String profileImage = account.getProfileImage();
+        if(profileImage != null) {
+            s3Service.deleteImage(profileImage);
+        }
+
+        String newProfileImage = s3Service.uploadImage(multipartFile);
+        account.setProfileImage(newProfileImage);
+    }
 }

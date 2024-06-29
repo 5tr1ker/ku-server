@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,6 +79,15 @@ public class AccountController {
         accountService.updateAccount(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/v1/accounts/images")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 이미지 수정")
+    public ResponseEntity updateAccountImage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                             @RequestPart MultipartFile multipartFile) {
+        accountService.updateAccountImage(currentUser, multipartFile);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/v1/accounts/certs/students/send-mail")
