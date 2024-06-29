@@ -53,4 +53,14 @@ public class DeliveryAddress {
         this.detailAddress = request.getDetailAddress();
         this.phone = getPhone();
     }
+
+    @Override
+    public boolean equals(Object deliveryAddress) {
+        DeliveryAddress entity = (DeliveryAddress) deliveryAddress;
+        if(entity.deliveryAddressId == this.deliveryAddressId) {
+            return true;
+        }
+
+        return false;
+    }
 }

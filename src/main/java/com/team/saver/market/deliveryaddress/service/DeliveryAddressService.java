@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.team.saver.common.dto.ErrorMessage.CANNOT_DELETE_DEFAULT_DELIVERY_ADDRESS;
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_DELIVERY_ADDRESS;
 
 @Service
@@ -57,6 +58,10 @@ public class DeliveryAddressService {
     public void deleteDeliveryAddress(CurrentUser currentUser, long deliveryAddressId) {
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findByEmailAndId(currentUser.getEmail(), deliveryAddressId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_DELIVERY_ADDRESS));
+
+        if(deliveryAddress.getAccount().getDefaultDeliveryAddress().equals(deliveryAddress)) {
+            throw new CustomRuntimeException(CANNOT_DELETE_DEFAULT_DELIVERY_ADDRESS);
+        }
 
         deliveryAddressRepository.delete(deliveryAddress);
     }
