@@ -31,21 +31,21 @@ public class MarketService {
     private final AccountService accountService;
 
     public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), null, pageable);
+        return marketSortTool.sortMarket(request, null, pageable);
     }
 
     public List<MarketResponse> findMarketByMarketName(MarketSearchRequest request, String marketName, Pageable pageable) {
         QMarket market = new QMarket("market");
 
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.marketName.contains(marketName), pageable);
+        return marketSortTool.sortMarket(request, market.marketName.contains(marketName), pageable);
     }
 
     public List<MarketResponse> findMarketByMainCategory(MarketSearchRequest request, MainCategory category, Pageable pageable) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(category), pageable);
+        return marketSortTool.sortMarket(request, market.mainCategory.eq(category), pageable);
     }
 
     public List<MarketResponse> findMarketByMainCategoryAndMarketName(MarketSearchRequest request, MainCategory categoryData, String marketName, Pageable pageable) {
-        return marketSortTool.sortMarket(request.getSort(), request.getDistance(), market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)), pageable);
+        return marketSortTool.sortMarket(request, market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)), pageable);
     }
 
     public MarketDetailResponse findMarketDetailById(long marketId) {
