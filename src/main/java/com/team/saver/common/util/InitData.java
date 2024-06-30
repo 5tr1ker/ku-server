@@ -253,8 +253,9 @@ public class InitData implements CommandLineRunner {
         storeData.add(new StoreData("왕돈까쓰", "돈까스", "Rectangle 2426.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중! 대충 메세지 임을 알려줍니다. 이건 말도 안된다고 아잇 정말 맛업ㅈㅅ어 죽겠네 어그로 끌지마라 임니니니니 라항항항항항항하", Arrays.asList(review16_1, review16_2, review16_3)));
 
         for (StoreData data : storeData) {
-            double randomX = random.nextDouble(99999);
-            double randomY = random.nextDouble(99999);
+            // locationX = 33 ~ 38 , LocationY = 125 ~ 130
+            double randomX = random.nextDouble(5);
+            double randomY = random.nextDouble(5);
             File image = new File("src/main/resources/images/" + data.imageName);
 
             // Market
@@ -263,8 +264,8 @@ public class InitData implements CommandLineRunner {
                     .marketDescription(data.tag)
                     .detailAddress("충청북도 충주시 단월동")
                     .mainCategory(MainCategory.RESTAURANT)
-                    .locationY(randomX)
-                    .locationX(randomY)
+                    .locationX(33 + randomX)
+                    .locationY(125 + randomY)
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
