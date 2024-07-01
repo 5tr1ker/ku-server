@@ -68,6 +68,10 @@ public class Account implements UserDetails {
 
     @Builder.Default
     @Column(nullable = false)
+    private long usePoint = 0;
+
+    @Builder.Default
+    @Column(nullable = false)
     private boolean isDelete = false;
 
     public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
