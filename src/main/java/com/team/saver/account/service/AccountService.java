@@ -125,4 +125,5 @@ public class AccountService {
         return accountRepository.getMyPageInfo(currentUser.getEmail(), missionLevelResponse.getUserExp(), missionLevelResponse.getUserLevel())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
     }
+
 }

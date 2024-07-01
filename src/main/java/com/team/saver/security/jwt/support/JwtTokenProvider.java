@@ -35,7 +35,7 @@ public class JwtTokenProvider {
     private final UserDetailsService loginService;
     private final AccountRepository accountRepository;
     private long tokenValidTime = 30 * 60 * 1000L; // 30 minutes
-    private String secretKey = "FZ4617yUKJK5935th5Tyh5hs4GHS45";
+    private static String secretKey = "FZ4617yUKJK5935th5Tyh5hs4GHS45";
     private final String DOMAIN_URL = "LOCALHOST";
 
     @PostConstruct
@@ -50,7 +50,7 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUserPk(String token) {
+    public static String getUserPk(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -79,7 +79,7 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String getTokenFromCookie(ServletRequest request) {
+    public static String getTokenFromCookie(ServletRequest request) {
         Cookie cookies[] = ((HttpServletRequest) request).getCookies();
 
         if(cookies != null) {

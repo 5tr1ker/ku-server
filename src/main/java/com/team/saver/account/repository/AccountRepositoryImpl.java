@@ -3,20 +3,18 @@ package com.team.saver.account.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.account.dto.MyPageResponse;
 import com.team.saver.account.entity.QAccount;
 import lombok.RequiredArgsConstructor;
 
-import static com.querydsl.jpa.JPAExpressions.select;
-
-import static com.team.saver.favorite.entity.QFavorite.favorite;
-import static com.team.saver.market.coupon.entity.QDownloadCoupon.downloadCoupon;
-import static com.team.saver.market.coupon.entity.QCoupon.coupon;
-import static com.team.saver.account.entity.QAccount.account;
-
 import java.util.Optional;
+
+import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.saver.account.entity.QAccount.account;
+import static com.team.saver.favorite.entity.QFavorite.favorite;
+import static com.team.saver.market.coupon.entity.QCoupon.coupon;
+import static com.team.saver.market.coupon.entity.QDownloadCoupon.downloadCoupon;
 
 @RequiredArgsConstructor
 public class AccountRepositoryImpl implements CustomAccountRepository {
@@ -27,8 +25,8 @@ public class AccountRepositoryImpl implements CustomAccountRepository {
     public Optional<MyPageResponse> getMyPageInfo(String email, long userExp, long userLevel) {
         QAccount account1 = new QAccount("account1");
         QAccount account2 = new QAccount("account2");
-        final NumberPath userExpPath = Expressions.numberPath(null, String.valueOf(userExp));
-        final NumberPath userLevelPath = Expressions.numberPath(null, String.valueOf(userLevel));
+        final NumberPath userExpPath = Expressions.numberPath(Integer.class, String.valueOf(userExp));
+        final NumberPath userLevelPath = Expressions.numberPath(Integer.class, String.valueOf(userLevel));
 
         MyPageResponse result = jpaQueryFactory.select(
                         Projections.constructor(MyPageResponse.class,
