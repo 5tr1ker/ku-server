@@ -3,6 +3,7 @@ package com.team.saver.market.store.dto;
 import com.team.saver.market.store.entity.MainCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalTime;
 
@@ -40,4 +41,24 @@ public class MarketResponse {
 
     private int maxDiscountRate;
 
+    @Setter
+    private double distance;
+
+    public MarketResponse(long marketId, MainCategory mainCategory, double locationX, double locationY, String marketImage, String marketName, String marketDescription, String detailAddress, String eventMessage, LocalTime openTime, LocalTime closeTime, String closedDays, double averageReviewScore, long reviewCount, int maxDiscountRate) {
+        this.marketId = marketId;
+        this.mainCategory = mainCategory;
+        this.locationX = locationX;
+        this.locationY = locationY;
+        this.marketImage = marketImage;
+        this.marketName = marketName;
+        this.marketDescription = marketDescription;
+        this.detailAddress = detailAddress;
+        this.eventMessage = eventMessage;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.closedDays = closedDays;
+        this.averageReviewScore = averageReviewScore;
+        this.reviewCount = reviewCount;
+        this.maxDiscountRate = maxDiscountRate;
+    }
 }

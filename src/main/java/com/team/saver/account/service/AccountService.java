@@ -2,6 +2,7 @@ package com.team.saver.account.service;
 
 import com.team.saver.account.dto.AccountResponse;
 import com.team.saver.account.dto.AccountUpdateRequest;
+import com.team.saver.account.dto.MyPageResponse;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
@@ -9,6 +10,8 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.mail.service.MailService;
+import com.team.saver.quest.dto.MissionLevelResponse;
+import com.team.saver.quest.service.MissionService;
 import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final MailService mailService;
     private final S3Service s3Service;
+    private final MissionService missionService;
 
     public Account getProfile(CurrentUser currentUser) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
@@ -114,4 +118,12 @@ public class AccountService {
         String newProfileImage = s3Service.uploadImage(multipartFile);
         account.setProfileImage(newProfileImage);
     }
+
+    public MyPageResponse getMyPageInfo(CurrentUser currentUser) {
+        MissionLevelResponse missionLevelResponse = missionService.getMissionLevelByEmail(currentUser);
+
+        return accountRepository.getMyPageInfo(currentUser.getEmail(), missionLevelResponse.getUserExp(), missionLevelResponse.getUserLevel())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+    }
+
 }

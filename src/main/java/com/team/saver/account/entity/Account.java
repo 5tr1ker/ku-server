@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -63,8 +64,13 @@ public class Account implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     private DeliveryAddress defaultDeliveryAddress;
 
+    @Builder.Default
     @OneToMany(mappedBy = "account", cascade = { CascadeType.PERSIST })
-    private List<DeliveryAddress> deliveryAddresses;
+    private List<DeliveryAddress> deliveryAddresses = new ArrayList<>();
+
+    @Builder.Default
+    @Column(nullable = false)
+    private long usePoint = 0;
 
     @Builder.Default
     @Column(nullable = false)

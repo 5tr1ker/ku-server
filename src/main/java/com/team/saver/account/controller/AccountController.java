@@ -2,6 +2,7 @@ package com.team.saver.account.controller;
 
 import com.team.saver.account.dto.AccountResponse;
 import com.team.saver.account.dto.AccountUpdateRequest;
+import com.team.saver.account.dto.MyPageResponse;
 import com.team.saver.account.dto.SchoolCertRequest;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
@@ -61,6 +62,14 @@ public class AccountController {
     @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         AccountResponse result = accountService.findAccountDetail(currentUser);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/accounts/my-page")
+    @Operation(summary = "[ 로그인 ] 사용자 마이페이지 정보 가져오기")
+    public ResponseEntity getMyPageInfo(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        MyPageResponse result = accountService.getMyPageInfo(currentUser);
 
         return ResponseEntity.ok(result);
     }
