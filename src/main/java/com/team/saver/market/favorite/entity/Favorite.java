@@ -1,4 +1,4 @@
-package com.team.saver.favorite.entity;
+package com.team.saver.market.favorite.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.store.entity.Market;
