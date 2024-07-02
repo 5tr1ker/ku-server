@@ -1,8 +1,8 @@
-package com.team.saver.favorite.controller;
+package com.team.saver.market.favorite.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
-import com.team.saver.favorite.service.FavoriteService;
+import com.team.saver.market.favorite.service.FavoriteService;
 import com.team.saver.market.store.dto.MarketResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,8 +30,10 @@ public class FavoriteController {
 
     @GetMapping("/v1/markets/favorites")
     @Operation(summary = "[ 로그인 ] 내가 추가한 관심 가게 조회")
-    public ResponseEntity findFavoriteMarketByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser);
+    public ResponseEntity findFavoriteMarketByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                                        @RequestParam double locationX,
+                                                        @RequestParam double locationY) {
+        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser, locationX, locationY);
 
         return ResponseEntity.ok(result);
     }

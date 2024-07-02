@@ -1,5 +1,6 @@
 package com.team.saver.market.store.util;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.store.dto.MarketResponse;
@@ -31,16 +32,22 @@ public class MarketSortTool {
 
             return sortByDistance(marketResponse, request.getLocationX(), request.getLocationY());
         } else if (sort.equals(HIGHEST_DISCOUNT)) {
-            return marketRepository.findMarketsAndSort(HIGHEST_DISCOUNT.getOrderSpecifier(), conditional, pageable);
+            return findMarketAndCalculateDistance(request, HIGHEST_DISCOUNT.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(HIGHEST_REVIEW_RATED)) {
-            return marketRepository.findMarketsAndSort(HIGHEST_REVIEW_RATED.getOrderSpecifier(), conditional, pageable);
+            return findMarketAndCalculateDistance(request, HIGHEST_REVIEW_RATED.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(MANY_REVIEW_COUNT)) {
-            return marketRepository.findMarketsAndSort(MANY_REVIEW_COUNT.getOrderSpecifier(), conditional, pageable);
+            return findMarketAndCalculateDistance(request, MANY_REVIEW_COUNT.getOrderSpecifier(), conditional, pageable);
         } else if (sort.equals(RECENTLY_UPLOAD)) {
-            return marketRepository.findMarketsAndSort(RECENTLY_UPLOAD.getOrderSpecifier(), conditional, pageable);
+            return findMarketAndCalculateDistance(request, RECENTLY_UPLOAD.getOrderSpecifier(), conditional, pageable);
         }
 
         throw new CustomRuntimeException(NOT_FOUND_SORT_TYPE);
+    }
+
+    private List<MarketResponse> findMarketAndCalculateDistance(MarketSearchRequest request, OrderSpecifier orderSpecifier, BooleanExpression conditional, Pageable pageable) {
+        List<MarketResponse> result = marketRepository.findMarketsAndSort(orderSpecifier, conditional, pageable);
+
+        return calculateDistancePerStore(result, request.getLocationX(), request.getLocationY());
     }
 
     private List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, double locationX, double locationY) {
@@ -56,7 +63,7 @@ public class MarketSortTool {
         return storages;
     }
 
-    private List<MarketResponse> calculateDistancePerStore(List<MarketResponse> marketResponse, double locationX, double locationY) {
+    public List<MarketResponse> calculateDistancePerStore(List<MarketResponse> marketResponse, double locationX, double locationY) {
         List<MarketResponse> storages = new ArrayList<>(marketResponse);
 
         for (MarketResponse store : marketResponse) {

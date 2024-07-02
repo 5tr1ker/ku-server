@@ -1,14 +1,14 @@
-package com.team.saver.favorite.repository;
+package com.team.saver.market.favorite.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.favorite.entity.Favorite;
+import com.team.saver.market.favorite.entity.Favorite;
 
 import com.team.saver.market.store.dto.MarketResponse;
 import lombok.RequiredArgsConstructor;
 
 import static com.team.saver.account.entity.QAccount.account;
-import static com.team.saver.favorite.entity.QFavorite.favorite;
+import static com.team.saver.market.favorite.entity.QFavorite.favorite;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
@@ -39,9 +39,14 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                         market.mainCategory,
                         market.locationX,
                         market.locationY,
+                        market.marketImage,
                         market.marketName,
                         market.marketDescription,
                         market.detailAddress,
+                        market.eventMessage,
+                        market.openTime,
+                        market.closeTime,
+                        market.closedDays,
                         review.score.avg(),
                         review.countDistinct(),
                         coupon.saleRate.max()

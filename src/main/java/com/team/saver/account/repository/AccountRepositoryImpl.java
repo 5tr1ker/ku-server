@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.saver.account.entity.QAccount.account;
-import static com.team.saver.favorite.entity.QFavorite.favorite;
+import static com.team.saver.market.favorite.entity.QFavorite.favorite;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.coupon.entity.QDownloadCoupon.downloadCoupon;
 

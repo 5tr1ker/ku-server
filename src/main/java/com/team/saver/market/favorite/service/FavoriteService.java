@@ -1,14 +1,15 @@
-package com.team.saver.favorite.service;
+package com.team.saver.market.favorite.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.favorite.entity.Favorite;
-import com.team.saver.favorite.repository.FavoriteRepository;
+import com.team.saver.market.favorite.entity.Favorite;
+import com.team.saver.market.favorite.repository.FavoriteRepository;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.market.store.util.MarketSortTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class FavoriteService {
 
     private final MarketRepository marketRepository;
+    private final MarketSortTool marketSortTool;
     private final AccountRepository accountRepository;
     private final FavoriteRepository favoriteRepository;
 
@@ -41,8 +43,10 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser) {
-        return favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail());
+    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY) {
+        List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail());
+
+        return marketSortTool.calculateDistancePerStore(result, locationX, locationY);
     }
 
     @Transactional
