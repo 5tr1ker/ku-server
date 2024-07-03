@@ -27,12 +27,12 @@ public class History {
     private LocalDateTime localDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Builder.Default
-    private Account account = new Account();
+    private Account account;
 
     public static History createEntity(Account account, String content) {
         return History.builder()
                 .content(content)
+                .account(account)
                 .localDateTime(LocalDateTime.now())
                 .build();
     }
