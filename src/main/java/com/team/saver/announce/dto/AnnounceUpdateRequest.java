@@ -12,6 +12,6 @@ public class AnnounceUpdateRequest {
 
     private AnnounceType announceType;
 
-    private boolean isImportant;
+    private boolean important;
 
 }

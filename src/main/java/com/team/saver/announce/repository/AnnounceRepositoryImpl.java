@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.announce.dto.AnnounceResponse;
+import com.team.saver.announce.entity.Announce;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -36,6 +37,7 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
                         )
                 ).from(announce)
                 .orderBy(isImportantAsNumber.desc(), announce.announceId.desc())
+                .where(announce.isDelete.eq(false))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -54,7 +56,17 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
                                 announce.isImportant
                         )
                 ).from(announce)
-                .where(announce.announceId.eq(announceId))
+                .where(announce.announceId.eq(announceId).and(announce.isDelete.eq(false)))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Announce> findById(long announceId) {
+        Announce result = jpaQueryFactory.select(announce)
+                .from(announce)
+                .where(announce.announceId.eq(announceId).and(announce.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);
