@@ -1,5 +1,7 @@
 package com.team.saver.announce.entity;
 
+import com.team.saver.announce.dto.AnnounceCreateRequest;
+import com.team.saver.announce.dto.AnnounceUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +35,31 @@ public class Announce {
     @Column(nullable = false)
     private AnnounceType announceType;
 
+    @Column(nullable = false)
+    private boolean isImportant;
+
     @Builder.Default
     @Column(nullable = false)
-    private boolean isFix = false;
+    private boolean isDelete = false;
+
+    public static Announce createEntity(AnnounceCreateRequest request) {
+        return Announce.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .announceType(request.getAnnounceType())
+                .isImportant(request.isImportant())
+                .build();
+    }
+
+    public void update(AnnounceUpdateRequest request) {
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.announceType = request.getAnnounceType();
+        this.isImportant = request.isImportant();
+    }
+
+    public void delete() {
+        this.isDelete = true;
+    }
 
 }
