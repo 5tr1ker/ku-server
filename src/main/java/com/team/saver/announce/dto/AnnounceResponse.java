@@ -2,11 +2,13 @@ package com.team.saver.announce.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team.saver.announce.entity.AnnounceType;
-import jakarta.persistence.Column;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@AllArgsConstructor
 public class AnnounceResponse {
 
     private long announceId;

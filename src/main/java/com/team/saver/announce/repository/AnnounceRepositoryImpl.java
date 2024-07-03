@@ -28,6 +28,7 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
                         Projections.constructor(
                                 AnnounceResponse.class,
                                 announce.announceId,
+                                announce.writeTime,
                                 announce.title,
                                 announce.description,
                                 announce.announceType,
@@ -46,6 +47,7 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
                         Projections.constructor(
                                 AnnounceResponse.class,
                                 announce.announceId,
+                                announce.writeTime,
                                 announce.title,
                                 announce.description,
                                 announce.announceType,
