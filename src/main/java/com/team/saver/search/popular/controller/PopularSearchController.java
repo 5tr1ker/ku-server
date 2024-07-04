@@ -5,6 +5,7 @@ import com.team.saver.common.dto.LogIn;
 import com.team.saver.search.popular.dto.PopularSearchAddRequest;
 import com.team.saver.search.popular.dto.SearchWordScore;
 import com.team.saver.search.popular.service.PopularSearchService;
+import com.team.saver.search.popular.util.SearchWordScheduler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,15 @@ public class PopularSearchController {
         popularSearchService.addSearchWordToRedis(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    private final SearchWordScheduler scheduler;
+    @PostMapping("/v1/popular-search-word/push")
+    @Operation(summary = "[ 테스트 ] 인기 검색어 Redis 에서 서버에 즉시 반영")
+    public ResponseEntity pushSearchWordFromRedis() {
+        scheduler.updateSearchWord_everyTime();
+
+        return ResponseEntity.ok().build();
     }
 
 }
