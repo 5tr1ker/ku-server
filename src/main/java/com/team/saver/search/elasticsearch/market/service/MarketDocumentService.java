@@ -13,8 +13,8 @@ public class MarketDocumentService {
 
     private final MarketDocumentRepository marketDocumentRepository;
 
-    public List<MarketDocument> findByMarketName(String title) {
-        return marketDocumentRepository.findByMarketName(title);
+    public List<MarketDocument> findByMarketName(String marketName) {
+        return marketDocumentRepository.findByMarketName(marketName);
     }
 
 }

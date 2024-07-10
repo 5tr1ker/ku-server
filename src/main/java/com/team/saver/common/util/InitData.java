@@ -21,6 +21,8 @@ import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
+import com.team.saver.search.elasticsearch.market.document.MarketDocument;
+import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepository;
 import com.team.saver.search.popular.util.SearchWordScheduler;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +96,7 @@ public class InitData implements CommandLineRunner {
     private final AttractionRepository attractionRepository;
     private final AttractionTagRepository attractionTagRepository;
     private final AmazonS3Client amazonS3Client;
+    private final MarketDocumentRepository marketDocumentRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -138,6 +141,7 @@ public class InitData implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         deleteAllObjectsInBucket();
+        marketDocumentRepository.deleteAll();
 
         Random random = new Random();
         accountRepository.deleteAll();
@@ -334,6 +338,7 @@ public class InitData implements CommandLineRunner {
             }
 
             marketRepository.save(market);
+            marketDocumentRepository.save(MarketDocument.createEntity(market));
         }
 
         // 관광 명소

@@ -1,20 +1,22 @@
 package com.team.saver.search.elasticsearch.market.document;
 
+import com.team.saver.market.store.entity.Market;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Setting;
+import org.springframework.data.elasticsearch.annotations.*;
 
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
-@Document(indexName = "alcohols")
-@Setting(replicas = 0)
+@Document(indexName = "market")
+@Setting(replicas = 10)
+@Builder
 public class MarketDocument {
 
     @Id
+    @WriteOnlyProperty
+    @Field(name = "id", type = FieldType.Keyword)
     private String marketDocumentId;
 
     @Field(type = FieldType.Long, index = false, docValues = false)
@@ -23,28 +25,44 @@ public class MarketDocument {
     @Field(type = FieldType.Text)
     private String marketName;
 
-    @Field(type = FieldType.Text, index = false, docValues = false)
+    @Field(type = FieldType.Text, index = false)
     private String marketDescription;
 
-    @Field(type = FieldType.Text, index = false, docValues = false)
+    @Field(type = FieldType.Text, index = false)
     private String marketImage;
 
-    @Field(type = FieldType.Double, index = false, docValues = false)
+    @Field(type = FieldType.Double, index = false)
     private double locationX;
 
-    @Field(type = FieldType.Double, index = false, docValues = false)
+    @Field(type = FieldType.Double, index = false)
     private double locationY;
 
-    @Field(type = FieldType.Text, index = false, docValues = false)
+    @Field(type = FieldType.Text, index = false)
     private String eventMessage;
 
-    @Field(type = FieldType.Date, index = false, docValues = false)
-    private LocalTime openTime;
+    @Field(type = FieldType.Text, index = false)
+    private String openTime;
 
-    @Field(type = FieldType.Date, index = false, docValues = false)
-    private LocalTime closeTime;
+    @Field(type = FieldType.Text, index = false)
+    private String closeTime;
 
-    @Field(type = FieldType.Text, index = false, docValues = false)
+    @Field(type = FieldType.Text, index = false)
     private String closedDays;
+
+    public static MarketDocument createEntity(Market market) {
+
+        return MarketDocument.builder()
+                .marketId(market.getMarketId())
+                .marketName(market.getMarketName())
+                .marketDescription(market.getMarketDescription())
+                .marketImage(market.getMarketImage())
+                .locationX(market.getLocationX())
+                .locationY(market.getLocationY())
+                .eventMessage(market.getEventMessage())
+                .openTime(market.getOpenTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString())
+                .closeTime(market.getCloseTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString())
+                .closedDays(market.getClosedDays())
+                .build();
+    }
 
 }
