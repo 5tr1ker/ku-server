@@ -20,6 +20,11 @@ spring:
           google:
             user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
 
+  elasticsearch:
+    username: elastic
+    password: d+xMZ*cKAs8BnrZZftr7
+    uris: https://localhost:9200
+
   data:
     redis:
       port: 6379
