@@ -7,6 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class HistoryResponse {
 
+    private long historyId;
+
     private String content;
 
 }

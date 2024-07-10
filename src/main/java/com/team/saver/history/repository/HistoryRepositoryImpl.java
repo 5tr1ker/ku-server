@@ -2,17 +2,13 @@ package com.team.saver.history.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.account.entity.Account;
 import com.team.saver.history.dto.HistoryResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.querydsl.jpa.JPAExpressions.select;
-import static com.team.saver.history.entity.QHistory.history;
 import static com.team.saver.account.entity.QAccount.account;
-
-import java.util.List;
+import static com.team.saver.history.entity.QHistory.history;
 
 @RequiredArgsConstructor
 public class HistoryRepositoryImpl implements CustomHistoryRepository {
@@ -20,24 +16,30 @@ public class HistoryRepositoryImpl implements CustomHistoryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void deleteHistoryByAccountAndHistoryId(Account accountData, long historyId) {
-        jpaQueryFactory.delete(history)
-                .where(history.historyId.eq(
-                        select(history.historyId)
-                                .from(history)
-                                .innerJoin(history.account, account).on(account.eq(accountData))
-                                .where(history.historyId.eq(historyId))
-                ))
+    public long deleteHistoryByEmailAndHistoryId(String email, long historyId) {
+        Long result = jpaQueryFactory.select(history.historyId)
+                .from(history)
+                .innerJoin(history.account, account).on(account.email.eq(email))
+                .where(history.historyId.eq(historyId))
+                .fetchOne();
+
+        if(result == null) {
+            return 0;
+        }
+
+        return jpaQueryFactory.delete(history)
+                .where(history.historyId.eq(result))
                 .execute();
     }
 
     @Override
-    public List<HistoryResponse> findAllByAccount(Account accountData) {
+    public List<HistoryResponse> findAllByEmail(String email) {
         return jpaQueryFactory.select(
                         Projections.constructor(HistoryResponse.class,
+                                history.historyId,
                                 history.content
                         )).from(history)
-                .innerJoin(history.account, account).on(account.eq(accountData))
+                .innerJoin(history.account, account).on(account.email.eq(email))
                 .orderBy(history.localDateTime.desc())
                 .fetch();
     }
