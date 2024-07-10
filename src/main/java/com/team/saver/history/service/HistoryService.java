@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_HISTORY;
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 
 @Service
@@ -24,10 +25,7 @@ public class HistoryService {
     private final AccountRepository accountRepository;
 
     public List<HistoryResponse> findAllByAccount(CurrentUser currentUser) {
-        Account account = accountRepository.findByEmail(currentUser.getEmail())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
-
-        return historyRepository.findAllByAccount(account);
+        return historyRepository.findAllByEmail(currentUser.getEmail());
     }
 
     @Transactional
@@ -52,10 +50,11 @@ public class HistoryService {
 
     @Transactional
     public void deleteHistoryByAccountAndHistoryId(CurrentUser currentUser, long historyId) {
-        Account account = accountRepository.findByEmail(currentUser.getEmail())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+        long result = historyRepository.deleteHistoryByEmailAndHistoryId(currentUser.getEmail(), historyId);
 
-        historyRepository.deleteHistoryByAccountAndHistoryId(account, historyId);
+        if(result == 0) {
+            throw new CustomRuntimeException(NOT_FOUND_HISTORY);
+        }
     }
 
 }
