@@ -5,10 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import java.util.List;
-
 public interface MarketDocumentRepository extends ElasticsearchRepository<MarketDocument, Long> {
 
-    Page<MarketDocument> findByMarketName(String marketName, Pageable pageable);
+    Page<MarketDocument> findByMarketNameContaining(String marketName, Pageable pageable);
 
 }

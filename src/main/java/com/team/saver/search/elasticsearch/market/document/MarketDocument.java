@@ -9,9 +9,10 @@ import org.springframework.data.elasticsearch.annotations.*;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-@Document(indexName = "market")
-@Setting(replicas = 10)
 @Builder
+@Document(indexName = "market")
+@Setting(settingPath = "/elasticsearch/settings.json")
+@Mapping(mappingPath = "/elasticsearch/mappings.json")
 public class MarketDocument {
 
     @Id
@@ -66,3 +67,4 @@ public class MarketDocument {
     }
 
 }
+
