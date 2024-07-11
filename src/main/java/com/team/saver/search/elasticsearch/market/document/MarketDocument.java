@@ -23,7 +23,7 @@ public class MarketDocument {
     @Field(type = FieldType.Long, index = false, docValues = false)
     private long marketId;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "synonym_search")
     private String marketName;
 
     @Field(type = FieldType.Text, index = false)
@@ -51,7 +51,6 @@ public class MarketDocument {
     private String closedDays;
 
     public static MarketDocument createEntity(Market market) {
-
         return MarketDocument.builder()
                 .marketId(market.getMarketId())
                 .marketName(market.getMarketName())

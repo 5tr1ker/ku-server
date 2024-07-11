@@ -1,22 +1,24 @@
 {
   "analysis": {
+    "filter": {
+      "user_synonym": {
+        "type": "synonym",
+        "synonyms_path": "analysis/synonyms.txt"
+      }
+    },
     "tokenizer": {
-      "nori_none": {
+      "nori_user_dict": {
         "type": "nori_tokenizer",
-        "decompound_mode": "none"
-      },
-      "nori_discard": {
-        "type": "nori_tokenizer",
-        "decompound_mode": "discard"
-      },
-      "nori_mixed": {
-        "type": "nori_tokenizer",
-        "decompound_mode": "mixed"
+        "decompound_mode": "none",
+        "discard_punctuation": "false",
+        "user_dictionary": "userdict_ko.txt"
       }
     },
     "analyzer": {
-      "korean": {
-        "type": "nori"
+      "synonym_search": {
+        "filter" : ["user_synonym"],
+        "type": "custom",
+        "tokenizer": "nori_user_dict"
       }
     }
   }
