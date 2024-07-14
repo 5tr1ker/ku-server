@@ -32,4 +32,12 @@ public class AutoCompleteController {
         return ResponseEntity.ok(result);
     }
 
+    @DeleteMapping("/v1/auto-complete")
+    @Operation(summary = "자동 완성 글자 제거 [ 삭제하면 검색 수와 함께 삭제됩니다. ]")
+    public ResponseEntity deleteSearchWord(@RequestParam String word) {
+        autoCompleteService.deleteWord(word);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

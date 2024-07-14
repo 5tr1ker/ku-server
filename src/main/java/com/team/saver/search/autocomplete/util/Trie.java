@@ -1,5 +1,6 @@
 package com.team.saver.search.autocomplete.util;
 
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.search.autocomplete.dto.WordResponse;
 import com.team.saver.search.autocomplete.entity.AutoComplete;
 import com.team.saver.search.autocomplete.repository.AutoCompleteRepository;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_AUTOCOMPLETE;
 
 @ToString
 class Node {
@@ -82,6 +85,33 @@ public class Trie {
         node.frequency = currentNode.frequency;
 
         return node;
+    }
+
+    @Transactional
+    public void delete(String word) {
+        long result = autoCompleteRepository.deleteByWord(word);
+        if(result != 1) {
+            throw new CustomRuntimeException(NOT_FOUND_AUTOCOMPLETE);
+        }
+
+        Node node = this.rootNode;
+        String [] completeWord = new String[word.length()];
+
+        for(int i = 0; i < word.length(); i++) {
+            String targetString = word.substring(i , i + 1);
+            completeWord[i] = targetString;
+
+            if(isHangul(targetString)) {
+                node = addTrieNode_Hangul(targetString, node, completeWord, i);
+            } else {
+                node = addTrieNode_English(targetString, node, completeWord);
+            }
+        }
+
+        if(node != null) {
+            node.isContainWord = false;
+            node.frequency = 0;
+        }
     }
 
     public static boolean isHangul(String str) {

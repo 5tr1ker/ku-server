@@ -8,6 +8,7 @@ import com.team.saver.attraction.entity.AttractionTagRelationShip;
 import com.team.saver.attraction.repository.AttractionRepository;
 import com.team.saver.attraction.repository.AttractionTagRepository;
 import com.team.saver.s3.service.S3Service;
+import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class AttractionService {
 
     private final AttractionRepository attractionRepository;
     private final AttractionTagRepository attractionTagRepository;
+    private final AutoCompleteService autoCompleteService;
     private final S3Service s3Service;
 
     @Transactional
@@ -38,6 +40,7 @@ public class AttractionService {
         }
 
         attractionRepository.save(attraction);
+        autoCompleteService.addSearchWord(attraction.getTitle());
     }
 
     @Transactional

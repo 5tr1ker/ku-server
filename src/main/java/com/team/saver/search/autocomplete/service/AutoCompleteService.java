@@ -28,4 +28,8 @@ public class AutoCompleteService {
     public List<WordResponse> findSearchComplete(String word) {
         return trie.searchComplete(word);
     }
+
+    public void deleteWord(String word) {
+        trie.delete(word);
+    }
 }
