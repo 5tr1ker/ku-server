@@ -10,6 +10,8 @@ import com.team.saver.market.store.repository.ClassificationRepository;
 import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
+import com.team.saver.search.autocomplete.service.AutoCompleteService;
+import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class MarketService {
     private final ClassificationRepository classificationRepository;
     private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
+    private final AutoCompleteService autoCompleteService;
 
     public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
         return marketSortTool.sortMarket(request, null, pageable);
@@ -67,6 +70,7 @@ public class MarketService {
         }
 
         marketRepository.save(market);
+        autoCompleteService.addSearchWord(market.getMarketName());
     }
 
     private Classification getClassificationEntity(String classification) {

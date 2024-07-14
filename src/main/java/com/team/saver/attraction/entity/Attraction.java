@@ -17,10 +17,12 @@ public class Attraction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long attractionId;
 
+    private String title;
+
     @Setter
     private String imageUrl;
 
-    private String description;
+    private String introduce;
 
     @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -28,7 +30,8 @@ public class Attraction {
 
     public static Attraction createEntity(AttractionCreateRequest request) {
         return Attraction.builder()
-                .description(request.getDescription())
+                .title(request.getTitle())
+                .introduce(request.getIntroduce())
                 .build();
     }
 

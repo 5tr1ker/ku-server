@@ -7,7 +7,9 @@ import java.util.List;
 @Getter
 public class AttractionCreateRequest {
 
-    private String description;
+    private String title;
+
+    private String introduce;
 
     private List<String> tags;
 

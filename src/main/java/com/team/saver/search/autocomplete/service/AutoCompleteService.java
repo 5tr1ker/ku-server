@@ -20,6 +20,11 @@ public class AutoCompleteService {
         trie.insert(request.getWord());
     }
 
+    @Transactional
+    public void addSearchWord(String searchWord) {
+        trie.insert(searchWord);
+    }
+
     public List<WordResponse> findSearchComplete(String word) {
         return trie.searchComplete(word);
     }
