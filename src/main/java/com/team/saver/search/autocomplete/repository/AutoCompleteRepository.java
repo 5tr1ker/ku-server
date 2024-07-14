@@ -9,4 +9,6 @@ public interface AutoCompleteRepository extends JpaRepository<AutoComplete, Long
 
     Optional<AutoComplete> findAutoCompleteByWord(String word);
 
+    long deleteByWord(String word);
+
 }

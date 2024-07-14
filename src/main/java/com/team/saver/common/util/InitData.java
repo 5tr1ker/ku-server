@@ -21,6 +21,8 @@ import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
+import com.team.saver.search.autocomplete.service.AutoCompleteService;
+import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
 import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepository;
 import com.team.saver.search.popular.util.SearchWordScheduler;
@@ -78,7 +80,10 @@ class ReviewData {
 
 @AllArgsConstructor
 class AttractionData {
-    String description;
+
+    String title;
+
+    String introduce;
 
     String tags[];
 
@@ -92,6 +97,8 @@ public class InitData implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final MarketRepository marketRepository;
     private final RecommendAlgorithm recommendAlgorithm;
+    private final Trie trie;
+    private final AutoCompleteService autoCompleteService;
     private final SearchWordScheduler searchWordScheduler;
     private final AttractionRepository attractionRepository;
     private final AttractionTagRepository attractionTagRepository;
@@ -109,6 +116,7 @@ public class InitData implements CommandLineRunner {
         recommendAlgorithm.updateMarketRecommend();
         searchWordScheduler.updateSearchWordScore();
         searchWordScheduler.calculateRankingChangeValue();
+        trie.initTrie();
         // init Data-End
     }
 
@@ -338,22 +346,24 @@ public class InitData implements CommandLineRunner {
             }
 
             marketRepository.save(market);
+            autoCompleteService.addSearchWord(market.getMarketName());
             marketDocumentRepository.save(MarketDocument.createEntity(market));
         }
 
         // 관광 명소
         List<AttractionData> attractionData = new ArrayList<>();
-        attractionData.add(new AttractionData("스카이캡슐\n반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
-        attractionData.add(new AttractionData("튤립정원\n축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
-        attractionData.add(new AttractionData("양떼목장\n체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
-        attractionData.add(new AttractionData("데이트하기 좋은\n호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        attractionData.add(new AttractionData("스카이캡슐", "스카이캡슐\n반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        attractionData.add(new AttractionData("튤립정원", "튤립정원\n축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        attractionData.add(new AttractionData("양떼목장", "양떼목장\n체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        attractionData.add(new AttractionData("보트체험", "데이트하기 좋은\n호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
 
         for (AttractionData data : attractionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
             String imageUrl = uploadFile(fileImage);
 
             Attraction attraction = Attraction.builder()
-                    .description(data.description)
+                    .title(data.title)
+                    .introduce(data.introduce)
                     .imageUrl(imageUrl)
                     .build();
 
@@ -370,6 +380,7 @@ public class InitData implements CommandLineRunner {
             }
 
             attractionRepository.save(attraction);
+            autoCompleteService.addSearchWord(attraction.getTitle());
         }
 
         settingInitData();

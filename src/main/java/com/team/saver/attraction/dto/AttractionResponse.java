@@ -2,7 +2,6 @@ package com.team.saver.attraction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -16,6 +15,8 @@ public class AttractionResponse {
 
     private List<String> tags;
 
-    private String description;
+    private String title;
+
+    private String introduce;
 
 }

@@ -33,7 +33,8 @@ public class AttractionRepositoryImpl implements CustomAttractionRepository {
                                 list(
                                         attractionTag.tagContent
                                 ),
-                                attraction.description
+                                attraction.title,
+                                attraction.introduce
                         )
                 ));
     }
