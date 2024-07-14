@@ -15,8 +15,8 @@ public class MarketDocumentService {
 
     private final MarketDocumentRepository marketDocumentRepository;
 
-    public List<MarketDocument> findByMarketName(String marketName, Pageable pageable) {
-        Page<MarketDocument> result = marketDocumentRepository.findByMarketNameContaining(marketName, pageable);
+    public List<MarketDocument> findByMarketName(String word, Pageable pageable) {
+        Page<MarketDocument> result = marketDocumentRepository.findByMarketNameContainingOrMarketDescriptionContaining(word, word, pageable);
 
         return result.getContent();
     }

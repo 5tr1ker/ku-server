@@ -26,7 +26,7 @@ public class MarketDocument {
     @Field(type = FieldType.Text, analyzer = "synonym_search")
     private String marketName;
 
-    @Field(type = FieldType.Text, index = false)
+    @Field(type = FieldType.Text, analyzer = "synonym_search")
     private String marketDescription;
 
     @Field(type = FieldType.Text, index = false)
