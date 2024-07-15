@@ -18,8 +18,8 @@ public class MarketDocumentController {
     private final MarketDocumentService marketDocumentService;
 
     @GetMapping("/v1/markets/search")
-    public ResponseEntity findByMarketName(@RequestParam String marketName, Pageable pageable) {
-        List<MarketDocument> result = marketDocumentService.findByMarketName(marketName, pageable);
+    public ResponseEntity findByMarketName(@RequestParam String word, Pageable pageable) {
+        List<MarketDocument> result = marketDocumentService.findByMarketName(word, pageable);
 
         return ResponseEntity.ok(result);
     }

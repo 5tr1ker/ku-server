@@ -155,24 +155,30 @@ public class InitData implements CommandLineRunner {
         accountRepository.deleteAll();
         marketRepository.deleteAll();
 
+        File fileImage_account_1 = new File("src/main/resources/images/profile-1.png");
+        String image_url_account_1 = uploadFile(fileImage_account_1);
         Account account = Account.builder()
                 .email("email@naver.com")
                 .age("20")
                 .phone("01012341234")
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
+                .profileImage(image_url_account_1)
                 .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.KAKAO)
                 .build();
 
         accountRepository.save(account);
 
+        File fileImage_account_2 = new File("src/main/resources/images/profile-1.png");
+        String image_url_account_2 = uploadFile(fileImage_account_2);
         Account account2 = Account.builder()
                 .email("email2@naver.com")
                 .age("24")
                 .phone("01046544654")
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
+                .profileImage(image_url_account_2)
                 .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.NAVER)
                 .build();

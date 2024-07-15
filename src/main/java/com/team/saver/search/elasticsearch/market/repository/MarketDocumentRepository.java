@@ -7,6 +7,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface MarketDocumentRepository extends ElasticsearchRepository<MarketDocument, Long> {
 
-    Page<MarketDocument> findByMarketNameContaining(String marketName, Pageable pageable);
+    Page<MarketDocument> findByMarketNameContainingOrMarketDescriptionContaining(String marketName, String marketDescription, Pageable pageable);
 
 }
