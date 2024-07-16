@@ -1,6 +1,6 @@
-package com.team.saver.attraction.promotion.entity;
+package com.team.saver.promotion.entity;
 
-import com.team.saver.attraction.promotion.dto.PromotionCreateRequest;
+import com.team.saver.promotion.dto.PromotionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 

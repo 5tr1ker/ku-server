@@ -1,4 +1,4 @@
-package com.team.saver.attraction.promotion.entity;
+package com.team.saver.promotion.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

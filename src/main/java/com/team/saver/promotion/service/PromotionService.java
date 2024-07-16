@@ -1,13 +1,13 @@
-package com.team.saver.attraction.promotion.service;
+package com.team.saver.promotion.service;
 
-import com.team.saver.attraction.promotion.dto.PromotionResponse;
-import com.team.saver.attraction.promotion.dto.PromotionCreateRequest;
-import com.team.saver.attraction.promotion.entity.Promotion;
-import com.team.saver.attraction.promotion.entity.PromotionLocation;
-import com.team.saver.attraction.promotion.entity.PromotionTag;
-import com.team.saver.attraction.promotion.entity.PromotionTagRelationShip;
-import com.team.saver.attraction.promotion.repository.PromotionRepository;
-import com.team.saver.attraction.promotion.repository.PromotionTagRepository;
+import com.team.saver.promotion.dto.PromotionResponse;
+import com.team.saver.promotion.dto.PromotionCreateRequest;
+import com.team.saver.promotion.entity.Promotion;
+import com.team.saver.promotion.entity.PromotionLocation;
+import com.team.saver.promotion.entity.PromotionTag;
+import com.team.saver.promotion.entity.PromotionTagRelationShip;
+import com.team.saver.promotion.repository.PromotionRepository;
+import com.team.saver.promotion.repository.PromotionTagRepository;
 import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +49,7 @@ public class PromotionService {
 
     @Transactional
     public void deleteByIdAndLocation(long promotionId, PromotionLocation location) {
-        promotionRepository.deleteByIdAndLocation(promotionId, location);
+        promotionRepository.deleteByPromotionIdAndPromotionLocation(promotionId, location);
     }
 
     public List<PromotionResponse> getPromotion(Pageable pageable, PromotionLocation location) {

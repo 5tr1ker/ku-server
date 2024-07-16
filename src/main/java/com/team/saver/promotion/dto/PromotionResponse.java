@@ -1,4 +1,4 @@
-package com.team.saver.attraction.promotion.dto;
+package com.team.saver.promotion.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

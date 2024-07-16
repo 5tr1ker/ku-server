@@ -1,7 +1,7 @@
-package com.team.saver.attraction.promotion.repository;
+package com.team.saver.promotion.repository;
 
-import com.team.saver.attraction.promotion.dto.PromotionResponse;
-import com.team.saver.attraction.promotion.entity.PromotionLocation;
+import com.team.saver.promotion.dto.PromotionResponse;
+import com.team.saver.promotion.entity.PromotionLocation;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

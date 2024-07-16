@@ -1,9 +1,9 @@
-package com.team.saver.attraction.promotion.controller;
+package com.team.saver.promotion.controller;
 
-import com.team.saver.attraction.promotion.dto.PromotionResponse;
-import com.team.saver.attraction.promotion.dto.PromotionCreateRequest;
-import com.team.saver.attraction.promotion.entity.PromotionLocation;
-import com.team.saver.attraction.promotion.service.PromotionService;
+import com.team.saver.promotion.dto.PromotionResponse;
+import com.team.saver.promotion.dto.PromotionCreateRequest;
+import com.team.saver.promotion.entity.PromotionLocation;
+import com.team.saver.promotion.service.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
