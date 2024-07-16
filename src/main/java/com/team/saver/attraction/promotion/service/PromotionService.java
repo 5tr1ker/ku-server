@@ -8,7 +8,6 @@ import com.team.saver.attraction.promotion.entity.PromotionTagRelationShip;
 import com.team.saver.attraction.promotion.repository.PromotionRepository;
 import com.team.saver.attraction.promotion.repository.PromotionTagRepository;
 import com.team.saver.s3.service.S3Service;
-import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,11 +22,10 @@ public class PromotionService {
 
     private final PromotionRepository promotionRepository;
     private final PromotionTagRepository promotionTagRepository;
-    private final AutoCompleteService autoCompleteService;
     private final S3Service s3Service;
 
     @Transactional
-    public void addAttraction(PromotionCreateRequest request, MultipartFile imageFile) {
+    public void addPromotion(PromotionCreateRequest request, MultipartFile imageFile) {
         Promotion promotion = Promotion.createEntity(request);
         String imageUrl = s3Service.uploadImage(imageFile);
 
@@ -49,11 +47,11 @@ public class PromotionService {
     }
 
     @Transactional
-    public void deleteAttraction(long attractionId) {
-        promotionRepository.deleteById(attractionId);
+    public void deletePromotion(long promotionId) {
+        promotionRepository.deleteById(promotionId);
     }
 
-    public List<PromotionResponse> getAttraction(Pageable pageable) {
+    public List<PromotionResponse> getPromotion(Pageable pageable) {
         return promotionRepository.findByRecommend(pageable);
     }
 

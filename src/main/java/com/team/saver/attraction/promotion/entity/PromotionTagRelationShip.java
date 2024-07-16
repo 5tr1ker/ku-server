@@ -11,7 +11,7 @@ import lombok.*;
 public class PromotionTagRelationShip {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long attractionTagRelationShipId;
+    private long promotionTagRelationShipId;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

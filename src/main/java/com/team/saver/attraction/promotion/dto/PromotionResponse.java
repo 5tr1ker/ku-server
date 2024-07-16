@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PromotionResponse {
 
-    private long attractionId;
+    private long promotionId;
 
     private String imageUrl;
 

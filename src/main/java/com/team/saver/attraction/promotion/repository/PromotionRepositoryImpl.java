@@ -10,9 +10,9 @@ import java.util.List;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
-import static com.team.saver.attraction.promotion.entity.QAttraction.attraction;
-import static com.team.saver.attraction.promotion.entity.QAttractionTag.attractionTag;
-import static com.team.saver.attraction.promotion.entity.QAttractionTagRelationShip.attractionTagRelationShip;
+import static com.team.saver.attraction.promotion.entity.QPromotion.promotion;
+import static com.team.saver.attraction.promotion.entity.QPromotionTag.promotionTag;
+import static com.team.saver.attraction.promotion.entity.QPromotionTagRelationShip.promotionTagRelationShip;
 
 @RequiredArgsConstructor
 public class PromotionRepositoryImpl implements CustomPromotionRepository {
@@ -22,18 +22,18 @@ public class PromotionRepositoryImpl implements CustomPromotionRepository {
     @Override
     public List<PromotionResponse> findByRecommend(Pageable pageable) {
         return jpaQueryFactory
-                .selectFrom(attraction)
-                .leftJoin(attraction.attractionTagRelationShips, attractionTagRelationShip)
-                .leftJoin(attractionTagRelationShip.attractionTag, attractionTag)
-                .transform(groupBy(attraction.attractionId).list(
+                .selectFrom(promotion)
+                .leftJoin(promotion.promotionTagRelationShips, promotionTagRelationShip)
+                .leftJoin(promotionTagRelationShip.promotionTag, promotionTag)
+                .transform(groupBy(promotion.promotionId).list(
                         Projections.constructor(
                                 PromotionResponse.class,
-                                attraction.attractionId,
-                                attraction.imageUrl,
+                                promotion.promotionId,
+                                promotion.imageUrl,
                                 list(
-                                        attractionTag.tagContent
+                                        promotionTag.tagContent
                                 ),
-                                attraction.introduce
+                                promotion.introduce
                         )
                 ));
     }

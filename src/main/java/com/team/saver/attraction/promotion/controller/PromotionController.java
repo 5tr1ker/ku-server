@@ -23,7 +23,7 @@ public class PromotionController {
     @Operation(summary = "관광 시설 홍보 등록")
     public ResponseEntity addPromotion(@RequestPart PromotionCreateRequest request,
                                         @RequestPart MultipartFile image) {
-        promotionService.addAttraction(request, image);
+        promotionService.addPromotion(request, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -31,7 +31,7 @@ public class PromotionController {
     @DeleteMapping("/v1/attractions/promotions/{promotionId}")
     @Operation(summary = "관광 시설 홍보 제거")
     public ResponseEntity deletePromotion(@PathVariable long promotionId) {
-        promotionService.deleteAttraction(promotionId);
+        promotionService.deletePromotion(promotionId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -39,7 +39,7 @@ public class PromotionController {
     @GetMapping("/v1/attractions/promotions")
     @Operation(summary = "모든 관광 시설 홍보 조회")
     public ResponseEntity getPromotion(Pageable pageable) {
-        List<PromotionResponse> result = promotionService.getAttraction(pageable);
+        List<PromotionResponse> result = promotionService.getPromotion(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

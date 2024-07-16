@@ -15,7 +15,7 @@ import java.util.List;
 public class Promotion {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long attractionId;
+    private long promotionId;
 
     @Setter
     private String imageUrl;

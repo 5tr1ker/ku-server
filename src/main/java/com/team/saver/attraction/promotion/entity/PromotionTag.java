@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PromotionTag {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long attractionTagId;
+    private long promotionTagId;
 
     @Column(nullable = false)
     private String tagContent;
