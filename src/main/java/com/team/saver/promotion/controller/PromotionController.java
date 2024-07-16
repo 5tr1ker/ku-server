@@ -40,7 +40,7 @@ public class PromotionController {
     }
 
     @GetMapping("/v1/{location}/promotions")
-    @Operation(summary = "특정 위치의 홍보 데이터 조회 [ Main : 메인 , Attraction : 관광 조회 페이지 ]")
+    @Operation(summary = "특정 위치의 홍보 데이터 조회 [ MAIN : 메인 , ATTRACTION : 관광 조회 페이지 ]")
     public ResponseEntity getPromotion(Pageable pageable, @PathVariable PromotionLocation location) {
         List<PromotionResponse> result = promotionService.getPromotion(pageable, location);
 

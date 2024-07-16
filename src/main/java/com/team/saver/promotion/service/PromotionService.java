@@ -1,5 +1,6 @@
 package com.team.saver.promotion.service;
 
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.promotion.dto.PromotionResponse;
 import com.team.saver.promotion.dto.PromotionCreateRequest;
 import com.team.saver.promotion.entity.Promotion;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PROMOTION;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +52,11 @@ public class PromotionService {
 
     @Transactional
     public void deleteByIdAndLocation(long promotionId, PromotionLocation location) {
-        promotionRepository.deleteByPromotionIdAndPromotionLocation(promotionId, location);
+        long result = promotionRepository.deleteByPromotionIdAndPromotionLocation(promotionId, location);
+
+        if(result == 0) {
+            throw new CustomRuntimeException(NOT_FOUND_PROMOTION);
+        }
     }
 
     public List<PromotionResponse> getPromotion(Pageable pageable, PromotionLocation location) {
