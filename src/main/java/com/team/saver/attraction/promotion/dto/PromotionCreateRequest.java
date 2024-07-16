@@ -1,13 +1,11 @@
-package com.team.saver.attraction.dto;
+package com.team.saver.attraction.promotion.dto;
 
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class AttractionCreateRequest {
-
-    private String title;
+public class PromotionCreateRequest {
 
     private String introduce;
 

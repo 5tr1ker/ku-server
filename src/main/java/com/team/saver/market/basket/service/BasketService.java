@@ -12,4 +12,16 @@ public class BasketService {
     private final BasketRepository basketRepository;
     private final BasketMenuRepository basketMenuRepository;
 
+    public void addBasket() {
+
+    }
+
+    public void getBasketById() {
+
+    }
+
+    public void getAllBasket() {
+
+    }
+
 }

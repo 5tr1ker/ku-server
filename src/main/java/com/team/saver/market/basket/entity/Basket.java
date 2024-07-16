@@ -2,7 +2,6 @@ package com.team.saver.market.basket.entity;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +24,7 @@ public class Basket {
     @ManyToOne(fetch = FetchType.LAZY)
     private Market market;
 
+    @Builder.Default
     @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true)
     private List<BasketMenu> basketMenus = new ArrayList<>();
 

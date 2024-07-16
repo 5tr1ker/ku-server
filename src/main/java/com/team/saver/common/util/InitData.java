@@ -6,11 +6,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
-import com.team.saver.attraction.entity.Attraction;
-import com.team.saver.attraction.entity.AttractionTag;
-import com.team.saver.attraction.entity.AttractionTagRelationShip;
-import com.team.saver.attraction.repository.AttractionRepository;
-import com.team.saver.attraction.repository.AttractionTagRepository;
+import com.team.saver.attraction.promotion.entity.Promotion;
+import com.team.saver.attraction.promotion.entity.PromotionTag;
+import com.team.saver.attraction.promotion.entity.PromotionTagRelationShip;
+import com.team.saver.attraction.promotion.repository.PromotionRepository;
+import com.team.saver.attraction.promotion.repository.PromotionTagRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
@@ -100,8 +100,8 @@ public class InitData implements CommandLineRunner {
     private final Trie trie;
     private final AutoCompleteService autoCompleteService;
     private final SearchWordScheduler searchWordScheduler;
-    private final AttractionRepository attractionRepository;
-    private final AttractionTagRepository attractionTagRepository;
+    private final PromotionRepository promotionRepository;
+    private final PromotionTagRepository promotionTagRepository;
     private final AmazonS3Client amazonS3Client;
     private final MarketDocumentRepository marketDocumentRepository;
 
@@ -367,26 +367,24 @@ public class InitData implements CommandLineRunner {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
             String imageUrl = uploadFile(fileImage);
 
-            Attraction attraction = Attraction.builder()
-                    .title(data.title)
+            Promotion promotion = Promotion.builder()
                     .introduce(data.introduce)
                     .imageUrl(imageUrl)
                     .build();
 
             for (String tag : data.tags) {
-                AttractionTag attractionTag = AttractionTag.builder()
+                PromotionTag promotionTag = PromotionTag.builder()
                         .tagContent(tag)
                         .build();
-                attractionTagRepository.save(attractionTag);
+                promotionTagRepository.save(promotionTag);
 
-                attraction.addTag(AttractionTagRelationShip.builder()
-                        .attractionTag(attractionTag)
-                        .attraction(attraction)
+                promotion.addTag(PromotionTagRelationShip.builder()
+                        .promotionTag(promotionTag)
+                        .promotion(promotion)
                         .build());
             }
 
-            attractionRepository.save(attraction);
-            autoCompleteService.addSearchWord(attraction.getTitle());
+            promotionRepository.save(promotion);
         }
 
         settingInitData();
