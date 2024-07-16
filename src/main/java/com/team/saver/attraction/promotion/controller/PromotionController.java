@@ -2,6 +2,7 @@ package com.team.saver.attraction.promotion.controller;
 
 import com.team.saver.attraction.promotion.dto.PromotionResponse;
 import com.team.saver.attraction.promotion.dto.PromotionCreateRequest;
+import com.team.saver.attraction.promotion.entity.PromotionLocation;
 import com.team.saver.attraction.promotion.service.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,27 +20,29 @@ public class PromotionController {
 
     private final PromotionService promotionService;
 
-    @PostMapping("/v1/attractions/promotions")
-    @Operation(summary = "관광 시설 홍보 등록")
-    public ResponseEntity addPromotion(@RequestPart PromotionCreateRequest request,
-                                        @RequestPart MultipartFile image) {
-        promotionService.addPromotion(request, image);
+    @PostMapping("/v1/{location}/promotions")
+    @Operation(summary = "특정 위치에 있는 홍보 데이터 등록")
+    public ResponseEntity addPromotionFromMain(@RequestPart PromotionCreateRequest request,
+                                               @PathVariable PromotionLocation location,
+                                               @RequestPart MultipartFile image) {
+        promotionService.addPromotion(request, location, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/v1/attractions/promotions/{promotionId}")
-    @Operation(summary = "관광 시설 홍보 제거")
-    public ResponseEntity deletePromotion(@PathVariable long promotionId) {
-        promotionService.deletePromotion(promotionId);
+    @DeleteMapping("/v1/{location}/promotions/{promotionId}")
+    @Operation(summary = "특정 위치에 있는 홍보 데이터 제거")
+    public ResponseEntity deletePromotion(@PathVariable long promotionId,
+                                          @PathVariable PromotionLocation location) {
+        promotionService.deleteByIdAndLocation(promotionId, location);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/v1/attractions/promotions")
-    @Operation(summary = "모든 관광 시설 홍보 조회")
-    public ResponseEntity getPromotion(Pageable pageable) {
-        List<PromotionResponse> result = promotionService.getPromotion(pageable);
+    @GetMapping("/v1/{location}/promotions")
+    @Operation(summary = "특정 위치의 홍보 데이터 조회 [ Main : 메인 , Attraction : 관광 조회 페이지 ]")
+    public ResponseEntity getPromotion(Pageable pageable, @PathVariable PromotionLocation location) {
+        List<PromotionResponse> result = promotionService.getPromotion(pageable, location);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

@@ -3,6 +3,7 @@ package com.team.saver.attraction.promotion.service;
 import com.team.saver.attraction.promotion.dto.PromotionResponse;
 import com.team.saver.attraction.promotion.dto.PromotionCreateRequest;
 import com.team.saver.attraction.promotion.entity.Promotion;
+import com.team.saver.attraction.promotion.entity.PromotionLocation;
 import com.team.saver.attraction.promotion.entity.PromotionTag;
 import com.team.saver.attraction.promotion.entity.PromotionTagRelationShip;
 import com.team.saver.attraction.promotion.repository.PromotionRepository;
@@ -25,8 +26,8 @@ public class PromotionService {
     private final S3Service s3Service;
 
     @Transactional
-    public void addPromotion(PromotionCreateRequest request, MultipartFile imageFile) {
-        Promotion promotion = Promotion.createEntity(request);
+    public void addPromotion(PromotionCreateRequest request, PromotionLocation location, MultipartFile imageFile) {
+        Promotion promotion = Promotion.createEntity(request, location);
         String imageUrl = s3Service.uploadImage(imageFile);
 
         promotion.setImageUrl(imageUrl);
@@ -47,12 +48,12 @@ public class PromotionService {
     }
 
     @Transactional
-    public void deletePromotion(long promotionId) {
-        promotionRepository.deleteById(promotionId);
+    public void deleteByIdAndLocation(long promotionId, PromotionLocation location) {
+        promotionRepository.deleteByIdAndLocation(promotionId, location);
     }
 
-    public List<PromotionResponse> getPromotion(Pageable pageable) {
-        return promotionRepository.findByRecommend(pageable);
+    public List<PromotionResponse> getPromotion(Pageable pageable, PromotionLocation location) {
+        return promotionRepository.findByRecommend(pageable, location);
     }
 
 }

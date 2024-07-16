@@ -20,14 +20,18 @@ public class Promotion {
     @Setter
     private String imageUrl;
 
+    @Enumerated(EnumType.STRING)
+    private PromotionLocation promotionLocation;
+
     private String introduce;
 
     @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<PromotionTagRelationShip> promotionTagRelationShips = new ArrayList<>();
 
-    public static Promotion createEntity(PromotionCreateRequest request) {
+    public static Promotion createEntity(PromotionCreateRequest request, PromotionLocation location) {
         return Promotion.builder()
+                .promotionLocation(location)
                 .introduce(request.getIntroduce())
                 .build();
     }
