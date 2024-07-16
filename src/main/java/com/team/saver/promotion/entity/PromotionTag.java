@@ -1,4 +1,4 @@
-package com.team.saver.attraction.entity;
+package com.team.saver.promotion.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AttractionTag {
+public class PromotionTag {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long attractionTagId;
+    private long promotionTagId;
 
     @Column(nullable = false)
     private String tagContent;
 
-    public static AttractionTag createEntity(String tagContent) {
-        return AttractionTag.builder()
+    public static PromotionTag createEntity(String tagContent) {
+        return PromotionTag.builder()
                 .tagContent(tagContent)
                 .build();
     }

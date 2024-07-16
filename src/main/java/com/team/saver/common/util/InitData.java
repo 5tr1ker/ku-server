@@ -6,11 +6,12 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
-import com.team.saver.attraction.entity.Attraction;
-import com.team.saver.attraction.entity.AttractionTag;
-import com.team.saver.attraction.entity.AttractionTagRelationShip;
-import com.team.saver.attraction.repository.AttractionRepository;
-import com.team.saver.attraction.repository.AttractionTagRepository;
+import com.team.saver.promotion.entity.Promotion;
+import com.team.saver.promotion.entity.PromotionLocation;
+import com.team.saver.promotion.entity.PromotionTag;
+import com.team.saver.promotion.entity.PromotionTagRelationShip;
+import com.team.saver.promotion.repository.PromotionRepository;
+import com.team.saver.promotion.repository.PromotionTagRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
@@ -79,11 +80,11 @@ class ReviewData {
 }
 
 @AllArgsConstructor
-class AttractionData {
-
-    String title;
+class PromotionData {
 
     String introduce;
+
+    PromotionLocation location;
 
     String tags[];
 
@@ -100,8 +101,8 @@ public class InitData implements CommandLineRunner {
     private final Trie trie;
     private final AutoCompleteService autoCompleteService;
     private final SearchWordScheduler searchWordScheduler;
-    private final AttractionRepository attractionRepository;
-    private final AttractionTagRepository attractionTagRepository;
+    private final PromotionRepository promotionRepository;
+    private final PromotionTagRepository promotionTagRepository;
     private final AmazonS3Client amazonS3Client;
     private final MarketDocumentRepository marketDocumentRepository;
 
@@ -356,37 +357,38 @@ public class InitData implements CommandLineRunner {
             marketDocumentRepository.save(MarketDocument.createEntity(market));
         }
 
-        // 관광 명소
-        List<AttractionData> attractionData = new ArrayList<>();
-        attractionData.add(new AttractionData("스카이캡슐", "스카이캡슐\n반값으로 입장하기", new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
-        attractionData.add(new AttractionData("튤립정원", "튤립정원\n축제 학생할인 받는 방법", new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
-        attractionData.add(new AttractionData("양떼목장", "양떼목장\n체험해보고 싶다면?", new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
-        attractionData.add(new AttractionData("보트체험", "데이트하기 좋은\n호숫가 위 보트체험", new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        // 홍보 데이터 ( 메인 )
+        List<PromotionData> attractionData = new ArrayList<>();
+        attractionData.add(new PromotionData("스카이캡슐\n반값으로 입장하기",PromotionLocation.MAIN , new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        attractionData.add(new PromotionData("튤립정원\n축제 학생할인 받는 방법",PromotionLocation.MAIN , new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        attractionData.add(new PromotionData("양떼목장\n체험해보고 싶다면?",PromotionLocation.MAIN , new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        attractionData.add(new PromotionData("데이트하기 좋은\n호숫가 위 보트체험",PromotionLocation.MAIN , new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        attractionData.add(new PromotionData("할인 받고 튤립 호수공원에서 인생샷 남기기",PromotionLocation.ATTRACTION , new String[]{"튤립", "인생샷"}, "Rectangle 2450.png"));
+        attractionData.add(new PromotionData("부산여행 가고 싶은데 돈이 걱정이라면?",PromotionLocation.ATTRACTION , new String[]{"부산", "여행"}, "Rectangle 2452.png"));
 
-        for (AttractionData data : attractionData) {
+        for (PromotionData data : attractionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
             String imageUrl = uploadFile(fileImage);
 
-            Attraction attraction = Attraction.builder()
-                    .title(data.title)
+            Promotion promotion = Promotion.builder()
                     .introduce(data.introduce)
                     .imageUrl(imageUrl)
+                    .promotionLocation(data.location)
                     .build();
 
             for (String tag : data.tags) {
-                AttractionTag attractionTag = AttractionTag.builder()
+                PromotionTag promotionTag = PromotionTag.builder()
                         .tagContent(tag)
                         .build();
-                attractionTagRepository.save(attractionTag);
+                promotionTagRepository.save(promotionTag);
 
-                attraction.addTag(AttractionTagRelationShip.builder()
-                        .attractionTag(attractionTag)
-                        .attraction(attraction)
+                promotion.addTag(PromotionTagRelationShip.builder()
+                        .promotionTag(promotionTag)
+                        .promotion(promotion)
                         .build());
             }
 
-            attractionRepository.save(attraction);
-            autoCompleteService.addSearchWord(attraction.getTitle());
+            promotionRepository.save(promotion);
         }
 
         settingInitData();
