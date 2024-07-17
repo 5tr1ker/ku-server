@@ -70,7 +70,7 @@ public class PartnerRequest {
                 .build();
     }
 
-    public void addPartnerResponse(PartnerComment response) {
+    public void addPartnerComment(PartnerComment response) {
         partnerComment.add(response);
         response.setPartnerRequest(this);
     }

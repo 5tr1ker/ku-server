@@ -8,6 +8,10 @@ import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
+import com.team.saver.partner.comment.entity.PartnerComment;
+import com.team.saver.partner.request.entity.PartnerRecommender;
+import com.team.saver.partner.request.entity.PartnerRequest;
+import com.team.saver.partner.request.repository.PartnerRequestRepository;
 import com.team.saver.promotion.entity.Promotion;
 import com.team.saver.promotion.entity.PromotionLocation;
 import com.team.saver.promotion.entity.PromotionTag;
@@ -29,6 +33,7 @@ import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
 import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepository;
 import com.team.saver.search.popular.util.SearchWordScheduler;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -110,6 +115,30 @@ class AttractionData {
 
 }
 
+@AllArgsConstructor
+class PartnerRequestData {
+
+    String requestMarketName;
+
+    String marketAddress;
+
+    String detailAddress;
+
+    String title;
+
+    String description;
+
+    String phoneNumber;
+}
+
+@AllArgsConstructor
+class PartnerCommentData {
+
+    String message;
+
+}
+
+
 @Component
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
@@ -125,6 +154,7 @@ public class InitData implements CommandLineRunner {
     private final AmazonS3Client amazonS3Client;
     private final MarketDocumentRepository marketDocumentRepository;
     private final AttractionRepository attractionRepository;
+    private final PartnerRequestRepository partnerRequestRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -191,7 +221,7 @@ public class InitData implements CommandLineRunner {
 
         accountRepository.save(account);
 
-        File fileImage_account_2 = new File("src/main/resources/images/profile-1.png");
+        File fileImage_account_2 = new File("src/main/resources/images/profile-2.png");
         String image_url_account_2 = uploadFile(fileImage_account_2);
         Account account2 = Account.builder()
                 .email("email2@naver.com")
@@ -205,6 +235,21 @@ public class InitData implements CommandLineRunner {
                 .build();
 
         accountRepository.save(account2);
+
+        File fileImage_account_3 = new File("src/main/resources/images/profile-3.png");
+        String image_url_account_3 = uploadFile(fileImage_account_3);
+        Account account3 = Account.builder()
+                .email("email3@naver.com")
+                .age("38")
+                .phone("01046544654")
+                .lastedLoginDate(LocalDate.now().minusDays(5))
+                .loginCount(1)
+                .profileImage(image_url_account_3)
+                .role(UserRole.STUDENT)
+                .oAuthType(OAuthType.NAVER)
+                .build();
+
+        accountRepository.save(account3);
 
         List<StoreData> storeData = new ArrayList<>();
 
@@ -443,6 +488,59 @@ public class InitData implements CommandLineRunner {
                     .build();
 
             attractionRepository.save(attraction);
+        }
+
+        // 파트너 요청
+        List<PartnerRequestData> partnerRequestData = new ArrayList<>();
+        partnerRequestData.add(new PartnerRequestData("잎사이", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "잎사이 치킨집", "잎사이 치킨집 제발 등록해주시면 안될까요...? 여기 너무 맛있고 맨날 시켜먹는데 할인쿠폰까지 있으면 진짜 너무 좋을 것 같아서 남겨봅니다.. 잎사이 항상 잘 애용하고 있어요! 잎사이 최고!! 역시 최고의 앱!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("화로상회 건대점", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "화로상회 건대점", "화로상회는 언제쯤 들어올까요? 전에 다른 지역에서 가봤는데 너무 맛있었어서 또 먹고 싶은데....", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("냥냥치킨", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "이번에 들어온 냥냥치킨", "이번에 들어온 냥냥치킨도 가능할까요? 궁금한데 아직 가본 적은 없어서 나중에 배달시켜 먹어보고 싶어서 신청해봅니다!!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("매드슬로우", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "매드슬로우", "매드슬로우 칵테일 바 전에 가봤는데 메뉴랑 칵테일이 너무 맛있어서자주 먹고싶은데 가격대가 좀 있어서,,, 부탁드립니다!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("마녀식당", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "마녀식당", "여기 메뉴들 다 신박하고 맛도 있어서 자주 가는데 요즘 통 바빠서 밖에 잘 못나가서요ㅠㅠ 마녀식당 가능하다면 부탁드립니다.", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("마포곱창타운", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "마포곱창타운", "마포곱창타운 단골입니다. 긴말 안합니다. 여기 업체 등록되면 단연 불굴의 1등 맛집될 것이라고 보장합니다. 제발 마포곱창타운 해주세요!!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("충주 규카츠", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "규카츠집", "보니까 규카츠집은 없던데 따로 들어올 업체는 없나용?ㅡ? 제가 규카츠를 엄청 좋아하는데 없어서 부탁드려봅니당!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("메가커피", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "메가커피 원해요!", "메가커피 자주 가는데 할인쿠폰 생기면 좋을 것 같아서 신청해봅니다! 보니까 음식점은 많은데 카페는 별로 없더라구요.. 메가커피 꼭 부탁드립니다!!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("충주 케이크", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "케이크 전문점", "저는 케이크 덕후인데 케이크 배달해주는 곳은 거의 없어서 직접 사먹으러 나가야 하는게 불편해요... 그래서 케이크전가 너무 좋아요!!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("춘리 마라탕", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "춘리마라탕 들어왔으면", "마라탕 중에 제일 맛있는 춘리마라탕이 없는게 말이 안됩니다! 잎사이는 당장 춘리마라탕을 등록하라!!!", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("충주 아구찜", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "아구찜 하는 곳", "저기 뭐냐 그 충주호였나 근처에 아구찜 맛집있던데 거기는 너무 멀어서 먹고 싶을 때 찾아가기 힘들어요.. 배달로 편리하게 먹고싶어요..", "010 - 1234 - 5678"));
+        partnerRequestData.add(new PartnerRequestData("건대토스트", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "건대토스트", "여기 배달하긴 하던데 좀더 할인 받은 가격으로 먹으면 좋겠다 싶어서 한번 요청드려봅니다....", "010 - 1234 - 5678"));
+
+        List<PartnerCommentData> partnerCommentData = new ArrayList<>();
+        partnerCommentData.add(new PartnerCommentData("헉 너무 공감이라 추천을 안 누를 수가 없네용"));
+        partnerCommentData.add(new PartnerCommentData("그니까요 잎사이 치킨집 대체 언제 들어오는지,,,"));
+
+        for(PartnerRequestData data : partnerRequestData) {
+            PartnerRequest request = PartnerRequest.builder()
+                    .requestMarketName(data.requestMarketName)
+                    .marketAddress(data.marketAddress)
+                    .detailAddress(data.detailAddress)
+                    .title(data.title)
+                    .description(data.description)
+                    .phoneNumber(data.phoneNumber)
+                    .requestUser(account)
+                    .build();
+
+            int recommend = random.nextInt(20);
+            for(int i = 0; i < recommend; i++) {
+                PartnerRecommender recommender = PartnerRecommender.builder()
+                        .partnerRequest(request)
+                        .account(account2)
+                        .build();
+
+                request.addPartnerRecommender(recommender);
+            }
+
+            for(PartnerCommentData data2 : partnerCommentData) {
+                PartnerComment partnerComment = PartnerComment.builder()
+                        .message(data2.message)
+                        .writer(account3)
+                        .partnerRequest(request)
+                        .build();
+
+                request.addPartnerComment(partnerComment);
+            }
+
+            partnerRequestRepository.save(request);
         }
 
         settingInitData();
