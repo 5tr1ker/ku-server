@@ -18,20 +18,20 @@ public class PartnerCommentController {
     private final PartnerCommentService partnerCommentService;
 
     @PostMapping("/v1/partners/requests/{partnerRequestId}/comments")
-    @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 응답 남기기")
-    public ResponseEntity addPartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                             @RequestBody PartnerCommentCreateRequest response,
-                                             @PathVariable long partnerRequestId) {
-        partnerCommentService.addPartnerResponse(currentUser ,partnerRequestId, response);
+    @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 댓글 남기기")
+    public ResponseEntity addPartnerComment(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                            @RequestBody PartnerCommentCreateRequest response,
+                                            @PathVariable long partnerRequestId) {
+        partnerCommentService.addPartnerComment(currentUser ,partnerRequestId, response);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/v1/partners/requests/comments/{commentId}")
     @Operation(summary = "[ 로그인 ] 파트너 십 요청에 대한 댓글 삭제")
-    public ResponseEntity deletePartnerResponse(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+    public ResponseEntity deletePartnerComment(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                 @PathVariable long commentId) {
-        partnerCommentService.deletePartnerResponse(currentUser, commentId);
+        partnerCommentService.deletePartnerComment(currentUser, commentId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

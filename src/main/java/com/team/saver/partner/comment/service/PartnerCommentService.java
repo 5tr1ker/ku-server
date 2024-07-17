@@ -25,18 +25,18 @@ public class PartnerCommentService {
     private final AccountService accountService;
 
     @Transactional
-    public void addPartnerResponse(CurrentUser currentUser ,long partnerRequestId, PartnerCommentCreateRequest response) {
+    public void addPartnerComment(CurrentUser currentUser , long partnerRequestId, PartnerCommentCreateRequest response) {
         PartnerRequest request = partnerRequestRepository.findById(partnerRequestId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
         Account account = accountService.getProfile(currentUser);
 
         PartnerComment result = PartnerComment.createEntity(response.getMessage(), account);
 
-        request.addPartnerResponse(result);
+        request.addPartnerComment(result);
     }
 
     @Transactional
-    public void deletePartnerResponse(CurrentUser currentUser, long commentId) {
+    public void deletePartnerComment(CurrentUser currentUser, long commentId) {
         PartnerComment result = partnerCommentRepository.findByEmailAndCommentId(currentUser.getEmail(), commentId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
