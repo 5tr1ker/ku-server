@@ -5,6 +5,7 @@ import com.team.saver.attraction.dto.AttractionResponse;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.common.util.DistanceCalculator;
 import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -33,12 +34,16 @@ public class AttractionService {
         attractionRepository.save(attraction);
     }
 
-    public List<AttractionResponse> getAttraction(Pageable pageable) {
-        return attractionRepository.getAttraction(pageable);
+    public List<AttractionResponse> getAttraction(Pageable pageable, long locationX, double locationY) {
+        List<AttractionResponse> result = attractionRepository.getAttraction(pageable);
+
+        return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
     }
 
-    public List<AttractionResponse> searchAttraction(Pageable pageable, String keyWord) {
-        return attractionRepository.searchAttraction(pageable, keyWord);
+    public List<AttractionResponse> searchAttraction(Pageable pageable, String keyWord, long locationX, double locationY) {
+        List<AttractionResponse> result =  attractionRepository.searchAttraction(pageable, keyWord);
+
+        return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
     }
 
     @Transactional

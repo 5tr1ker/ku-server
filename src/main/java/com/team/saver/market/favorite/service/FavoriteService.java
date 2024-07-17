@@ -4,6 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.common.util.DistanceCalculator;
 import com.team.saver.market.favorite.entity.Favorite;
 import com.team.saver.market.favorite.repository.FavoriteRepository;
 import com.team.saver.market.store.dto.MarketResponse;
@@ -46,7 +47,7 @@ public class FavoriteService {
     public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY) {
         List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail());
 
-        return marketSortTool.calculateDistancePerStore(result, locationX, locationY);
+        return DistanceCalculator.calculateMarketDistance(result, locationX, locationY);
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.team.saver.market.store.util;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.common.util.DistanceCalculator;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.dto.MarketSearchRequest;
 import com.team.saver.market.store.repository.MarketRepository;
@@ -47,11 +48,11 @@ public class MarketSortTool {
     private List<MarketResponse> findMarketAndCalculateDistance(MarketSearchRequest request, OrderSpecifier orderSpecifier, BooleanExpression conditional, Pageable pageable) {
         List<MarketResponse> result = marketRepository.findMarketsAndSort(orderSpecifier, conditional, pageable);
 
-        return calculateDistancePerStore(result, request.getLocationX(), request.getLocationY());
+        return DistanceCalculator.calculateMarketDistance(result, request.getLocationX(), request.getLocationY());
     }
 
     private List<MarketResponse> sortByDistance(List<MarketResponse> marketResponse, double locationX, double locationY) {
-        List<MarketResponse> storages = calculateDistancePerStore(marketResponse, locationX, locationY);
+        List<MarketResponse> storages = DistanceCalculator.calculateMarketDistance(marketResponse, locationX, locationY);
 
         Collections.sort(storages, new Comparator<MarketResponse>() {
             @Override
@@ -61,33 +62,6 @@ public class MarketSortTool {
         });
 
         return storages;
-    }
-
-    public List<MarketResponse> calculateDistancePerStore(List<MarketResponse> marketResponse, double locationX, double locationY) {
-        List<MarketResponse> storages = new ArrayList<>(marketResponse);
-
-        for (MarketResponse store : marketResponse) {
-            double distance = calculateDistance(store.getLocationX(), store.getLocationY(), locationX, locationY);
-
-            store.setDistance(distance);
-        }
-
-        return storages;
-    }
-
-    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        int R = 6371; // Radius of the earth in km
-        double dLat = deg2rad(lat2-lat1);  // deg2rad below
-        double dLon = deg2rad(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d = R * c;
-
-        return d;
-    }
-
-    private double deg2rad(double deg) {
-        return deg * (Math.PI / 180);
     }
 
 

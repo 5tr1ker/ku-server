@@ -20,22 +20,26 @@ public class AttractionController {
 
     @PostMapping("/v1/attractions")
     public ResponseEntity addAttraction(@RequestPart AttractionCreateRequest request,
-                              @RequestPart MultipartFile image) {
+                                        @RequestPart MultipartFile image) {
         attractionService.addAttraction(request, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/v1/attractions")
-    public ResponseEntity getAttraction(Pageable pageable) {
-        List<AttractionResponse> result = attractionService.getAttraction(pageable);
+    public ResponseEntity getAttraction(Pageable pageable,
+                                        @RequestParam long locationX,
+                                        @RequestParam double locationY) {
+        List<AttractionResponse> result = attractionService.getAttraction(pageable, locationX ,locationY);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/v1/attractions/search")
-    public ResponseEntity searchAttraction(Pageable pageable, String keyWord) {
-        List<AttractionResponse> result = attractionService.searchAttraction(pageable, keyWord);
+    public ResponseEntity searchAttraction(Pageable pageable, @RequestParam String keyWord,
+                                           @RequestParam long locationX,
+                                           @RequestParam double locationY) {
+        List<AttractionResponse> result = attractionService.searchAttraction(pageable, keyWord, locationX, locationY);
 
         return ResponseEntity.ok(result);
     }
