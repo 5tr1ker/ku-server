@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.attraction.entity.Attraction;
+import com.team.saver.attraction.repository.AttractionRepository;
 import com.team.saver.promotion.entity.Promotion;
 import com.team.saver.promotion.entity.PromotionLocation;
 import com.team.saver.promotion.entity.PromotionTag;
@@ -91,6 +93,23 @@ class PromotionData {
     String imageName;
 }
 
+@AllArgsConstructor
+class AttractionData {
+
+    String title;
+
+    String description;
+
+    LocalTime openTime;
+
+    LocalTime closeTime;
+
+    String eventMessage;
+
+    String imageUrl;
+
+}
+
 @Component
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
@@ -105,6 +124,7 @@ public class InitData implements CommandLineRunner {
     private final PromotionTagRepository promotionTagRepository;
     private final AmazonS3Client amazonS3Client;
     private final MarketDocumentRepository marketDocumentRepository;
+    private final AttractionRepository attractionRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -358,15 +378,15 @@ public class InitData implements CommandLineRunner {
         }
 
         // 홍보 데이터 ( 메인 )
-        List<PromotionData> attractionData = new ArrayList<>();
-        attractionData.add(new PromotionData("스카이캡슐\n반값으로 입장하기",PromotionLocation.MAIN , new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
-        attractionData.add(new PromotionData("튤립정원\n축제 학생할인 받는 방법",PromotionLocation.MAIN , new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
-        attractionData.add(new PromotionData("양떼목장\n체험해보고 싶다면?",PromotionLocation.MAIN , new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
-        attractionData.add(new PromotionData("데이트하기 좋은\n호숫가 위 보트체험",PromotionLocation.MAIN , new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
-        attractionData.add(new PromotionData("할인 받고 튤립 호수공원에서 인생샷 남기기",PromotionLocation.ATTRACTION , new String[]{"튤립", "인생샷"}, "Rectangle 2450.png"));
-        attractionData.add(new PromotionData("부산여행 가고 싶은데 돈이 걱정이라면?",PromotionLocation.ATTRACTION , new String[]{"부산", "여행"}, "Rectangle 2452.png"));
+        List<PromotionData> promotionData = new ArrayList<>();
+        promotionData.add(new PromotionData("스카이캡슐\n반값으로 입장하기",PromotionLocation.MAIN , new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        promotionData.add(new PromotionData("튤립정원\n축제 학생할인 받는 방법",PromotionLocation.MAIN , new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        promotionData.add(new PromotionData("양떼목장\n체험해보고 싶다면?",PromotionLocation.MAIN , new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        promotionData.add(new PromotionData("데이트하기 좋은\n호숫가 위 보트체험",PromotionLocation.MAIN , new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        promotionData.add(new PromotionData("할인 받고 튤립 호수공원에서 인생샷 남기기",PromotionLocation.ATTRACTION , new String[]{"튤립", "인생샷"}, "Rectangle 2450.png"));
+        promotionData.add(new PromotionData("부산여행 가고 싶은데 돈이 걱정이라면?",PromotionLocation.ATTRACTION , new String[]{"부산", "여행"}, "Rectangle 2452.png"));
 
-        for (PromotionData data : attractionData) {
+        for (PromotionData data : promotionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
             String imageUrl = uploadFile(fileImage);
 
@@ -389,6 +409,40 @@ public class InitData implements CommandLineRunner {
             }
 
             promotionRepository.save(promotion);
+        }
+
+        // 관광 시설
+        List<AttractionData> attractionData = new ArrayList<>();
+        attractionData.add(new AttractionData("롯데월드" , "놀이공원.어트랙션.퍼레이드" , LocalTime.now() , LocalTime.now().plusHours(5) , "학생할인 최대 30%까지 진행 중" ,  "Rectangle 2295.png"));
+        attractionData.add(new AttractionData("경복궁" , "경복궁.한옥.한복" , LocalTime.now() , LocalTime.now().plusHours(5) , "한복 체험 10% 할인 가능" ,  "Rectangle 2455.png"));
+        attractionData.add(new AttractionData("KTX 승차권" , "KTK.대중교통" , LocalTime.now() , LocalTime.now().plusHours(5) , "승차권 주중 15% 할인 예매 가능" ,  "Rectangle 2457.png"));
+        attractionData.add(new AttractionData("서울스카이" , "서울.전망대.야경" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 1+1 행사 이벤트 진행 중" ,  "Rectangle 2459.png"));
+        attractionData.add(new AttractionData("제주도" , "제주도.관광지.바다" , LocalTime.now() , LocalTime.now().plusHours(5) , "제주도 내 관광지 할인 쿠폰 제공" ,  "Rectangle 2461.png"));
+        attractionData.add(new AttractionData("남산타워" , "서울.전망대.야경" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 1+1 행사 이벤트 진행 중" ,  "Rectangle 2470.png"));
+        attractionData.add(new AttractionData("부산 아쿠아리움" , "부산.아쿠아리움" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 5% 할인 및 식사권 제공" ,  "Rectangle 2468.png"));
+        attractionData.add(new AttractionData("캐리비안베이" , "워터파크.어트랙션.퍼레이드" , LocalTime.now() , LocalTime.now().plusHours(5) , "학생할인 20% 할인 입장권 제공" ,  "Rectangle 2467.png"));
+        attractionData.add(new AttractionData("부산 스카이캡슐" , "부산.관광지.스카이캡슐" , LocalTime.now() , LocalTime.now().plusHours(5) , "승차권 주중 15% 할인 예매 가능" ,  "Rectangle 2472.png"));
+        attractionData.add(new AttractionData("전주 한옥마을" , "한옥.한복" , LocalTime.now() , LocalTime.now().plusHours(5) , "한복 대여 10% 할인쿠폰 제공" ,  "Rectangle 2471.png"));
+        for(AttractionData data : attractionData) {
+            File fileImage = new File("src/main/resources/images/" + data.imageUrl);
+            String imageUrl = uploadFile(fileImage);
+
+            // locationX = 33 ~ 38 , LocationY = 125 ~ 130
+            double randomX = random.nextDouble(5);
+            double randomY = random.nextDouble(5);
+
+            Attraction attraction = Attraction.builder()
+                    .attractionName(data.title)
+                    .attractionDescription(data.description)
+                    .openTime(data.openTime)
+                    .closeTime(data.closeTime)
+                    .eventMessage(data.eventMessage)
+                    .imageUrl(imageUrl)
+                    .locationX(33 + randomX)
+                    .locationY(125 + randomY)
+                    .build();
+
+            attractionRepository.save(attraction);
         }
 
         settingInitData();
