@@ -1,5 +1,6 @@
 package com.team.saver.attraction.entity;
 
+import com.team.saver.attraction.dto.AttractionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,8 +18,10 @@ public class Attraction {
 
     private String attractionName;
 
-    @Column(nullable = false)
     private String attractionDescription;
+
+    @Setter
+    private String imageUrl;
 
     private LocalTime openTime;
 
@@ -33,5 +36,16 @@ public class Attraction {
     @Column(nullable = false)
     private double locationY;
 
+    public static Attraction createEntity(AttractionCreateRequest request) {
+        return Attraction.builder()
+                .attractionName(request.getAttractionName())
+                .attractionDescription(request.getAttractionDescription())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
+                .eventMessage(request.getEventMessage())
+                .locationX(request.getLocationX())
+                .locationY(request.getLocationY())
+                .build();
+    }
 
 }
