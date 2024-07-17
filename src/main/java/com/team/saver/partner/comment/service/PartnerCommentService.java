@@ -4,6 +4,7 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
@@ -12,6 +13,8 @@ import com.team.saver.partner.comment.repository.PartnerCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PARTNER_REQUEST;
 import static com.team.saver.common.dto.ErrorMessage.ONLY_DELETE_WRITER;
@@ -41,5 +44,9 @@ public class PartnerCommentService {
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
         partnerCommentRepository.delete(result);
+    }
+
+    public List<PartnerCommentResponse> getPartnerComment(long partnerRequestId) {
+        return partnerCommentRepository.findByPartnerRequestId(partnerRequestId);
     }
 }

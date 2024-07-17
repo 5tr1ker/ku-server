@@ -7,6 +7,7 @@ import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
+import com.team.saver.partner.request.entity.QPartnerRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -29,33 +30,26 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public List<PartnerRequestResponse> findAllEntity(Pageable pageable) {
-        QAccount commentAccount = new QAccount("commentAccount");
-
-        return jpaQueryFactory.selectFrom(partnerRequest)
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        PartnerRequestResponse.class,
+                        partnerRequest.partnerRequestId,
+                        partnerRequest.requestMarketName,
+                        partnerRequest.marketAddress,
+                        account.accountId,
+                        account.email,
+                        account.profileImage,
+                        partnerRequest.writeTime,
+                        select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
+                        partnerComment.count()
+                ))
+                .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
                 .leftJoin(partnerRequest.partnerComment, partnerComment)
-                .leftJoin(partnerComment.writer, commentAccount)
+                .groupBy(partnerRequest.partnerRequestId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .transform(groupBy(partnerRequest.partnerRequestId).list(
-                        Projections.constructor(
-                                PartnerRequestResponse.class,
-                                partnerRequest.partnerRequestId,
-                                partnerRequest.requestMarketName,
-                                partnerRequest.marketAddress,
-                                account.accountId,
-                                account.email,
-                                partnerRequest.writeTime,
-                                select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
-                                list(Projections.constructor(
-                                        PartnerCommentResponse.class,
-                                        partnerComment.partnerCommentId,
-                                        partnerComment.message,
-                                        commentAccount.email,
-                                        partnerComment.writeTime
-                                ))
-                        )
-                ));
+                .fetch();
     }
 
     @Override

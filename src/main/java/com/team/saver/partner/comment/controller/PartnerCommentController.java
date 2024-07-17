@@ -3,6 +3,7 @@ package com.team.saver.partner.comment.controller;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
 import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
+import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.service.PartnerCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +37,14 @@ public class PartnerCommentController {
         partnerCommentService.deletePartnerComment(currentUser, commentId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/v1/partners/requests/{partnerRequestId}/comments")
+    @Operation(summary = "해당 파트너쉽에 관련된 데이터 가져오기")
+    public ResponseEntity getPartnerComment(@PathVariable long partnerRequestId) {
+        List<PartnerCommentResponse> result = partnerCommentService.getPartnerComment(partnerRequestId);
+
+        return ResponseEntity.ok(result);
     }
 
 }
