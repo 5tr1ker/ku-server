@@ -2,6 +2,7 @@ package com.team.saver.attraction.controller;
 
 import com.team.saver.attraction.dto.AttractionCreateRequest;
 import com.team.saver.attraction.dto.AttractionResponse;
+import com.team.saver.attraction.dto.SortType;
 import com.team.saver.attraction.service.AttractionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -28,18 +29,21 @@ public class AttractionController {
 
     @GetMapping("/v1/attractions")
     public ResponseEntity getAttraction(Pageable pageable,
+                                        @RequestParam SortType sort,
                                         @RequestParam double locationX,
                                         @RequestParam double locationY) {
-        List<AttractionResponse> result = attractionService.getAttraction(pageable, locationX ,locationY);
+        List<AttractionResponse> result = attractionService.getAttraction(pageable, sort, locationX ,locationY);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/v1/attractions/search")
-    public ResponseEntity searchAttraction(Pageable pageable, @RequestParam String keyWord,
+    public ResponseEntity searchAttraction(Pageable pageable,
+                                           @RequestParam SortType sort,
+                                           @RequestParam String keyWord,
                                            @RequestParam double locationX,
                                            @RequestParam double locationY) {
-        List<AttractionResponse> result = attractionService.searchAttraction(pageable, keyWord, locationX, locationY);
+        List<AttractionResponse> result = attractionService.searchAttraction(pageable, sort, keyWord, locationX, locationY);
 
         return ResponseEntity.ok(result);
     }

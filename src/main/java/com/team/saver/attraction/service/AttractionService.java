@@ -2,6 +2,7 @@ package com.team.saver.attraction.service;
 
 import com.team.saver.attraction.dto.AttractionCreateRequest;
 import com.team.saver.attraction.dto.AttractionResponse;
+import com.team.saver.attraction.dto.SortType;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
 import com.team.saver.common.exception.CustomRuntimeException;
@@ -34,14 +35,14 @@ public class AttractionService {
         attractionRepository.save(attraction);
     }
 
-    public List<AttractionResponse> getAttraction(Pageable pageable, double locationX, double locationY) {
-        List<AttractionResponse> result = attractionRepository.getAttraction(pageable);
+    public List<AttractionResponse> getAttraction(Pageable pageable, SortType sortType, double locationX, double locationY) {
+        List<AttractionResponse> result = attractionRepository.getAttraction(pageable, sortType.getOrderSpecifier());
 
         return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
     }
 
-    public List<AttractionResponse> searchAttraction(Pageable pageable, String keyWord, double locationX, double locationY) {
-        List<AttractionResponse> result =  attractionRepository.searchAttraction(pageable, keyWord);
+    public List<AttractionResponse> searchAttraction(Pageable pageable, SortType sortType, String keyWord, double locationX, double locationY) {
+        List<AttractionResponse> result =  attractionRepository.searchAttraction(pageable, sortType.getOrderSpecifier(), keyWord);
 
         return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
     }
