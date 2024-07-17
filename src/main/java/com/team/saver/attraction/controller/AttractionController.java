@@ -28,7 +28,7 @@ public class AttractionController {
 
     @GetMapping("/v1/attractions")
     public ResponseEntity getAttraction(Pageable pageable,
-                                        @RequestParam long locationX,
+                                        @RequestParam double locationX,
                                         @RequestParam double locationY) {
         List<AttractionResponse> result = attractionService.getAttraction(pageable, locationX ,locationY);
 
@@ -37,7 +37,7 @@ public class AttractionController {
 
     @GetMapping("/v1/attractions/search")
     public ResponseEntity searchAttraction(Pageable pageable, @RequestParam String keyWord,
-                                           @RequestParam long locationX,
+                                           @RequestParam double locationX,
                                            @RequestParam double locationY) {
         List<AttractionResponse> result = attractionService.searchAttraction(pageable, keyWord, locationX, locationY);
 

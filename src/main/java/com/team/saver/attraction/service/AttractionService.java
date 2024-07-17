@@ -34,13 +34,13 @@ public class AttractionService {
         attractionRepository.save(attraction);
     }
 
-    public List<AttractionResponse> getAttraction(Pageable pageable, long locationX, double locationY) {
+    public List<AttractionResponse> getAttraction(Pageable pageable, double locationX, double locationY) {
         List<AttractionResponse> result = attractionRepository.getAttraction(pageable);
 
         return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
     }
 
-    public List<AttractionResponse> searchAttraction(Pageable pageable, String keyWord, long locationX, double locationY) {
+    public List<AttractionResponse> searchAttraction(Pageable pageable, String keyWord, double locationX, double locationY) {
         List<AttractionResponse> result =  attractionRepository.searchAttraction(pageable, keyWord);
 
         return DistanceCalculator.calculateAttractionDistance(result, locationX, locationY);
