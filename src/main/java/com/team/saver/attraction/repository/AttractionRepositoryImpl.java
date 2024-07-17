@@ -26,6 +26,7 @@ public class AttractionRepositoryImpl implements CustomAttractionRepository {
                         attraction.imageUrl,
                         attraction.openTime,
                         attraction.closeTime,
+                        attraction.eventMessage,
                         attraction.locationX,
                         attraction.locationY
                 )).from(attraction)
@@ -44,6 +45,7 @@ public class AttractionRepositoryImpl implements CustomAttractionRepository {
                         attraction.imageUrl,
                         attraction.openTime,
                         attraction.closeTime,
+                        attraction.eventMessage,
                         attraction.locationX,
                         attraction.locationY
                 )).from(attraction)

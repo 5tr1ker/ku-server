@@ -4,6 +4,7 @@ import com.team.saver.attraction.entity.Attraction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AttractionRepository extends JpaRepository<Attraction, Long>, CustomAttractionRepository {
-    long deleteById(long attractionId);
+
+    long deleteByAttractionId(long attractionId);
 
 }

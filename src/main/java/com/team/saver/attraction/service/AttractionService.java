@@ -9,6 +9,7 @@ import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class AttractionService {
     private final AttractionRepository attractionRepository;
     private final S3Service s3Service;
 
+    @Transactional
     public void addAttraction(AttractionCreateRequest request, MultipartFile multipartFile) {
         Attraction attraction = Attraction.createEntity(request);
 
@@ -39,8 +41,9 @@ public class AttractionService {
         return attractionRepository.searchAttraction(pageable, keyWord);
     }
 
+    @Transactional
     public void deleteAttraction(long attractionId) {
-        long result = attractionRepository.deleteById(attractionId);
+        long result = attractionRepository.deleteByAttractionId(attractionId);
 
         if(result == 0) {
             throw new CustomRuntimeException(NOT_FOUND_ATTRACTION);

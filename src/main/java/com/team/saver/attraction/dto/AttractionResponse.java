@@ -11,6 +11,8 @@ import java.time.LocalTime;
 @Getter
 public class AttractionResponse {
 
+    private long attractionId;
+
     private String attractionName;
 
     private String attractionDescription;
