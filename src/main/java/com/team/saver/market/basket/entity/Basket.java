@@ -30,4 +30,16 @@ public class Basket {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
+
+    public void addBasketMenu(BasketMenu basketMenu) {
+        basketMenus.add(basketMenu);
+    }
+
+    public static Basket createEntity(Market market, Account account) {
+        return Basket.builder()
+                .market(market)
+                .account(account)
+                .build();
+    }
+
 }
