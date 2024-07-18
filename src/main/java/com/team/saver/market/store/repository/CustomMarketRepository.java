@@ -4,6 +4,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.team.saver.market.store.dto.MarketDetailResponse;
 import com.team.saver.market.store.dto.MarketResponse;
+import com.team.saver.market.store.dto.MenuDetailResponse;
 import com.team.saver.market.store.dto.MenuResponse;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
@@ -27,5 +28,6 @@ public interface CustomMarketRepository {
     Optional<Market> findMarketAndMenuByMarketId(long marketId);
 
     List<MenuResponse> findMarketMenuById(long marketId);
-    
+
+    Optional<MenuDetailResponse> findMarketMenuAndOptionById(long marketId, long menuId);
 }

@@ -60,10 +60,11 @@ public class MarketService {
     }
 
     @Transactional
-    public void addMarket(CurrentUser currentUser, MarketCreateRequest request) {
+    public void addMarket(CurrentUser currentUser, MarketCreateRequest request, MultipartFile image) {
         Account account = accountService.getProfile(currentUser);
+        String imageUrl = s3Service.uploadImage(image);
 
-        Market market = Market.createEntity(account, request, "image");
+        Market market = Market.createEntity(account, request, imageUrl);
         for (String classification : request.getClassifications()) {
             Classification classificationEntity = getClassificationEntity(classification);
 
@@ -127,4 +128,8 @@ public class MarketService {
         market.setEventMessage(request.getMessage());
     }
 
+    public MenuDetailResponse findMarketMenuAndOptionById(long marketId, long menuId) {
+        return marketRepository.findMarketMenuAndOptionById(marketId, menuId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
+    }
 }

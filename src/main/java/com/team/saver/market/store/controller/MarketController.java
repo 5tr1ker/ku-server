@@ -27,8 +27,9 @@ public class MarketController {
     @PostMapping("/v1/markets")
     @Operation(summary = "[ 로그인 ] Market 데이터 추가")
     public ResponseEntity addMarket(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                    @RequestBody MarketCreateRequest request) {
-        marketService.addMarket(currentUser, request);
+                                    @RequestPart MarketCreateRequest request,
+                                    @RequestPart MultipartFile image) {
+        marketService.addMarket(currentUser, request, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -56,6 +57,14 @@ public class MarketController {
     @Operation(summary = "해당 Market의 메뉴 정보 가져오기")
     public ResponseEntity findMarketMenuById(@PathVariable long marketId) {
         List<MenuResponse> result = marketService.findMarketMenuById(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/menus/{menuId}/options")
+    @Operation(summary = "해당 Market의 메뉴 옵션 정보 가져오기")
+    public ResponseEntity findMarketMenuOptionById(@PathVariable long marketId, @PathVariable long menuId) {
+        MenuDetailResponse result = marketService.findMarketMenuAndOptionById(marketId, menuId);
 
         return ResponseEntity.ok(result);
     }

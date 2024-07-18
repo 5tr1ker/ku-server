@@ -5,9 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.saver.market.store.dto.MarketDetailResponse;
-import com.team.saver.market.store.dto.MarketResponse;
-import com.team.saver.market.store.dto.MenuResponse;
+import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Market;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +13,14 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.saver.market.store.entity.QMenu.menu;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
+import static com.team.saver.market.store.entity.QMenuOption.menuOption;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
+import static com.team.saver.market.store.entity.QMenu.menu;
 
 @RequiredArgsConstructor
 public class MarketRepositoryImpl implements CustomMarketRepository {
@@ -179,5 +180,33 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.menus, menu)
                 .where(market.marketId.eq(marketId))
                 .fetch();
+    }
+
+    @Override
+    public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long marketId, long menuId) {
+        List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(menu)
+                .leftJoin(menu.menuOptions, menuOption)
+                .where(menu.menuId.eq(menuId))
+                .transform(
+                        groupBy(menu.menuId)
+                                .list(Projections.constructor(
+                                        MenuDetailResponse.class,
+                                        menu.menuId,
+                                        menu.price,
+                                        menu.imageUrl,
+                                        menu.menuName,
+                                        list(Projections.constructor(MenuOptionResponse.class,
+                                                menuOption.menuOptionId,
+                                                menuOption.description,
+                                                menuOption.additionalPrice
+                                        ))
+                                ))
+                );
+
+        if(result.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(result.get(0));
     }
 }
