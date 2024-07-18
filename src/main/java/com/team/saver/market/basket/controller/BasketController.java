@@ -58,8 +58,10 @@ public class BasketController {
     }
 
     @DeleteMapping("/v1/markets/baskets/{basketMenuId}")
-    public ResponseEntity deleteBasketMenu(@PathVariable long basketMenuId) {
-        basketService.deleteBasketMenu(basketMenuId);
+    @Operation(summary = "[ 로그인 ] 특정 장바구니 삭제")
+    public ResponseEntity deleteBasketMenu(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
+                                           @PathVariable long basketMenuId) {
+        basketService.deleteBasketMenu(currentUser, basketMenuId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

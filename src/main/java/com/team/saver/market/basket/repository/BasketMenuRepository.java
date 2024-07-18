@@ -5,6 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BasketMenuRepository extends JpaRepository<BasketMenu, Long>, CustomBasketMenuRepository {
 
-    long deleteByBasketMenuId(long basketMenuId);
-
 }

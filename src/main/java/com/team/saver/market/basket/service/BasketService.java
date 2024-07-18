@@ -82,8 +82,8 @@ public class BasketService {
         return basketRepository.findAllByAccountEmail(currentUser.getEmail());
     }
 
-    public void deleteBasketMenu(long basketMenuId) {
-        long result = basketMenuRepository.deleteByBasketMenuId(basketMenuId);
+    public void deleteBasketMenu(CurrentUser currentUser, long basketMenuId) {
+        long result = basketMenuRepository.deleteByAccountEmailAndBasketMenuId(currentUser.getEmail(), basketMenuId);
 
         if(result == 0) {
             throw new CustomRuntimeException(NOT_FOUND_BASKET_MENU);
