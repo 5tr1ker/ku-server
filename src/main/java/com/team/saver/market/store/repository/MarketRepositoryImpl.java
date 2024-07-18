@@ -171,6 +171,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         Projections.constructor(MenuResponse.class,
                                 menu.menuId,
                                 menu.price,
+                                menu.imageUrl,
                                 menu.menuName
                         )
                 )

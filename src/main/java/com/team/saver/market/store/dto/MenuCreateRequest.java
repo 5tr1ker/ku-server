@@ -1,20 +1,18 @@
 package com.team.saver.market.store.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
-@Getter
-@Builder
-@AllArgsConstructor
-public class MenuResponse {
+import java.util.List;
 
-    private long menuId;
+@Getter
+@AllArgsConstructor
+public class MenuCreateRequest {
 
     private int price;
 
-    private String imageUrl;
-
     private String menuName;
+
+    private List<MenuOptionCreateRequest> options;
 
 }

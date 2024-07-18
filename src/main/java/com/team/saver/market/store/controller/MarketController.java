@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,6 +29,17 @@ public class MarketController {
     public ResponseEntity addMarket(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestBody MarketCreateRequest request) {
         marketService.addMarket(currentUser, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/v1/markets/{marketId}/menus")
+    @Operation(summary = "[ 로그인 ] Market Menu 데이터 추가")
+    public ResponseEntity addMarketMenu(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                        @PathVariable long marketId,
+                                        @RequestPart List<MenuCreateRequest> request,
+                                        @RequestPart List<MultipartFile> image) {
+        marketService.addMarketMenu(currentUser, marketId, request, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

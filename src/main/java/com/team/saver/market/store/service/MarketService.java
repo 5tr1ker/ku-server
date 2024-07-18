@@ -10,12 +10,14 @@ import com.team.saver.market.store.repository.ClassificationRepository;
 import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
+import com.team.saver.s3.service.S3Service;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class MarketService {
     private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
     private final AutoCompleteService autoCompleteService;
+    private final S3Service s3Service;
 
     public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
         return marketSortTool.sortMarket(request, null, pageable);
@@ -73,6 +76,26 @@ public class MarketService {
         autoCompleteService.addSearchWord(market.getMarketName());
     }
 
+    @Transactional
+    public void addMarketMenu(CurrentUser currentUser, long marketId, List<MenuCreateRequest> request, List<MultipartFile> image) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
+
+        int index = 0;
+        for(MenuCreateRequest menuCreateRequest : request) {
+            String imageUrl = s3Service.uploadImage(image.get(index++));
+            Menu menu = Menu.createEntity(menuCreateRequest, imageUrl);
+
+            for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateRequest.getOptions()) {
+                MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+
+                menu.addMenuOption(menuOption);
+            }
+
+            market.addMenu(menu);
+        }
+    }
+
     private Classification getClassificationEntity(String classification) {
         return classificationRepository.findByClassification(classification)
                 .orElseGet(() -> classificationRepository.save(Classification.createEntity(classification)));
@@ -103,4 +126,5 @@ public class MarketService {
 
         market.setEventMessage(request.getMessage());
     }
+
 }
