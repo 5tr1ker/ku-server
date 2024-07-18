@@ -50,7 +50,8 @@ public enum ErrorMessage {
     NOT_FOUND_PROMOTION(-41, "홍보 데이터를 찾을 수 없습니다."),
     NOT_FOUND_ATTRACTION(-42, "관광 시설을 찾을 수 없습니다."),
     NOT_FOUND_MENU(-43, "메뉴 정보를 찾을 수 없습니다."),
-    NOT_FOUND_MENU_OPTION(-44, "메뉴 옵션 정보를 찾을 수 없습니다.");
+    NOT_FOUND_MENU_OPTION(-44, "메뉴 옵션 정보를 찾을 수 없습니다."),
+    NOT_FOUND_BASKET_MENU(-45, "장바구니 등록 상품을 찾을 수 없습니다.");
 
     private final int errorCode;
     private final String message;

@@ -9,4 +9,6 @@ public class MenuOptionUpdateRequest {
 
     private long basketMenuId;
 
+    private long amount;
+
 }

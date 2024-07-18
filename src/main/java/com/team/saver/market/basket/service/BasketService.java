@@ -1,10 +1,8 @@
 package com.team.saver.market.basket.service;
 
 import com.team.saver.account.entity.Account;
-import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
-import com.team.saver.common.dto.ErrorMessage;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.dto.BasketCreateRequest;
 import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
@@ -63,10 +61,17 @@ public class BasketService {
 
     @Transactional
     public void updateMenuOption(CurrentUser currentUser, MenuOptionUpdateRequest request) {
+        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
 
+        MenuOption menuOption = menuOptionRepository.findById(request.getMenuOptionId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU_OPTION));
+
+        basketMenu.updateMenuOption(menuOption);
+        basketMenu.updateAmount(request.getAmount());
     }
 
-    public void findBasketByAccountEmail() {
+    public void findAllByAccountEmail(CurrentUser currentUser) {
 
     }
 

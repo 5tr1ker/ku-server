@@ -184,7 +184,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
 
     @Override
     public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
-        List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(menu)
+        List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
+                .leftJoin(market.menus, menu)
                 .leftJoin(menu.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
@@ -193,6 +194,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                         MenuDetailResponse.class,
                                         menu.menuId,
                                         menu.price,
+                                        market.marketId,
+                                        market.marketName,
+                                        market.marketImage,
                                         menu.imageUrl,
                                         menu.menuName,
                                         list(Projections.constructor(MenuOptionResponse.class,
@@ -203,7 +207,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                 ))
                 );
 
-        if(result.size() == 0) {
+        if (result.size() == 0) {
             return Optional.empty();
         }
 

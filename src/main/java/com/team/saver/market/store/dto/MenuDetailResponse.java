@@ -13,7 +13,13 @@ public class MenuDetailResponse {
 
     private int price;
 
-    private String imageUrl;
+    private long marketId;
+
+    private String marketName;
+
+    private String marketImageUrl;
+
+    private String menuImageUrl;
 
     private String menuName;
 

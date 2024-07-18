@@ -26,6 +26,14 @@ public class BasketMenu {
 
     private long amount;
 
+    public void updateMenuOption(MenuOption menuOption) {
+        this.menuOption = menuOption;
+    }
+
+    public void updateAmount(long amount) {
+        this.amount = amount;
+    }
+
     public static BasketMenu createEntity(Menu menu, MenuOption menuOption, long amount) {
         return BasketMenu.builder()
                 .menu(menu)
