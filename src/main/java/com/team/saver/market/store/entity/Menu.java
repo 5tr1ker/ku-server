@@ -27,6 +27,9 @@ public class Menu {
     @Column(nullable = false)
     private String menuName;
 
+    @Column(nullable = false)
+    private String description;
+
     private String imageUrl;
 
     @Builder.Default
@@ -40,6 +43,7 @@ public class Menu {
     public static Menu createEntity(MenuCreateRequest request, String imageUrl) {
         return Menu.builder()
                 .price(request.getPrice())
+                .description(request.getDescription())
                 .menuName(request.getMenuName())
                 .imageUrl(imageUrl)
                 .build();

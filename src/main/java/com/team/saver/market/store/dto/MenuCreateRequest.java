@@ -13,6 +13,8 @@ public class MenuCreateRequest {
 
     private String menuName;
 
+    private String description;
+
     private List<MenuOptionCreateRequest> options;
 
 }

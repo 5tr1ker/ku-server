@@ -362,15 +362,15 @@ public class InitData implements CommandLineRunner {
 
             // Menu
             int priceRandom = random.nextInt(20);
-            Menu menu1 = Menu.builder().menuName("메뉴1").price(priceRandom * 1000).build();
+            Menu menu1 = Menu.builder().menuName("메뉴1").description("메뉴에 대한 설명").price(priceRandom * 1000).build();
             market.addMenu(menu1);
-            Menu menu2 = Menu.builder().menuName("메뉴2").price(priceRandom * 1500).build();
+            Menu menu2 = Menu.builder().menuName("메뉴2").description("메뉴에 대한 설명").price(priceRandom * 1500).build();
             market.addMenu(menu2);
-            Menu menu3 = Menu.builder().menuName("메뉴3").price(priceRandom * 1400).build();
+            Menu menu3 = Menu.builder().menuName("메뉴3").description("메뉴에 대한 설명").price(priceRandom * 1400).build();
             market.addMenu(menu3);
-            Menu menu4 = Menu.builder().menuName("메뉴4").price(priceRandom * 2000).build();
+            Menu menu4 = Menu.builder().menuName("메뉴4").description("메뉴에 대한 설명").price(priceRandom * 2000).build();
             market.addMenu(menu4);
-            Menu menu5 = Menu.builder().menuName("메뉴5").price(priceRandom * 3000).build();
+            Menu menu5 = Menu.builder().menuName("메뉴5").description("메뉴에 대한 설명").price(priceRandom * 3000).build();
             market.addMenu(menu5);
 
             // Coupon
