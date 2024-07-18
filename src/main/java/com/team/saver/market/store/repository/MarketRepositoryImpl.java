@@ -183,7 +183,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long marketId, long menuId) {
+    public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
         List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(menu)
                 .leftJoin(menu.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))

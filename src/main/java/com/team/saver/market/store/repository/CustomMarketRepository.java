@@ -29,5 +29,5 @@ public interface CustomMarketRepository {
 
     List<MenuResponse> findMarketMenuById(long marketId);
 
-    Optional<MenuDetailResponse> findMarketMenuAndOptionById(long marketId, long menuId);
+    Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId);
 }

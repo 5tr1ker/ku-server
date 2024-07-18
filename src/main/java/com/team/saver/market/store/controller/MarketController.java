@@ -63,8 +63,8 @@ public class MarketController {
 
     @GetMapping("/v1/markets/menus/{menuId}/options")
     @Operation(summary = "해당 Market의 메뉴 옵션 정보 가져오기")
-    public ResponseEntity findMarketMenuOptionById(@PathVariable long marketId, @PathVariable long menuId) {
-        MenuDetailResponse result = marketService.findMarketMenuAndOptionById(marketId, menuId);
+    public ResponseEntity findMarketMenuOptionById(@PathVariable long menuId) {
+        MenuDetailResponse result = marketService.findMarketMenuAndOptionById(menuId);
 
         return ResponseEntity.ok(result);
     }
