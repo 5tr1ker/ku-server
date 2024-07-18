@@ -1,9 +1,11 @@
 package com.team.saver.market.basket.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.entity.Basket;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.team.saver.account.entity.QAccount.account;
@@ -24,5 +26,15 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<BasketResponse> findAllByAccountEmail(String email) {
+        return null;
+    }
+
+    @Override
+    public List<BasketResponse> findByIdAndAccountEmail(String email, List<Long> ids) {
+        return null;
     }
 }

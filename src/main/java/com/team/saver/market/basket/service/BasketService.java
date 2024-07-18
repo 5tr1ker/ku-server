@@ -5,6 +5,7 @@ import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.dto.BasketCreateRequest;
+import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
 import com.team.saver.market.basket.entity.Basket;
 import com.team.saver.market.basket.entity.BasketMenu;
@@ -19,6 +20,8 @@ import com.team.saver.market.store.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
 
@@ -60,8 +63,8 @@ public class BasketService {
     }
 
     @Transactional
-    public void updateMenuOption(CurrentUser currentUser, MenuOptionUpdateRequest request) {
-        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId())
+    public void updateMenuOption(CurrentUser currentUser, MenuOptionUpdateRequest request, long basketMenuId) {
+        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndId(currentUser.getEmail(), basketMenuId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
 
         MenuOption menuOption = menuOptionRepository.findById(request.getMenuOptionId())
@@ -71,8 +74,20 @@ public class BasketService {
         basketMenu.updateAmount(request.getAmount());
     }
 
-    public void findAllByAccountEmail(CurrentUser currentUser) {
+    public List<BasketResponse> findByIdAndAccountEmail(CurrentUser currentUser, List<Long> ids) {
+        return basketRepository.findByIdAndAccountEmail(currentUser.getEmail(), ids);
+    }
 
+    public List<BasketResponse> findAllByAccountEmail(CurrentUser currentUser) {
+        return basketRepository.findAllByAccountEmail(currentUser.getEmail());
+    }
+
+    public void deleteBasketMenu(long basketMenuId) {
+        long result = basketMenuRepository.deleteByBasketMenuId(basketMenuId);
+
+        if(result == 0) {
+            throw new CustomRuntimeException(NOT_FOUND_BASKET_MENU);
+        }
     }
 
 }
