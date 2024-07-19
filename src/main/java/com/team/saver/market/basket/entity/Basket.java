@@ -25,7 +25,7 @@ public class Basket {
     private Market market;
 
     @Builder.Default
-    @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(cascade = { CascadeType.PERSIST , CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "basket")
     private List<BasketMenu> basketMenus = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,6 +33,7 @@ public class Basket {
 
     public void addBasketMenu(BasketMenu basketMenu) {
         basketMenus.add(basketMenu);
+        basketMenu.setBasket(this);
     }
 
     public static Basket createEntity(Market market, Account account) {

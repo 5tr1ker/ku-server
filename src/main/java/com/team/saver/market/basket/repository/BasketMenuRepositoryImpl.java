@@ -28,18 +28,13 @@ public class BasketMenuRepositoryImpl implements CustomBasketMenuRepository {
         return Optional.ofNullable(result);
     }
 
-    @Override
-    public long deleteByAccountEmailAndBasketMenuId(String email, long basketMenuId) {
-        QBasketMenu basketMenu2 = new QBasketMenu("basketMenu2");
+    public Optional<BasketMenu> findByAccountEmailAndBasketMenuId(String email, long basketMenuId) {
+        BasketMenu result = jpaQueryFactory.select(basketMenu)
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.eq(basketMenuId))
+                .fetchOne();
 
-        return jpaQueryFactory.delete(basketMenu)
-                .where(basketMenu.basketMenuId.eq(
-                                select(basketMenu.basketMenuId)
-                                        .from(basket)
-                                        .innerJoin(basket.account, account).on(account.email.eq(email))
-                                        .innerJoin(basket.basketMenus, basketMenu2).on(basketMenu2.basketMenuId.eq(basketMenuId))
-                                        .fetchOne()
-                        )
-                ).execute();
+        return Optional.ofNullable(result);
     }
 }

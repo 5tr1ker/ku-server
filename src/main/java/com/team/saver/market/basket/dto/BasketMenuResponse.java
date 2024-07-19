@@ -13,12 +13,14 @@ public class BasketMenuResponse {
 
     private String menuImageUrl;
 
-    private int amount;
+    private int menuPrice;
+
+    private long amount;
 
     private String optionDescription;
 
     private int optionAdditionalPrice;
 
-    private int finalMenuPrice;
+    private int totalMenuPrice;
 
 }

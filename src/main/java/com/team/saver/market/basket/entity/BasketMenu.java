@@ -3,10 +3,7 @@ package com.team.saver.market.basket.entity;
 import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.entity.MenuOption;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
@@ -23,6 +20,10 @@ public class BasketMenu {
 
     @OneToOne(fetch = FetchType.LAZY)
     private MenuOption menuOption;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Basket basket;
 
     private long amount;
 

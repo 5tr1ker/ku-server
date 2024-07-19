@@ -43,8 +43,8 @@ public class BasketController {
     @GetMapping("/v1/markets/baskets")
     @Operation(summary = "[ 로그인 ] 특정 아이디로 내가 등록한 장바구니 가져오기")
     public ResponseEntity findByIdAndAccountEmail(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
-                                                  @RequestParam List<Long> ids) {
-        List<BasketResponse> result = basketService.findByIdAndAccountEmail(currentUser, ids);
+                                                  @RequestParam List<Long> id) {
+        List<BasketResponse> result = basketService.findByIdAndAccountEmail(currentUser, id);
 
         return ResponseEntity.ok(result);
     }

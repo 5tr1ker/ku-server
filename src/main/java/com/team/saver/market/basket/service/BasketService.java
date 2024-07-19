@@ -40,7 +40,7 @@ public class BasketService {
     public void addBasket(CurrentUser currentUser, BasketCreateRequest request) {
         Account account = accountService.getProfile(currentUser);
         Basket basket = basketRepository.findByMarketIdAndAccountEmail(request.getMarketId(), currentUser.getEmail())
-                .orElseGet(() -> createBasket(request.getMarketId(), account));
+                .orElseGet(() -> basketRepository.save(createBasket(request.getMarketId(), account)));
 
         Menu menu = menuRepository.findById(request.getMenuId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
@@ -82,12 +82,12 @@ public class BasketService {
         return basketRepository.findAllByAccountEmail(currentUser.getEmail());
     }
 
+    @Transactional
     public void deleteBasketMenu(CurrentUser currentUser, long basketMenuId) {
-        long result = basketMenuRepository.deleteByAccountEmailAndBasketMenuId(currentUser.getEmail(), basketMenuId);
+        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndBasketMenuId(currentUser.getEmail(), basketMenuId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
 
-        if(result == 0) {
-            throw new CustomRuntimeException(NOT_FOUND_BASKET_MENU);
-        }
+        basketMenuRepository.delete(basketMenu);
     }
 
 }

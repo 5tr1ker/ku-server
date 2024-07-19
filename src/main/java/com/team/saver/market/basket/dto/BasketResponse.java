@@ -17,6 +17,4 @@ public class BasketResponse {
 
     private List<BasketMenuResponse> menu;
 
-    private long totalPrice;
-
 }

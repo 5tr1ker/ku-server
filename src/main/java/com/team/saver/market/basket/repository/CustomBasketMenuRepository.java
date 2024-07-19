@@ -8,6 +8,6 @@ public interface CustomBasketMenuRepository {
 
     Optional<BasketMenu> findByAccountEmailAndId(String email, long basketMenuId);
 
-    long deleteByAccountEmailAndBasketMenuId(String email, long basketMenuId);
+    Optional<BasketMenu> findByAccountEmailAndBasketMenuId(String email, long basketMenuId);
 
 }
