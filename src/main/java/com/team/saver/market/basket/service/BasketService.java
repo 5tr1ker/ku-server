@@ -37,10 +37,10 @@ public class BasketService {
     private final MenuOptionRepository menuOptionRepository;
 
     @Transactional
-    public void addBasket(CurrentUser currentUser, BasketCreateRequest request) {
+    public void addBasket(CurrentUser currentUser, long marketId, BasketCreateRequest request) {
         Account account = accountService.getProfile(currentUser);
-        Basket basket = basketRepository.findByMarketIdAndAccountEmail(request.getMarketId(), currentUser.getEmail())
-                .orElseGet(() -> basketRepository.save(createBasket(request.getMarketId(), account)));
+        Basket basket = basketRepository.findByMarketIdAndAccountEmail(marketId, currentUser.getEmail())
+                .orElseGet(() -> basketRepository.save(createBasket(marketId, account)));
 
         Menu menu = menuRepository.findById(request.getMenuId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));

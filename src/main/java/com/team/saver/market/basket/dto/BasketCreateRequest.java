@@ -9,8 +9,6 @@ public class BasketCreateRequest {
 
     private long menuOptionId;
 
-    private long marketId;
-
     private long amount;
 
 }

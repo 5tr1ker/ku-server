@@ -21,11 +21,12 @@ public class BasketController {
 
     private final BasketService basketService;
 
-    @PostMapping("/v1/markets/baskets")
+    @PostMapping("/v1/markets/{marketId}/baskets")
     @Operation(summary = "[ 로그인 ] 장바구니 추가 API ( menuOptionId 가 없으면 0 )")
     public ResponseEntity addBasket(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
+                                    @PathVariable long marketId,
                                     @RequestBody BasketCreateRequest request) {
-        basketService.addBasket(currentUser, request);
+        basketService.addBasket(currentUser, marketId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
