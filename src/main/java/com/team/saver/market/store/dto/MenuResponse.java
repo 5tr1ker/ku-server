@@ -13,6 +13,10 @@ public class MenuResponse {
 
     private int price;
 
+    private String description;
+
+    private String imageUrl;
+
     private String menuName;
 
 }

@@ -8,6 +8,7 @@ import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
+import com.team.saver.market.store.entity.MenuOption;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -362,16 +363,24 @@ public class InitData implements CommandLineRunner {
 
             // Menu
             int priceRandom = random.nextInt(20);
-            Menu menu1 = Menu.builder().menuName("메뉴1").price(priceRandom * 1000).build();
+            Menu menu1 = Menu.builder().menuName("메뉴1").description("메뉴에 대한 설명").price(priceRandom * 1000).build();
             market.addMenu(menu1);
-            Menu menu2 = Menu.builder().menuName("메뉴2").price(priceRandom * 1500).build();
+            Menu menu2 = Menu.builder().menuName("메뉴2").description("메뉴에 대한 설명").price(priceRandom * 1500).build();
             market.addMenu(menu2);
-            Menu menu3 = Menu.builder().menuName("메뉴3").price(priceRandom * 1400).build();
+            Menu menu3 = Menu.builder().menuName("메뉴3").description("메뉴에 대한 설명").price(priceRandom * 1400).build();
             market.addMenu(menu3);
-            Menu menu4 = Menu.builder().menuName("메뉴4").price(priceRandom * 2000).build();
+            Menu menu4 = Menu.builder().menuName("메뉴4").description("메뉴에 대한 설명").price(priceRandom * 2000).build();
             market.addMenu(menu4);
-            Menu menu5 = Menu.builder().menuName("메뉴5").price(priceRandom * 3000).build();
+            Menu menu5 = Menu.builder().menuName("메뉴5").description("메뉴에 대한 설명").price(priceRandom * 3000).build();
             market.addMenu(menu5);
+
+            // Menu Option
+            MenuOption menuOption1 = MenuOption.builder().description("옵션1").additionalPrice(100).build();
+            MenuOption menuOption2 = MenuOption.builder().description("옵션2").additionalPrice(200).build();
+            MenuOption menuOption3 = MenuOption.builder().description("옵션3").additionalPrice(500).build();
+            menu1.addMenuOption(menuOption1);
+            menu1.addMenuOption(menuOption2);
+            menu1.addMenuOption(menuOption3);
 
             // Coupon
             for (int i = 0; i < 5; i++) {

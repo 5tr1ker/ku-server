@@ -1,9 +1,29 @@
 package com.team.saver.market.basket.service;
 
+import com.team.saver.account.entity.Account;
+import com.team.saver.account.service.AccountService;
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.basket.dto.BasketCreateRequest;
+import com.team.saver.market.basket.dto.BasketResponse;
+import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
+import com.team.saver.market.basket.entity.Basket;
+import com.team.saver.market.basket.entity.BasketMenu;
 import com.team.saver.market.basket.repository.BasketMenuRepository;
 import com.team.saver.market.basket.repository.BasketRepository;
+import com.team.saver.market.store.entity.Market;
+import com.team.saver.market.store.entity.Menu;
+import com.team.saver.market.store.entity.MenuOption;
+import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.market.store.repository.MenuOptionRepository;
+import com.team.saver.market.store.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.team.saver.common.dto.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -11,17 +31,60 @@ public class BasketService {
 
     private final BasketRepository basketRepository;
     private final BasketMenuRepository basketMenuRepository;
+    private final AccountService accountService;
+    private final MarketRepository marketRepository;
+    private final MenuRepository menuRepository;
+    private final MenuOptionRepository menuOptionRepository;
 
-    public void addBasket() {
+    @Transactional
+    public void addBasket(CurrentUser currentUser, long marketId, BasketCreateRequest request) {
+        Account account = accountService.getProfile(currentUser);
+        Basket basket = basketRepository.findByMarketIdAndAccountEmail(marketId, currentUser.getEmail())
+                .orElseGet(() -> basketRepository.save(createBasket(marketId, account)));
 
+        Menu menu = menuRepository.findById(request.getMenuId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
+
+        MenuOption menuOption = null;
+        if(request.getMenuOptionId() != 0) {
+            menuOption = menuOptionRepository.findById(request.getMenuOptionId())
+                    .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU_OPTION));
+        }
+
+        BasketMenu basketMenu = BasketMenu.createEntity(menu, menuOption, request.getAmount());
+        basket.addBasketMenu(basketMenu);
     }
 
-    public void getBasketById() {
+    private Basket createBasket(long marketId, Account account) {
+        Market market = marketRepository.findById(marketId)
+                        .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
+        return Basket.createEntity(market, account);
     }
 
-    public void getAllBasket() {
+    @Transactional
+    public void updateMenuOption(CurrentUser currentUser, MenuOptionUpdateRequest request, long basketMenuId) {
+        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndId(currentUser.getEmail(), basketMenuId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
 
+        MenuOption menuOption = menuOptionRepository.findById(request.getMenuOptionId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU_OPTION));
+
+        basketMenu.updateMenuOption(menuOption);
+        basketMenu.updateAmount(request.getAmount());
+    }
+
+    public List<BasketResponse> findByIdAndAccountEmail(CurrentUser currentUser, List<Long> ids) {
+        return basketRepository.findByIdAndAccountEmail(currentUser.getEmail(), ids);
+    }
+
+    public List<BasketResponse> findAllByAccountEmail(CurrentUser currentUser) {
+        return basketRepository.findAllByAccountEmail(currentUser.getEmail());
+    }
+
+    @Transactional
+    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> ids) {
+        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), ids);
     }
 
 }

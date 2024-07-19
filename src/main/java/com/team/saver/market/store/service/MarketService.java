@@ -10,12 +10,14 @@ import com.team.saver.market.store.repository.ClassificationRepository;
 import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
+import com.team.saver.s3.service.S3Service;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class MarketService {
     private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
     private final AutoCompleteService autoCompleteService;
+    private final S3Service s3Service;
 
     public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
         return marketSortTool.sortMarket(request, null, pageable);
@@ -57,10 +60,11 @@ public class MarketService {
     }
 
     @Transactional
-    public void addMarket(CurrentUser currentUser, MarketCreateRequest request) {
+    public void addMarket(CurrentUser currentUser, MarketCreateRequest request, MultipartFile image) {
         Account account = accountService.getProfile(currentUser);
+        String imageUrl = s3Service.uploadImage(image);
 
-        Market market = Market.createEntity(account, request, "image");
+        Market market = Market.createEntity(account, request, imageUrl);
         for (String classification : request.getClassifications()) {
             Classification classificationEntity = getClassificationEntity(classification);
 
@@ -71,6 +75,26 @@ public class MarketService {
 
         marketRepository.save(market);
         autoCompleteService.addSearchWord(market.getMarketName());
+    }
+
+    @Transactional
+    public void addMarketMenu(CurrentUser currentUser, long marketId, List<MenuCreateRequest> request, List<MultipartFile> image) {
+        Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
+
+        int index = 0;
+        for(MenuCreateRequest menuCreateRequest : request) {
+            String imageUrl = s3Service.uploadImage(image.get(index++));
+            Menu menu = Menu.createEntity(menuCreateRequest, imageUrl);
+
+            for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateRequest.getOptions()) {
+                MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+
+                menu.addMenuOption(menuOption);
+            }
+
+            market.addMenu(menu);
+        }
     }
 
     private Classification getClassificationEntity(String classification) {
@@ -102,5 +126,10 @@ public class MarketService {
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
         market.setEventMessage(request.getMessage());
+    }
+
+    public MenuDetailResponse findMarketMenuAndOptionById(long menuId) {
+        return marketRepository.findMarketMenuAndOptionById(menuId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
     }
 }
