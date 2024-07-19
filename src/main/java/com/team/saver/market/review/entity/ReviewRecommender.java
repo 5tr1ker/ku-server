@@ -2,10 +2,7 @@ package com.team.saver.market.review.entity;
 
 import com.team.saver.account.entity.Account;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Getter
@@ -21,7 +18,9 @@ public class ReviewRecommender {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Review review;
 
     public static ReviewRecommender createEntity(Account account, Review review) {
@@ -30,8 +29,5 @@ public class ReviewRecommender {
                 .review(review)
                 .build();
     }
-
-    public void setReview(Review review) {
-        this.review = review;
-    }
+    
 }
