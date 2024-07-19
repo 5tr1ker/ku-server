@@ -10,6 +10,7 @@ import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.basket.entity.QBasket.basket;
 import static com.team.saver.market.basket.entity.QBasketMenu.basketMenu;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,13 +29,17 @@ public class BasketMenuRepositoryImpl implements CustomBasketMenuRepository {
         return Optional.ofNullable(result);
     }
 
-    public Optional<BasketMenu> findByAccountEmailAndBasketMenuId(String email, long basketMenuId) {
-        BasketMenu result = jpaQueryFactory.select(basketMenu)
+    @Override
+    public long deleteByBasketMenuIds(String email, List<Long> ids) {
+        List<Long> basketMenuId = jpaQueryFactory
+                .select(basketMenu.basketMenuId)
                 .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
-                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.eq(basketMenuId))
-                .fetchOne();
+                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(ids))
+                .fetch();
 
-        return Optional.ofNullable(result);
+        return jpaQueryFactory.delete(basketMenu)
+                .where(basketMenu.basketMenuId.in(basketMenuId))
+                .execute();
     }
 }

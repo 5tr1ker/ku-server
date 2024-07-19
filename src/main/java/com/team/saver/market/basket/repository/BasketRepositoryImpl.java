@@ -58,8 +58,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                                         menu.price,
                                         basketMenu.amount,
                                         menuOption.description,
-                                        menuOption.additionalPrice,
-                                        menu.price.add(menuOption.additionalPrice).multiply(basketMenu.amount)
+                                        menuOption.additionalPrice
                                 ))
                         )
                 ));
@@ -67,7 +66,30 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
 
     @Override
     public List<BasketResponse> findByIdAndAccountEmail(String email, List<Long> ids) {
-        return null;
+        return jpaQueryFactory.selectFrom(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .innerJoin(basket.market, market)
+                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(ids))
+                .leftJoin(basketMenu.menuOption, menuOption)
+                .innerJoin(basketMenu.menu, menu)
+                .transform(groupBy(basket.basketId).list(
+                        Projections.constructor(
+                                BasketResponse.class,
+                                basket.basketId,
+                                market.marketId,
+                                market.marketName,
+                                list(Projections.constructor(
+                                        BasketMenuResponse.class,
+                                        basketMenu.basketMenuId,
+                                        menu.menuName,
+                                        menu.imageUrl,
+                                        menu.price,
+                                        basketMenu.amount,
+                                        menuOption.description,
+                                        menuOption.additionalPrice
+                                ))
+                        )
+                ));
     }
 
 }

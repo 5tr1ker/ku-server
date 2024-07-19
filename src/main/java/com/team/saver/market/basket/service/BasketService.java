@@ -83,11 +83,8 @@ public class BasketService {
     }
 
     @Transactional
-    public void deleteBasketMenu(CurrentUser currentUser, long basketMenuId) {
-        BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndBasketMenuId(currentUser.getEmail(), basketMenuId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
-
-        basketMenuRepository.delete(basketMenu);
+    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> ids) {
+        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), ids);
     }
 
 }

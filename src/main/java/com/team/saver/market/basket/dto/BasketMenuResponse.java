@@ -21,6 +21,4 @@ public class BasketMenuResponse {
 
     private int optionAdditionalPrice;
 
-    private int totalMenuPrice;
-
 }
