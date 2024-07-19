@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +34,18 @@ public class Basket {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
+    @CreationTimestamp
+    private LocalDateTime updateTime;
+
+    public void updateTime() {
+        updateTime = LocalDateTime.now();
+    }
+
     public void addBasketMenu(BasketMenu basketMenu) {
         basketMenus.add(basketMenu);
         basketMenu.setBasket(this);
+
+        updateTime();
     }
 
     public static Basket createEntity(Market market, Account account) {

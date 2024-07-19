@@ -44,6 +44,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .innerJoin(basket.basketMenus, basketMenu)
                 .leftJoin(basketMenu.menuOption, menuOption)
                 .innerJoin(basketMenu.menu, menu)
+                .orderBy(basket.updateTime.desc())
                 .transform(groupBy(basket.basketId).list(
                         Projections.constructor(
                                 BasketResponse.class,
@@ -72,6 +73,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(ids))
                 .leftJoin(basketMenu.menuOption, menuOption)
                 .innerJoin(basketMenu.menu, menu)
+                .orderBy(basket.updateTime.desc())
                 .transform(groupBy(basket.basketId).list(
                         Projections.constructor(
                                 BasketResponse.class,
