@@ -33,11 +33,13 @@ public class Menu {
     private String imageUrl;
 
     @Builder.Default
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "menu")
     List<MenuOption> menuOptions = new ArrayList<>();
 
     public void addMenuOption(MenuOption menuOption) {
         this.menuOptions.add(menuOption);
+
+        menuOption.setMenu(this);
     }
 
     public static Menu createEntity(MenuCreateRequest request, String imageUrl) {

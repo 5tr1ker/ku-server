@@ -1,14 +1,8 @@
 package com.team.saver.market.order.entity;
 
 import com.team.saver.market.store.entity.Menu;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -24,6 +18,11 @@ public class OrderMenu {
     private String menuName;
 
     private int price;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Order order;
 
     public static OrderMenu createEntity(Menu menu) {
         return OrderMenu.builder()

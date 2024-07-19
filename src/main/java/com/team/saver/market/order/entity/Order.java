@@ -47,8 +47,10 @@ public class Order {
                 .build();
     }
 
-    public void addOrderMenu(OrderMenu menu) {
-        orderMenuList.add(menu);
+    public void addOrderMenu(OrderMenu orderMenu) {
+        orderMenuList.add(orderMenu);
+
+        orderMenu.setOrder(this);
     }
 
     public void setOrderDetail(OrderDetail orderDetail) {
