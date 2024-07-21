@@ -1,6 +1,7 @@
 package com.team.saver.market.order.entity;
 
 import com.team.saver.market.order.dto.OrderCreateRequest;
+import com.team.saver.market.order.dto.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,23 +28,17 @@ public class OrderDetail {
 
     private String orderNumber;
 
-    private String deliveryAddress;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
 
-    private String deliveryAddressDetail;
-
-    private String phoneNumber;
-
-    private int orderPrice;
+    private long orderPrice;
 
     private int discountAmount;
 
-    private int finalPrice;
+    private long finalPrice;
 
-    public static OrderDetail createEntity(OrderCreateRequest request, String orderNumber, int orderPrice, int discountAmount) {
+    public static OrderDetail createEntity(PaymentType paymentType, String orderNumber, long orderPrice, int discountAmount) {
         return OrderDetail.builder()
-                .deliveryAddress(request.getDeliveryAddress())
-                .deliveryAddressDetail(request.getDeliveryAddressDetail())
-                .phoneNumber(request.getPhoneNumber())
                 .orderNumber(orderNumber)
                 .orderPrice(orderPrice)
                 .discountAmount(discountAmount)

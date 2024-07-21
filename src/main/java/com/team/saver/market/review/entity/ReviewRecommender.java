@@ -29,5 +29,5 @@ public class ReviewRecommender {
                 .review(review)
                 .build();
     }
-    
+
 }

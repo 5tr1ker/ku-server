@@ -9,12 +9,8 @@ public class OrderCreateRequest {
 
     private long couponId;
 
-    private List<Long> menuIds;
+    private List<Long> basketMenuId;
 
-    private String deliveryAddress;
-
-    private String deliveryAddressDetail;
-
-    private String phoneNumber;
+    private PaymentType paymentType;
 
 }

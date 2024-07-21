@@ -21,12 +21,11 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/v1/markets/{marketId}/orders")
-    @Operation(summary = "[ 로그인 ] 주문 목록 추가")
+    @PostMapping("/v1/markets/orders")
+    @Operation(summary = "[ 로그인 ] 해당 메뉴 주문하기")
     public ResponseEntity addOrder(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                   @RequestBody OrderCreateRequest request,
-                                   @PathVariable long marketId) {
-        orderService.addOrder(currentUser ,marketId , request);
+                                   @RequestBody OrderCreateRequest request) {
+        orderService.addOrder(currentUser , request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -42,7 +41,8 @@ public class OrderController {
 
     @GetMapping("/v1/markets/orders/me")
     @Operation(summary = "[ 로그인 ] 나의 주문 목록 모두 가져오기")
-    public ResponseEntity findOrderByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser, @RequestParam boolean existReview) {
+    public ResponseEntity findOrderByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                               @RequestParam boolean existReview) {
         List<OrderResponse> result = orderService.findOrderByUserEmail(currentUser, existReview);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);

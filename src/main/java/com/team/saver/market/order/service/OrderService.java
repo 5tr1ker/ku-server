@@ -4,6 +4,10 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.basket.entity.Basket;
+import com.team.saver.market.basket.entity.BasketMenu;
+import com.team.saver.market.basket.repository.BasketMenuRepository;
+import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.repository.CouponRepository;
 import com.team.saver.market.order.dto.OrderCreateRequest;
@@ -32,41 +36,44 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MarketRepository marketRepository;
-    private final AccountRepository accountRepository;
     private final CouponRepository couponRepository;
     private final MenuRepository menuRepository;
+    private final BasketMenuRepository basketMenuRepository;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, long marketId, OrderCreateRequest request) {
-        Order order = createOrder(currentUser.getEmail(), marketId);
-        int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIds()));
+    public void addOrder(CurrentUser currentUser, OrderCreateRequest request) {
+        List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId());
 
-        OrderDetail orderDetail = createOrderDetail(request, marketId, totalPrice);
-        order.setOrderDetail(orderDetail);
+        for(BasketMenu basketMenu : basketMenus) {
+            Order order = createOrder(basketMenu);
 
-        orderRepository.save(order);
+            long totalPrice = calculateTotalPrice(basketMenu);
+
+            OrderDetail orderDetail = createOrderDetail(request, order.getMarket(), totalPrice);
+            order.setOrderDetail(orderDetail);
+
+            orderRepository.save(order);
+        }
     }
 
     private List<Menu> findMenuListByMenuIdList(List<Long> menuIdList) {
         return menuRepository.findAllById(menuIdList);
     }
 
-    private Order createOrder(String userEmail, long marketId) {
-        Market market = marketRepository.findMarketAndMenuByMarketId(marketId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
-        Account account = accountRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
-
-        return Order.createEntity(market, account);
+    private Order createOrder(BasketMenu basketMenu) {
+        return Order.createEntity(basketMenu.getBasket().getMarket(), basketMenu.getBasket().getAccount());
     }
 
-    private OrderDetail createOrderDetail(OrderCreateRequest request, long marketId , int totalPrice) {
-        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), marketId);
+    private long calculateTotalPrice(BasketMenu basketMenu) {
+        return (basketMenu.getMenuOption().getAdditionalPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
+    }
+
+    private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long totalPrice) {
+        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), market.getMarketId());
 
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
 
-        return OrderDetail.createEntity(request, orderNumber, totalPrice, saleRate);
+        return OrderDetail.createEntity(request.getPaymentType(), orderNumber, totalPrice, saleRate);
     }
 
     private int getSaleRateByCouponIdAndMarketId(long couponId, long marketId) {
