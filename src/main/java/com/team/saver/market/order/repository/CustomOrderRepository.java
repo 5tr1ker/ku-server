@@ -1,6 +1,7 @@
 package com.team.saver.market.order.repository;
 
 import com.team.saver.market.order.dto.OrderDetailResponse;
+import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
 
@@ -11,10 +12,8 @@ public interface CustomOrderRepository {
 
     Optional<Order> findByIdAndUserEmail(String email, long orderId);
 
-    List<Order> findOrderDataByUserEmail(String email, boolean existReview);
+    List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview);
 
     Optional<OrderDetailResponse> findOrderDetailByOrderIdAndEmail(long orderId, String email);
-
-    List<OrderMenu> findOrderMenuByOrderId(long orderId);
 
 }

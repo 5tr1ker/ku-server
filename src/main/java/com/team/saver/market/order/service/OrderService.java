@@ -37,7 +37,6 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CouponRepository couponRepository;
-    private final MenuRepository menuRepository;
     private final BasketMenuRepository basketMenuRepository;
 
     @Transactional
@@ -54,10 +53,6 @@ public class OrderService {
 
             orderRepository.save(order);
         }
-    }
-
-    private List<Menu> findMenuListByMenuIdList(List<Long> menuIdList) {
-        return menuRepository.findAllById(menuIdList);
     }
 
     private Order createOrder(BasketMenu basketMenu) {
@@ -87,19 +82,6 @@ public class OrderService {
         return 0;
     }
 
-    private int addOrderMenuAndReturnTotalPrice(Order order, List<Menu> menuList) {
-        int totalPrice = 0;
-
-        for(Menu menu : menuList) {
-            OrderMenu orderMenu = OrderMenu.createEntity(menu);
-            totalPrice += orderMenu.getPrice();
-
-            order.addOrderMenu(orderMenu);
-        }
-
-        return totalPrice;
-    }
-
     @Transactional
     public void deleteOrder(CurrentUser currentUser, long orderId) {
         Order order = orderRepository.findByIdAndUserEmail(currentUser.getEmail(), orderId)
@@ -109,18 +91,12 @@ public class OrderService {
     }
 
     public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser, boolean existReview) {
-        List<Order> result = orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
-
-        return result.stream().map(OrderResponse::createEntity)
-                .collect(Collectors.toList());
+        return orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
     }
 
     public OrderDetailResponse getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {
-        OrderDetailResponse result = orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
+        return orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER_DETAIL));
-
-        result.setOrderMenus(orderRepository.findOrderMenuByOrderId(orderId));
-        return result;
     }
 
 }

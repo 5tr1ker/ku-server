@@ -42,6 +42,7 @@ public class OrderDetail {
                 .orderNumber(orderNumber)
                 .orderPrice(orderPrice)
                 .discountAmount(discountAmount)
+                .paymentType(paymentType)
                 .finalPrice(orderPrice - discountAmount)
                 .build();
     }
