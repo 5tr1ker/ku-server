@@ -50,6 +50,7 @@ public class OrderMenu {
                 .optionDescription(menuOption.getDescription())
                 .price(menu.getPrice() + menuOption.getOptionPrice())
                 .optionPrice(menuOption.getOptionPrice())
+                .amount(basketMenu.getAmount())
                 .build();
     }
 

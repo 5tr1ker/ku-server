@@ -203,7 +203,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                         list(Projections.constructor(MenuOptionResponse.class,
                                                 menuOption.menuOptionId,
                                                 menuOption.description,
-                                                menuOption.additionalPrice
+                                                menuOption.optionPrice
                                         ))
                                 ))
                 );
