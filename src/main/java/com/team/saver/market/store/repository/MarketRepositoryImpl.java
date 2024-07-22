@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.store.entity.QMenuContainer.menuContainer;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.team.saver.account.entity.QAccount.account;
@@ -156,17 +157,6 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<Market> findMarketAndMenuByMarketId(long marketId) {
-        Market result = jpaQueryFactory.select(market)
-                .from(market)
-                .innerJoin(market.menus).fetchJoin()
-                .where(market.marketId.eq(marketId))
-                .fetchOne();
-
-        return Optional.ofNullable(result);
-    }
-
-    @Override
     public List<MenuResponse> findMarketMenuById(long marketId) {
         return jpaQueryFactory.select(
                         Projections.constructor(MenuResponse.class,
@@ -178,7 +168,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         )
                 )
                 .from(market)
-                .leftJoin(market.menus, menu)
+                .innerJoin(market.menuContainers, menuContainer)
+                .innerJoin(menuContainer.menus, menu)
                 .where(market.marketId.eq(marketId))
                 .fetch();
     }
@@ -186,8 +177,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     @Override
     public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
         List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
-                .leftJoin(market.menus, menu)
-                .leftJoin(menu.menuOptions, menuOption)
+                .innerJoin(market.menuContainers, menuContainer)
+                .innerJoin(menuContainer.menus, menu)
+                .innerJoin(menu.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
                         groupBy(menu.menuId)

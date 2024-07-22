@@ -9,12 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 public class MenuCreateRequest {
 
-    private int price;
+    private String classification;
 
-    private String menuName;
-
-    private String description;
-
-    private List<MenuOptionCreateRequest> options;
+    private List<MenuCreateData> menus;
 
 }

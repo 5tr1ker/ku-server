@@ -72,16 +72,24 @@ public class MarketService {
 
         int index = 0;
         for(MenuCreateRequest menuCreateRequest : request) {
-            String imageUrl = s3Service.uploadImage(image.get(index++));
-            Menu menu = Menu.createEntity(menuCreateRequest, imageUrl);
 
-            for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateRequest.getOptions()) {
-                MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification());
 
-                menu.addMenuOption(menuOption);
+            for(MenuCreateData menuCreateData : menuCreateRequest.getMenus()) {
+                String imageUrl = s3Service.uploadImage(image.get(index++));
+
+                Menu menu = Menu.createEntity(menuCreateData, imageUrl);
+
+                for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateData.getOptions()) {
+                    MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+
+                    menu.addMenuOption(menuOption);
+                }
+
+                menuContainer.addMenu(menu);
             }
 
-            market.addMenu(menu);
+            market.addMenuContainer(menuContainer);
         }
     }
 

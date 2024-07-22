@@ -270,7 +270,23 @@ public class InitData implements CommandLineRunner {
         storeData.add(new StoreData("피자나라 치킨공주", "치킨.피자.안주.주류", "Rectangle 2269.png", "리뷰 작성 시 음료 1개 무료 증정 이벤트 진행 중!", Arrays.asList(review2_1, review2_2, review2_3, review2_4, review2_5)));
 
         ReviewData review3_1 = new ReviewData("오랜만에 장작집이 생각나서 다녀왓습니다. 전기구이와 비교할수없는 장작구이만의 맛은 여전하네요 ~ 맛있게 잘 먹고 갑니다", "chicken4.png", 5);
-        storeData.add(new StoreData("태권치킨", "치킨.안주.주류", "Rectangle 2270.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중!", Arrays.asList(review3_1)));
+        StoreData storeData_detail = new StoreData("태권치킨", "치킨.안주.주류", "Rectangle 2270.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중!", Arrays.asList(review3_1));
+        Market market_detail = Market.builder()
+                .marketName(storeData_detail.storeName)
+                .marketDescription(storeData_detail.tag)
+                .detailAddress("충청북도 충주시 단월동")
+                .cookingTime(40)
+                .mainCategory(MainCategory.RESTAURANT)
+                .locationX(35.121658)
+                .locationY(127.2165987)
+                .eventMessage(storeData_detail.eventMessage)
+                .marketImage(uploadFile(new File("src/main/resources/images/" + storeData_detail.imageName)))
+                .partner(account)
+                .closeTime(LocalTime.now())
+                .openTime(LocalTime.now())
+                .marketPhone("01012341234")
+                .build();
+
 
         ReviewData review4_1 = new ReviewData("대학생때부터 진짜 자주 가던 곳이고 항상 스시는 스시도쿠가 맛있다고 말해왔고 인스타도 초창기부터 팔로워해왔는데 오랜만에 포장하러가니깐 진짜 싸가지없음. 포장세트메뉴 밑에 단품스시도 있어서 보는데 갑자기 휙하고 이건 볼 필요없다고 뺏어감.", "sushi1.png", 1);
         ReviewData review4_2 = new ReviewData("가성비는 있지만 초밥의 밥이 푸석(?)퍼석(?)해서 좀 실망했다....흠...그 밖에 음식에 실망한 몇가지 포인트가 있지만 긴 말은 생략하겠다", "sushi2.png", 4);
@@ -351,6 +367,7 @@ public class InitData implements CommandLineRunner {
                     .mainCategory(MainCategory.RESTAURANT)
                     .locationX(33 + randomX)
                     .locationY(125 + randomY)
+                    .cookingTime(40)
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
@@ -359,20 +376,18 @@ public class InitData implements CommandLineRunner {
                     .marketPhone("01012341234")
                     .build();
 
-            // classification
-
             // Menu
             int priceRandom = random.nextInt(20);
             Menu menu1 = Menu.builder().menuName("메뉴1").description("메뉴에 대한 설명").price(priceRandom * 1000).build();
-            market.addMenu(menu1);
+            //market.addMenu(menu1);
             Menu menu2 = Menu.builder().menuName("메뉴2").description("메뉴에 대한 설명").price(priceRandom * 1500).build();
-            market.addMenu(menu2);
+            //market.addMenu(menu2);
             Menu menu3 = Menu.builder().menuName("메뉴3").description("메뉴에 대한 설명").price(priceRandom * 1400).build();
-            market.addMenu(menu3);
+            //market.addMenu(menu3);
             Menu menu4 = Menu.builder().menuName("메뉴4").description("메뉴에 대한 설명").price(priceRandom * 2000).build();
-            market.addMenu(menu4);
+            //market.addMenu(menu4);
             Menu menu5 = Menu.builder().menuName("메뉴5").description("메뉴에 대한 설명").price(priceRandom * 3000).build();
-            market.addMenu(menu5);
+            //market.addMenu(menu5);
 
             // Menu Option
             MenuOption menuOption1 = MenuOption.builder().description("옵션1").optionPrice(100).build();

@@ -26,8 +26,6 @@ public interface CustomMarketRepository {
 
     Optional<Market> findMarketByMarketIdAndPartnerEmail(String partnerEmail, long marketId);
 
-    Optional<Market> findMarketAndMenuByMarketId(long marketId);
-
     List<MenuResponse> findMarketMenuById(long marketId);
 
     Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId);

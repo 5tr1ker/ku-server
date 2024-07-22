@@ -1,11 +1,8 @@
 package com.team.saver.market.store.entity;
 
-import com.team.saver.market.store.dto.MenuCreateRequest;
+import com.team.saver.market.store.dto.MenuCreateData;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +33,18 @@ public class Menu {
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "menu")
     List<MenuOption> menuOptions = new ArrayList<>();
 
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private MenuContainer menuContainer;
+
     public void addMenuOption(MenuOption menuOption) {
         this.menuOptions.add(menuOption);
 
         menuOption.setMenu(this);
     }
 
-    public static Menu createEntity(MenuCreateRequest request, String imageUrl) {
+    public static Menu createEntity(MenuCreateData request, String imageUrl) {
         return Menu.builder()
                 .price(request.getPrice())
                 .description(request.getDescription())
