@@ -375,9 +375,9 @@ public class InitData implements CommandLineRunner {
             market.addMenu(menu5);
 
             // Menu Option
-            MenuOption menuOption1 = MenuOption.builder().description("옵션1").additionalPrice(100).build();
-            MenuOption menuOption2 = MenuOption.builder().description("옵션2").additionalPrice(200).build();
-            MenuOption menuOption3 = MenuOption.builder().description("옵션3").additionalPrice(500).build();
+            MenuOption menuOption1 = MenuOption.builder().description("옵션1").optionPrice(100).build();
+            MenuOption menuOption2 = MenuOption.builder().description("옵션2").optionPrice(200).build();
+            MenuOption menuOption3 = MenuOption.builder().description("옵션3").optionPrice(500).build();
             menu1.addMenuOption(menuOption1);
             menu1.addMenuOption(menuOption2);
             menu1.addMenuOption(menuOption3);

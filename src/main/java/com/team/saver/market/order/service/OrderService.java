@@ -56,7 +56,7 @@ public class OrderService {
             long totalPrice = calculateTotalPrice(basketMenu);
             amountOfPayment += totalPrice;
 
-            OrderMenu orderMenu = OrderMenu.createEntity(basketMenu.getMenu(), basketMenu.getMenuOption());
+            OrderMenu orderMenu = OrderMenu.createEntity(basketMenu);
             order.addOrderMenu(orderMenu);
         }
 
@@ -70,7 +70,7 @@ public class OrderService {
             return basketMenu.getMenu().getPrice() * basketMenu.getAmount();
         }
 
-        return (basketMenu.getMenuOption().getAdditionalPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
+        return (basketMenu.getMenuOption().getOptionPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
     }
 
     private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long amountOfPayment) {

@@ -16,7 +16,7 @@ public class MenuOption {
 
     private String description;
 
-    private int additionalPrice;
+    private int optionPrice;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,7 +26,7 @@ public class MenuOption {
     public static MenuOption createEntity(MenuOptionCreateRequest request) {
         return MenuOption.builder()
                 .description(request.getDescription())
-                .additionalPrice(request.getAdditionalPrice())
+                .optionPrice(request.getOptionPrice())
                 .build();
     }
 

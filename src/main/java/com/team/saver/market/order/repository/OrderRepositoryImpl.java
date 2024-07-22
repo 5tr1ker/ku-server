@@ -64,8 +64,11 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                 OrderMenuResponse.class,
                                 orderMenu.orderMenuId,
                                 orderMenu.menuName,
+                                orderMenu.price,
                                 orderMenu.optionDescription,
-                                orderMenu.price
+                                orderMenu.optionPrice,
+                                orderMenu.amount,
+                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
                         ))
                 )));
     }
@@ -97,8 +100,11 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                                 OrderMenuResponse.class,
                                                 orderMenu.orderMenuId,
                                                 orderMenu.menuName,
+                                                orderMenu.price,
                                                 orderMenu.optionDescription,
-                                                orderMenu.price
+                                                orderMenu.optionPrice,
+                                                orderMenu.amount,
+                                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
                                         )
                                 )
                         )

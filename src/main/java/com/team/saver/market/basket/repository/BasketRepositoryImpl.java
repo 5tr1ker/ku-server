@@ -59,7 +59,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                                         menu.price,
                                         basketMenu.amount,
                                         menuOption.description,
-                                        menuOption.additionalPrice
+                                        menuOption.optionPrice
                                 ))
                         )
                 ));
@@ -88,7 +88,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                                         menu.price,
                                         basketMenu.amount,
                                         menuOption.description,
-                                        menuOption.additionalPrice
+                                        menuOption.optionPrice
                                 ))
                         )
                 ));

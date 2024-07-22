@@ -9,6 +9,6 @@ public class MenuOptionCreateRequest {
 
     private String description;
 
-    private int additionalPrice;
+    private int optionPrice;
 
 }
