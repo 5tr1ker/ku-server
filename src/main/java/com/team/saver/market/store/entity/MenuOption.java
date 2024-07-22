@@ -14,14 +14,16 @@ public class MenuOption {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long menuOptionId;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private int optionPrice;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Menu menu;
+    private MenuOptionContainer menuOptionContainer;
 
     public static MenuOption createEntity(MenuOptionCreateRequest request) {
         return MenuOption.builder()

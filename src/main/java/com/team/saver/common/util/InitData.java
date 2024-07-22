@@ -289,7 +289,13 @@ public class InitData implements CommandLineRunner {
         String menuImage_3 = uploadFile(new File("src/main/resources/images/Rectangle 2391.png"));
         String menuImage_4 = uploadFile(new File("src/main/resources/images/Rectangle 2392.png"));
         MenuContainer menuContainer_1 = MenuContainer.builder().classification("추천메뉴").priority(1).build();
-        menuContainer_1.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+
+        Menu menu1_1 = Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build();
+        menu1_1.addMenuOption(MenuOption.builder().description("뼈(기본)").optionPrice(0).build());
+        menu1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
+        menu1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
+        menu1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
+        menuContainer_1.addMenu(menu1_1);
         menuContainer_1.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         menuContainer_1.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         menuContainer_1.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());

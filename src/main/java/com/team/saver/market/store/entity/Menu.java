@@ -31,17 +31,17 @@ public class Menu {
 
     @Builder.Default
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "menu")
-    List<MenuOption> menuOptions = new ArrayList<>();
+    private List<MenuOptionContainer> menuOptionContainers = new ArrayList<>();
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private MenuContainer menuContainer;
 
-    public void addMenuOption(MenuOption menuOption) {
-        this.menuOptions.add(menuOption);
+    public void addMenuOptionContainer(MenuOptionContainer menuOptionContainer) {
+        this.menuOptionContainers.add(menuOptionContainer);
 
-        menuOption.setMenu(this);
+        menuOptionContainer.setMenu(this);
     }
 
     public static Menu createEntity(MenuCreateData request, String imageUrl) {
