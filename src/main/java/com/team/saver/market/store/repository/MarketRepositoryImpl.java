@@ -162,7 +162,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .innerJoin(market.menuContainers, menuContainer)
                 .innerJoin(menuContainer.menus, menu)
                 .where(market.marketId.eq(marketId))
-                .transform(groupBy(market.marketId).list(Projections.constructor(
+                .transform(groupBy(menuContainer.menuContainerId).list(Projections.constructor(
                         MenuClassificationResponse.class,
                         menuContainer.classification,
                         list(Projections.constructor(
