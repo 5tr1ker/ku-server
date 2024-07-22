@@ -29,7 +29,7 @@ public class OrderMenu {
 
     public static OrderMenu createEntity(Menu menu, MenuOption menuOption) {
         if(menuOption == null) {
-            OrderMenu.builder()
+            return OrderMenu.builder()
                     .menuName(menu.getMenuName())
                     .price(menu.getPrice())
                     .build();

@@ -64,6 +64,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                 OrderMenuResponse.class,
                                 orderMenu.orderMenuId,
                                 orderMenu.menuName,
+                                orderMenu.optionDescription,
                                 orderMenu.price
                         ))
                 )));
@@ -92,7 +93,8 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                 orderDetail.paymentType,
                                 orderDetail.finalPrice,
                                 list(
-                                        Projections.constructor(OrderMenuResponse.class,
+                                        Projections.constructor(
+                                                OrderMenuResponse.class,
                                                 orderMenu.orderMenuId,
                                                 orderMenu.menuName,
                                                 orderMenu.optionDescription,
@@ -102,7 +104,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                         )
                 ));
 
-        if(result.size() == 0) {
+        if (result.size() == 0) {
             return Optional.empty();
         }
 
