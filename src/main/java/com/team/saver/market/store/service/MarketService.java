@@ -114,8 +114,7 @@ public class MarketService {
         market.setEventMessage(request.getMessage());
     }
 
-    public MenuDetailResponse findMarketMenuAndOptionById(long menuId) {
-        return marketRepository.findMarketMenuAndOptionById(menuId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
+    public List<MenuOptionClassificationResponse> findMarketMenuAndOptionById(long menuId) {
+        return marketRepository.findMenuOptionById(menuId);
     }
 }

@@ -179,37 +179,27 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
-        List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
+    public List<MenuOptionClassificationResponse> findMenuOptionById(long menuId) {
+        return jpaQueryFactory.selectFrom(market)
                 .leftJoin(market.menuContainers, menuContainer)
                 .leftJoin(menuContainer.menus, menu)
                 .leftJoin(menu.menuOptionContainers, menuOptionContainer)
                 .leftJoin(menuOptionContainer.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
-                        groupBy(menu.menuId)
+                        groupBy(menuOptionContainer.menuOptionContainerId)
                                 .list(Projections.constructor(
-                                        MenuDetailResponse.class,
-                                        menu.menuId,
-                                        menu.price,
-                                        market.marketId,
-                                        market.marketName,
-                                        market.marketImage,
-                                        menu.imageUrl,
-                                        menu.menuName,
+                                        MenuOptionClassificationResponse.class,
+                                        menuOptionContainer.classification,
+                                        menuOptionContainer.isMultipleSelection,
                                         list(Projections.constructor(MenuOptionResponse.class,
                                                 menuOption.menuOptionId,
                                                 menuOption.description,
-                                                menuOption.optionPrice
+                                                menuOption.optionPrice,
+                                                menuOption.isAdultMenu
                                         ))
                                 ))
                 );
-
-        if (result.size() == 0) {
-            return Optional.empty();
-        }
-
-        return Optional.of(result.get(0));
     }
 
 }

@@ -2,9 +2,7 @@ package com.team.saver.market.store.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.team.saver.market.basket.entity.BasketMenu;
 import com.team.saver.market.store.dto.*;
-import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.entity.Market;
 import org.springframework.data.domain.Pageable;
 
@@ -25,6 +23,6 @@ public interface CustomMarketRepository {
 
     List<MenuClassificationResponse> findMarketMenuById(long marketId);
 
-    Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId);
+    List<MenuOptionClassificationResponse> findMenuOptionById(long menuId);
 
 }
