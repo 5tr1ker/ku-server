@@ -19,6 +19,6 @@ public class BasketMenuResponse {
 
     private String optionDescription;
 
-    private long optionPrice;
+    private int optionPrice;
 
 }

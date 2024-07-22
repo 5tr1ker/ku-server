@@ -11,6 +11,6 @@ public class MenuOptionResponse {
 
     private String description;
 
-    private long optionPrice;
+    private int optionPrice;
 
 }
