@@ -5,6 +5,7 @@ import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.dto.OrderDetailResponse;
+import com.team.saver.market.order.dto.OrderMenuResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.order.entity.QOrder.order;
@@ -37,56 +40,81 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
     }
 
     @Override
-    public List<Order> findOrderDataByUserEmail(String email, boolean existReview) {
-        JPAQuery query = jpaQueryFactory.select(order)
-                .from(order)
+    public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview) {
+        JPAQuery<Order> result = jpaQueryFactory.selectFrom(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenuList, orderMenu).fetchJoin();
+                .innerJoin(order.orderMenus, orderMenu);
 
-        if(existReview) {
-            query.innerJoin(order.review);
+        if (existReview) {
+            result.innerJoin(order.review);
         } else {
-            query.leftJoin(order.review, review);
-            query.where(review.isNull());
+            result.leftJoin(order.review, review);
+            result.where(review.isNull());
         }
 
-        return query.fetch();
+        return result.transform(groupBy(order.orderId)
+                .list(Projections.constructor(
+                        OrderResponse.class,
+                        order.orderId,
+                        orderDetail.orderDateTime,
+                        market.marketName,
+                        list(Projections.constructor(
+                                OrderMenuResponse.class,
+                                orderMenu.orderMenuId,
+                                orderMenu.menuName,
+                                orderMenu.price,
+                                orderMenu.optionDescription,
+                                orderMenu.optionPrice,
+                                orderMenu.amount,
+                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
+                        ))
+                )));
     }
 
     @Override
     public Optional<OrderDetailResponse> findOrderDetailByOrderIdAndEmail(long orderId, String email) {
-        OrderDetailResponse result = jpaQueryFactory.select(Projections.constructor(
-                        OrderDetailResponse.class,
-                        order.orderId,
-                        market.marketName,
-                        market.marketId,
-                        orderDetail.orderDateTime,
-                        orderDetail.orderNumber,
-                        orderDetail.deliveryAddress,
-                        orderDetail.deliveryAddressDetail,
-                        orderDetail.phoneNumber,
-                        orderDetail.orderPrice,
-                        orderDetail.discountAmount,
-                        orderDetail.finalPrice
-                ))
-                .from(order)
+        List<OrderDetailResponse> result = jpaQueryFactory.selectFrom(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
+                .innerJoin(order.orderMenus, orderMenu)
                 .where(order.orderId.eq(orderId))
-                .fetchOne();
+                .transform(groupBy(order.orderId).list(
+                        Projections.constructor(
+                                OrderDetailResponse.class,
+                                order.orderId,
+                                market.marketId,
+                                market.marketName,
+                                market.marketPhone,
+                                market.detailAddress,
+                                orderDetail.orderDateTime,
+                                orderDetail.orderNumber,
+                                orderDetail.orderPrice,
+                                orderDetail.discountAmount,
+                                orderDetail.paymentType,
+                                orderDetail.finalPrice,
+                                list(
+                                        Projections.constructor(
+                                                OrderMenuResponse.class,
+                                                orderMenu.orderMenuId,
+                                                orderMenu.menuName,
+                                                orderMenu.price,
+                                                orderMenu.optionDescription,
+                                                orderMenu.optionPrice,
+                                                orderMenu.amount,
+                                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
+                                        )
+                                )
+                        )
+                ));
 
-        return Optional.ofNullable(result);
+        if (result.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(result.get(0));
     }
 
-    @Override
-    public List<OrderMenu> findOrderMenuByOrderId(long orderId) {
-        return jpaQueryFactory.select(orderMenu)
-                .from(order)
-                .innerJoin(order.orderMenuList, orderMenu)
-                .where(order.orderId.eq(orderId))
-                .fetch();
-    }
 }

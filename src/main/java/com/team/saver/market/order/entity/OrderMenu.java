@@ -1,14 +1,10 @@
 package com.team.saver.market.order.entity;
 
+import com.team.saver.market.basket.entity.BasketMenu;
 import com.team.saver.market.store.entity.Menu;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.team.saver.market.store.entity.MenuOption;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -23,12 +19,38 @@ public class OrderMenu {
 
     private String menuName;
 
-    private int price;
+    private String optionDescription;
 
-    public static OrderMenu createEntity(Menu menu) {
+    private long optionPrice;
+
+    private long price;
+
+    private long amount;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Order order;
+
+    public static OrderMenu createEntity(BasketMenu basketMenu) {
+        MenuOption menuOption = basketMenu.getMenuOption();
+        Menu menu = basketMenu.getMenu();
+
+        if(menuOption == null) {
+            return OrderMenu.builder()
+                    .menuName(menu.getMenuName())
+                    .price(menu.getPrice())
+                    .optionPrice(0)
+                    .amount(basketMenu.getAmount())
+                    .build();
+        }
+
         return OrderMenu.builder()
                 .menuName(menu.getMenuName())
-                .price(menu.getPrice())
+                .optionDescription(menuOption.getDescription())
+                .price(menu.getPrice() + menuOption.getOptionPrice())
+                .optionPrice(menuOption.getOptionPrice())
+                .amount(basketMenu.getAmount())
                 .build();
     }
 

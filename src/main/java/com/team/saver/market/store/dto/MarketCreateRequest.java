@@ -29,6 +29,4 @@ public class MarketCreateRequest {
 
     private String marketPhone;
 
-    private List<String> classifications;
-
 }

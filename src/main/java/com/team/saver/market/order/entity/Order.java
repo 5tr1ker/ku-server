@@ -3,7 +3,6 @@ package com.team.saver.market.order.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,8 +33,8 @@ public class Order {
     private Review review;
 
     @Builder.Default
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<OrderMenu> orderMenuList = new ArrayList<>();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "order")
+    private List<OrderMenu> orderMenus = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private OrderDetail orderDetail;
@@ -47,12 +46,15 @@ public class Order {
                 .build();
     }
 
-    public void addOrderMenu(OrderMenu menu) {
-        orderMenuList.add(menu);
+    public void addOrderMenu(OrderMenu orderMenu) {
+        orderMenus.add(orderMenu);
+
+        orderMenu.setOrder(this);
     }
 
     public void setOrderDetail(OrderDetail orderDetail) {
         this.orderDetail = orderDetail;
         orderDetail.setOrder(this);
     }
+
 }

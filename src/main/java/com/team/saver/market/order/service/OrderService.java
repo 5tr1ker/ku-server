@@ -2,8 +2,13 @@ package com.team.saver.market.order.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.market.basket.entity.Basket;
+import com.team.saver.market.basket.entity.BasketMenu;
+import com.team.saver.market.basket.repository.BasketMenuRepository;
+import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.repository.CouponRepository;
 import com.team.saver.market.order.dto.OrderCreateRequest;
@@ -21,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,41 +38,47 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MarketRepository marketRepository;
-    private final AccountRepository accountRepository;
     private final CouponRepository couponRepository;
-    private final MenuRepository menuRepository;
+    private final BasketMenuRepository basketMenuRepository;
+    private final MarketRepository marketRepository;
+    private final AccountService accountService;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, long marketId, OrderCreateRequest request) {
-        Order order = createOrder(currentUser.getEmail(), marketId);
-        int totalPrice = addOrderMenuAndReturnTotalPrice(order, findMenuListByMenuIdList(request.getMenuIds()));
+    public void addOrder(CurrentUser currentUser, OrderCreateRequest request) {
+        List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId());
+        Market market = marketRepository.findById(request.getMarketId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
+        Account account = accountService.getProfile(currentUser);
+        Order order = Order.createEntity(market, account);
 
-        OrderDetail orderDetail = createOrderDetail(request, marketId, totalPrice);
+        long amountOfPayment = 0;
+        for(BasketMenu basketMenu : basketMenus) {
+            long totalPrice = calculateTotalPrice(basketMenu);
+            amountOfPayment += totalPrice;
+
+            OrderMenu orderMenu = OrderMenu.createEntity(basketMenu);
+            order.addOrderMenu(orderMenu);
+        }
+
+        OrderDetail orderDetail = createOrderDetail(request, market, amountOfPayment);
         order.setOrderDetail(orderDetail);
-
         orderRepository.save(order);
     }
 
-    private List<Menu> findMenuListByMenuIdList(List<Long> menuIdList) {
-        return menuRepository.findAllById(menuIdList);
+    private long calculateTotalPrice(BasketMenu basketMenu) {
+        if(basketMenu.getMenuOption() == null) {
+            return basketMenu.getMenu().getPrice() * basketMenu.getAmount();
+        }
+
+        return (basketMenu.getMenuOption().getOptionPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
     }
 
-    private Order createOrder(String userEmail, long marketId) {
-        Market market = marketRepository.findMarketAndMenuByMarketId(marketId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
-        Account account = accountRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
-
-        return Order.createEntity(market, account);
-    }
-
-    private OrderDetail createOrderDetail(OrderCreateRequest request, long marketId , int totalPrice) {
-        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), marketId);
+    private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long amountOfPayment) {
+        int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), market.getMarketId());
 
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
 
-        return OrderDetail.createEntity(request, orderNumber, totalPrice, saleRate);
+        return OrderDetail.createEntity(request.getPaymentType(), orderNumber, amountOfPayment, saleRate);
     }
 
     private int getSaleRateByCouponIdAndMarketId(long couponId, long marketId) {
@@ -80,19 +92,6 @@ public class OrderService {
         return 0;
     }
 
-    private int addOrderMenuAndReturnTotalPrice(Order order, List<Menu> menuList) {
-        int totalPrice = 0;
-
-        for(Menu menu : menuList) {
-            OrderMenu orderMenu = OrderMenu.createEntity(menu);
-            totalPrice += orderMenu.getPrice();
-
-            order.addOrderMenu(orderMenu);
-        }
-
-        return totalPrice;
-    }
-
     @Transactional
     public void deleteOrder(CurrentUser currentUser, long orderId) {
         Order order = orderRepository.findByIdAndUserEmail(currentUser.getEmail(), orderId)
@@ -102,18 +101,12 @@ public class OrderService {
     }
 
     public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser, boolean existReview) {
-        List<Order> result = orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
-
-        return result.stream().map(OrderResponse::createEntity)
-                .collect(Collectors.toList());
+        return orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
     }
 
     public OrderDetailResponse getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {
-        OrderDetailResponse result = orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
+        return orderRepository.findOrderDetailByOrderIdAndEmail(orderId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ORDER_DETAIL));
-
-        result.setOrderMenus(orderRepository.findOrderMenuByOrderId(orderId));
-        return result;
     }
 
 }

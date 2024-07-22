@@ -2,6 +2,7 @@ package com.team.saver.market.store.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.team.saver.market.basket.entity.BasketMenu;
 import com.team.saver.market.store.dto.MarketDetailResponse;
 import com.team.saver.market.store.dto.MarketResponse;
 import com.team.saver.market.store.dto.MenuDetailResponse;
@@ -30,4 +31,5 @@ public interface CustomMarketRepository {
     List<MenuResponse> findMarketMenuById(long marketId);
 
     Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId);
+
 }

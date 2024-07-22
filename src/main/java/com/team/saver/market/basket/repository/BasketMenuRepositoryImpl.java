@@ -42,4 +42,13 @@ public class BasketMenuRepositoryImpl implements CustomBasketMenuRepository {
                 .where(basketMenu.basketMenuId.in(basketMenuId))
                 .execute();
     }
+
+    @Override
+    public List<BasketMenu> findAllByAccountEmailAndId(String email, List<Long> basketMenuId) {
+        return jpaQueryFactory.select(basketMenu)
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(basketMenuId))
+                .fetch();
+    }
 }

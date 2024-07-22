@@ -24,15 +24,6 @@ public class OrderResponse {
 
     private String marketName;
 
-    private List<OrderMenu> orderMenus;
-
-    public static OrderResponse createEntity(Order order) {
-        return OrderResponse.builder()
-                .orderId(order.getOrderId())
-                .orderDate(order.getOrderDetail().getOrderDateTime())
-                .marketName(order.getMarket().getMarketName())
-                .orderMenus(order.getOrderMenuList())
-                .build();
-    }
+    private List<OrderMenuResponse> orderMenus;
 
 }

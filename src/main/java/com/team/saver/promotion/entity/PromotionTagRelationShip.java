@@ -15,6 +15,7 @@ public class PromotionTagRelationShip {
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Promotion promotion;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -6,13 +6,10 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.*;
-import com.team.saver.market.store.repository.ClassificationRepository;
-import com.team.saver.market.store.repository.MarketClassificationRepository;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
 import com.team.saver.s3.service.S3Service;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
-import com.team.saver.search.autocomplete.util.Trie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,8 +27,6 @@ public class MarketService {
 
     private final MarketRepository marketRepository;
     private final MarketSortTool marketSortTool;
-    private final ClassificationRepository classificationRepository;
-    private final MarketClassificationRepository marketClassificationRepository;
     private final AccountService accountService;
     private final AutoCompleteService autoCompleteService;
     private final S3Service s3Service;
@@ -65,13 +60,6 @@ public class MarketService {
         String imageUrl = s3Service.uploadImage(image);
 
         Market market = Market.createEntity(account, request, imageUrl);
-        for (String classification : request.getClassifications()) {
-            Classification classificationEntity = getClassificationEntity(classification);
-
-            MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
-
-            market.addClassification(marketClassification);
-        }
 
         marketRepository.save(market);
         autoCompleteService.addSearchWord(market.getMarketName());
@@ -95,25 +83,6 @@ public class MarketService {
 
             market.addMenu(menu);
         }
-    }
-
-    private Classification getClassificationEntity(String classification) {
-        return classificationRepository.findByClassification(classification)
-                .orElseGet(() -> classificationRepository.save(Classification.createEntity(classification)));
-    }
-
-    @Transactional
-    protected void addClassification(Market market, String classification) {
-        Classification classificationEntity = getClassificationEntity(classification);
-
-        if (marketClassificationRepository.findByMarketAndClassification(market, classificationEntity).isPresent()) {
-            throw new CustomRuntimeException(EXIST_CLASSIFICATION);
-        }
-        ;
-
-        MarketClassification marketClassification = MarketClassification.createEntity(classificationEntity, market);
-
-        market.addClassification(marketClassification);
     }
 
     public List<MenuResponse> findMarketMenuById(long marketId) {

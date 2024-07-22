@@ -26,7 +26,7 @@ public class Promotion {
     private String introduce;
 
     @Builder.Default
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "promotion")
     private List<PromotionTagRelationShip> promotionTagRelationShips = new ArrayList<>();
 
     public static Promotion createEntity(PromotionCreateRequest request, PromotionLocation location) {
@@ -38,6 +38,7 @@ public class Promotion {
 
     public void addTag(PromotionTagRelationShip tag) {
         promotionTagRelationShips.add(tag);
+
         tag.setPromotion(this);
     }
 

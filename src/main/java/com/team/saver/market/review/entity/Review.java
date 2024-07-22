@@ -55,7 +55,7 @@ public class Review {
     private List<ReviewRecommender> recommender = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE} , orphanRemoval = true, mappedBy = "review")
     private List<ReviewImage> reviewImage = new ArrayList<>();
 
     public static Review createEntity(Account account, ReviewCreateRequest request, Order order) {
@@ -72,11 +72,15 @@ public class Review {
     }
 
     public void addReviewImage(String imageUrl) {
-        reviewImage.add(ReviewImage.createEntity(imageUrl));
+        ReviewImage reviewImage = ReviewImage.createEntity(imageUrl);
+
+        this.reviewImage.add(reviewImage);
+        reviewImage.setReview(this);
     }
 
     public void addRecommender(ReviewRecommender reviewRecommender) {
         recommender.add(reviewRecommender);
+
         reviewRecommender.setReview(this);
     }
 

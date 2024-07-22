@@ -11,6 +11,6 @@ public class MenuOptionResponse {
 
     private String description;
 
-    private int additionalPrice;
+    private int optionPrice;
 
 }
