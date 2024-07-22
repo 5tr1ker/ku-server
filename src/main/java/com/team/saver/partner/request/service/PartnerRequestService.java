@@ -5,6 +5,7 @@ import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
+import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -50,6 +51,19 @@ public class PartnerRequestService {
 
         PartnerRecommender partnerRecommender = PartnerRecommender.createEntity(account, partnerRequest);
         partnerRequest.addPartnerRecommender(partnerRecommender);
+    }
+
+    public PartnerRequestDetailResponse findDetailById(long partnerRequestId) {
+        return partnerRequestRepository.findDetailById(partnerRequestId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
+    }
+
+    public List<PartnerRequestResponse> findMostRecommend(long size) {
+        return partnerRequestRepository.findMostRecommend(size);
+    }
+
+    public long findTotalPartnerRequestCount() {
+        return partnerRequestRepository.findTotalPartnerRequestCount();
     }
 
 }

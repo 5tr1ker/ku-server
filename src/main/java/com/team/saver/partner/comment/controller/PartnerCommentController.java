@@ -41,8 +41,8 @@ public class PartnerCommentController {
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}/comments")
     @Operation(summary = "해당 파트너쉽에 관련된 데이터 가져오기")
-    public ResponseEntity getPartnerComment(@PathVariable long partnerRequestId) {
-        List<PartnerCommentResponse> result = partnerCommentService.getPartnerComment(partnerRequestId);
+    public ResponseEntity findByPartnerRequestId(@PathVariable long partnerRequestId) {
+        List<PartnerCommentResponse> result = partnerCommentService.findByPartnerRequestId(partnerRequestId);
 
         return ResponseEntity.ok(result);
     }

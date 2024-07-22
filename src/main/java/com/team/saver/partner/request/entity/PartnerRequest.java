@@ -43,6 +43,12 @@ public class PartnerRequest {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @Column(nullable = false)
+    private double locationX;
+
+    @Column(nullable = false)
+    private double locationY;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Account requestUser;
@@ -67,6 +73,8 @@ public class PartnerRequest {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .phoneNumber(request.getPhoneNumber())
+                .locationX(request.getLocationX())
+                .locationY(request.getLocationY())
                 .build();
     }
 

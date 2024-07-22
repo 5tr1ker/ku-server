@@ -306,8 +306,8 @@ public class InitData implements CommandLineRunner {
 
         menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("콜라(+1000원)").optionPrice(1000).build());
         menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("사이다(+1000원)").optionPrice(1000).build());
-        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("소주(+1000원)").optionPrice(1000).build());
-        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("맥주(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("소주(+1000원)").isAdultMenu(true).optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("맥주(+1000원)").isAdultMenu(true).optionPrice(1000).build());
 
         menu1_1.addMenuOptionContainer(menuOptionContainer1_1);
         menu1_1.addMenuOptionContainer(menuOptionContainer1_2);

@@ -3,6 +3,7 @@ package com.team.saver.partner.request.controller;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
+import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.service.PartnerRequestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,30 @@ public class PartnerRequestController {
     @Operation(summary = "요청된 모든 파트너십 데이터 가져오기")
     public ResponseEntity findAllEntity(Pageable pageable) {
         List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/partners/requests/{partnerRequestId}")
+    @Operation(summary = "파트너십 상세 데이터 가져오기")
+    public ResponseEntity findDetailById(@PathVariable long partnerRequestId) {
+        PartnerRequestDetailResponse result = partnerRequestService.findDetailById(partnerRequestId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/partners/requests/bests")
+    @Operation(summary = "가장 인기있는 파트너십 데이터 가져오기")
+    public ResponseEntity findMostRecommend(@RequestParam long size) {
+        List<PartnerRequestResponse> result = partnerRequestService.findMostRecommend(size);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/partners/requests/totals")
+    @Operation(summary = "전체 파트너십 데이터 갯수 가져오기")
+    public ResponseEntity findTotalPartnerRequestCount() {
+        long result = partnerRequestService.findTotalPartnerRequestCount();
 
         return ResponseEntity.ok(result);
     }
