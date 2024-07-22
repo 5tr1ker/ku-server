@@ -9,6 +9,8 @@ public class OrderCreateRequest {
 
     private long couponId;
 
+    private long marketId;
+
     private List<Long> basketMenuId;
 
     private PaymentType paymentType;

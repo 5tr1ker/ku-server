@@ -48,7 +48,6 @@ public class BasketMenuRepositoryImpl implements CustomBasketMenuRepository {
         return jpaQueryFactory.select(basketMenu)
                 .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
-                .innerJoin(basket.market).fetchJoin()
                 .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(basketMenuId))
                 .fetch();
     }

@@ -2,6 +2,7 @@ package com.team.saver.market.basket.repository;
 
 import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.entity.Basket;
+import com.team.saver.market.store.entity.Market;
 
 import java.util.List;
 import java.util.Optional;

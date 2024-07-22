@@ -11,6 +11,8 @@ public class OrderMenuResponse {
 
     private String menuName;
 
+    private String optionDescription;
+
     private int price;
 
 }

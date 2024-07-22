@@ -15,12 +15,12 @@ import java.util.Optional;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
-import static com.team.saver.market.store.entity.QMenuOption.menuOption;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.store.entity.QMarket.market;
 import static com.team.saver.market.store.entity.QMenu.menu;
+import static com.team.saver.market.store.entity.QMenuOption.menuOption;
 
 @RequiredArgsConstructor
 public class MarketRepositoryImpl implements CustomMarketRepository {
@@ -214,4 +214,5 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
 
         return Optional.of(result.get(0));
     }
+
 }

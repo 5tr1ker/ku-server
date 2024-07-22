@@ -15,6 +15,8 @@ public class GeneralExceptionHandler {
     public ResponseEntity handleExceptionHandler(CustomRuntimeException e) {
         ResponseMessage message = ResponseMessage.of(REQUEST_FAIL, e.getErrorMessage().getErrorCode(), e.getMessage(), e.getData());
 
+        e.printStackTrace();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 

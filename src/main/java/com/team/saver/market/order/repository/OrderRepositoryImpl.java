@@ -45,7 +45,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenuList, orderMenu);
+                .innerJoin(order.orderMenus, orderMenu);
 
         if (existReview) {
             result.innerJoin(order.review);
@@ -54,7 +54,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
             result.where(review.isNull());
         }
 
-        return result.transform(groupBy(order)
+        return result.transform(groupBy(order.orderId)
                 .list(Projections.constructor(
                         OrderResponse.class,
                         order.orderId,
@@ -75,6 +75,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
+                .innerJoin(order.orderMenus, orderMenu)
                 .where(order.orderId.eq(orderId))
                 .transform(groupBy(order.orderId).list(
                         Projections.constructor(
@@ -94,6 +95,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                         Projections.constructor(OrderMenuResponse.class,
                                                 orderMenu.orderMenuId,
                                                 orderMenu.menuName,
+                                                orderMenu.optionDescription,
                                                 orderMenu.price
                                         )
                                 )

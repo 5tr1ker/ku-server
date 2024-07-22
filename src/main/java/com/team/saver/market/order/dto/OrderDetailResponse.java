@@ -28,13 +28,13 @@ public class OrderDetailResponse {
 
     private String orderNumber;
 
-    private int orderPrice;
+    private long orderPrice;
 
     private int discountAmount;
 
     private PaymentType paymentType;
 
-    private int finalPrice;
+    private long finalPrice;
 
     private List<OrderMenuResponse> orderMenus;
 

@@ -2,6 +2,7 @@ package com.team.saver.market.order.service;
 
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.entity.Basket;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,37 +40,45 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CouponRepository couponRepository;
     private final BasketMenuRepository basketMenuRepository;
+    private final MarketRepository marketRepository;
+    private final AccountService accountService;
 
     @Transactional
     public void addOrder(CurrentUser currentUser, OrderCreateRequest request) {
         List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId());
+        Market market = marketRepository.findById(request.getMarketId())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
+        Account account = accountService.getProfile(currentUser);
+        Order order = Order.createEntity(market, account);
 
+        long amountOfPayment = 0;
         for(BasketMenu basketMenu : basketMenus) {
-            Order order = createOrder(basketMenu);
-
             long totalPrice = calculateTotalPrice(basketMenu);
+            amountOfPayment += totalPrice;
 
-            OrderDetail orderDetail = createOrderDetail(request, order.getMarket(), totalPrice);
-            order.setOrderDetail(orderDetail);
-
-            orderRepository.save(order);
+            OrderMenu orderMenu = OrderMenu.createEntity(basketMenu.getMenu(), basketMenu.getMenuOption());
+            order.addOrderMenu(orderMenu);
         }
-    }
 
-    private Order createOrder(BasketMenu basketMenu) {
-        return Order.createEntity(basketMenu.getBasket().getMarket(), basketMenu.getBasket().getAccount());
+        OrderDetail orderDetail = createOrderDetail(request, market, amountOfPayment);
+        order.setOrderDetail(orderDetail);
+        orderRepository.save(order);
     }
 
     private long calculateTotalPrice(BasketMenu basketMenu) {
+        if(basketMenu.getMenuOption() == null) {
+            return basketMenu.getMenu().getPrice() * basketMenu.getAmount();
+        }
+
         return (basketMenu.getMenuOption().getAdditionalPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
     }
 
-    private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long totalPrice) {
+    private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long amountOfPayment) {
         int saleRate = getSaleRateByCouponIdAndMarketId(request.getCouponId(), market.getMarketId());
 
         String orderNumber = UUID.randomUUID().toString().replace('-' , 'Z').toUpperCase().substring(0 , 13);
 
-        return OrderDetail.createEntity(request.getPaymentType(), orderNumber, totalPrice, saleRate);
+        return OrderDetail.createEntity(request.getPaymentType(), orderNumber, amountOfPayment, saleRate);
     }
 
     private int getSaleRateByCouponIdAndMarketId(long couponId, long marketId) {

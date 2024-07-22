@@ -36,6 +36,8 @@ public class FilterExceptionHandler extends GenericFilterBean {
             chain.doFilter(request, response);
         } catch (ServletException e) { // 토큰 만료
             if(!e.getCause().toString().contains("ExpiredJwtException")) {
+                e.printStackTrace();
+
                 setErrorResponse((HttpServletResponse) response, 400, UNKNOWN_EXCEPTION, e.getMessage());
                 return;
             }
