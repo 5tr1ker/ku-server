@@ -96,12 +96,12 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                         partnerRequest.title,
                         partnerRequest.description,
                         partnerRequest.writeTime,
-                        select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
-                        partnerComment.count()
+                        partnerRecommender.count(),
+                        select(partnerComment.count()).from(partnerComment).where(partnerComment.partnerRequest.eq(partnerRequest))
                 ))
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
-                .leftJoin(partnerRequest.partnerComment, partnerComment)
+                .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender)
                 .groupBy(partnerRequest.partnerRequestId)
                 .orderBy(partnerRecommender.count().desc())
                 .limit(size)
