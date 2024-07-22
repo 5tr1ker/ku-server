@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.store.entity.QMenuOptionContainer.menuOptionContainer;
 import static com.team.saver.market.store.entity.QMenuContainer.menuContainer;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
@@ -182,7 +183,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
         List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
                 .leftJoin(market.menuContainers, menuContainer)
                 .leftJoin(menuContainer.menus, menu)
-                .leftJoin(menu.menuOptions, menuOption)
+                .leftJoin(menu.menuOptionContainers, menuOptionContainer)
+                .leftJoin(menuOptionContainer.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
                         groupBy(menu.menuId)

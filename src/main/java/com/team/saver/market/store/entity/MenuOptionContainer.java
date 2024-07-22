@@ -1,5 +1,6 @@
 package com.team.saver.market.store.entity;
 
+import com.team.saver.market.store.dto.MenuOptionContainerCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,9 @@ public class MenuOptionContainer {
     @Column(nullable = false)
     private long priority;
 
+    @Column(nullable = false)
+    private boolean isMultipleSelection;
+
     @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "menuOptionContainer")
     private List<MenuOption> menuOptions = new ArrayList<>();
@@ -36,6 +40,14 @@ public class MenuOptionContainer {
         this.menuOptions.add(menuOption);
 
         menuOption.setMenuOptionContainer(this);
+    }
+
+    public static MenuOptionContainer createEntity(MenuOptionContainerCreateRequest request, long priority) {
+        return MenuOptionContainer.builder()
+                .classification(request.getClassification())
+                .priority(priority)
+                .isMultipleSelection(request.isMultipleSelection())
+                .build();
     }
 
 }

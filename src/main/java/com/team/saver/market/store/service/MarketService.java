@@ -71,20 +71,28 @@ public class MarketService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         int index = 0;
-        long priority = 1;
+        long priority_menuContainer = 1;
+        long priority_menuOptionContainer = 1;
         for(MenuCreateRequest menuCreateRequest : request) {
 
-            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification(), priority++);
+            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification(), priority_menuContainer++);
 
             for(MenuCreateData menuCreateData : menuCreateRequest.getMenus()) {
                 String imageUrl = s3Service.uploadImage(image.get(index++));
 
                 Menu menu = Menu.createEntity(menuCreateData, imageUrl);
 
-                for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateData.getOptions()) {
-                    MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+                for(MenuOptionContainerCreateRequest menuOptionContainerCreateRequest : menuCreateData.getOptionContainers()) {
+                    MenuOptionContainer menuOptionContainer = MenuOptionContainer.createEntity(menuOptionContainerCreateRequest, priority_menuOptionContainer++);
 
-                    menu.addMenuOption(menuOption);
+                    for(MenuOptionCreateRequest menuOptionCreateRequest : menuOptionContainerCreateRequest.getMenuOption()) {
+                        MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+
+                        menuOptionContainer.addMenuOption(menuOption);
+                    }
+
+                    menu.addMenuOptionContainer(menuOptionContainer);
+
                 }
 
                 menuContainer.addMenu(menu);

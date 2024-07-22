@@ -15,6 +15,6 @@ public class MenuCreateData {
 
     private int price;
 
-    private List<MenuOptionCreateRequest> options;
+    private List<MenuOptionContainerCreateRequest> optionContainers;
 
 }

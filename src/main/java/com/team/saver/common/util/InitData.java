@@ -291,10 +291,28 @@ public class InitData implements CommandLineRunner {
         MenuContainer menuContainer_1 = MenuContainer.builder().classification("추천메뉴").priority(1).build();
 
         Menu menu1_1 = Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build();
-        menu1_1.addMenuOption(MenuOption.builder().description("뼈(기본)").optionPrice(0).build());
-        menu1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
-        menu1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
-        menu1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
+        MenuOptionContainer menuOptionContainer1_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션").build();
+        MenuOptionContainer menuOptionContainer1_2 = MenuOptionContainer.builder().priority(2).isMultipleSelection(true).classification("소스").build();
+        MenuOptionContainer menuOptionContainer1_3 = MenuOptionContainer.builder().priority(3).isMultipleSelection(true).classification("음료").build();
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("뼈(기본)").optionPrice(0).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
+
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("마블링소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("고블링소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("양념치킨소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("머스타드(+1000원)").optionPrice(1000).build());
+
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("콜라(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("사이다(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("소주(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("맥주(+1000원)").optionPrice(1000).build());
+
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_1);
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_2);
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_3);
+
         menuContainer_1.addMenu(menu1_1);
         menuContainer_1.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         menuContainer_1.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
@@ -461,9 +479,9 @@ public class InitData implements CommandLineRunner {
             MenuOption menuOption1 = MenuOption.builder().description("옵션1").optionPrice(100).build();
             MenuOption menuOption2 = MenuOption.builder().description("옵션2").optionPrice(200).build();
             MenuOption menuOption3 = MenuOption.builder().description("옵션3").optionPrice(500).build();
-            menu1.addMenuOption(menuOption1);
-            menu1.addMenuOption(menuOption2);
-            menu1.addMenuOption(menuOption3);
+            //menu1.addMenuOption(menuOption1);
+            //menu1.addMenuOption(menuOption2);
+            //menu1.addMenuOption(menuOption3);
 
             // Coupon
             for (int i = 0; i < 5; i++) {

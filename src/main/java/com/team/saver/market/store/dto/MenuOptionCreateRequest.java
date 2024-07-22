@@ -11,4 +11,6 @@ public class MenuOptionCreateRequest {
 
     private int optionPrice;
 
+    private boolean adultMenu;
+
 }
