@@ -7,6 +7,7 @@ import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
 import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
+import com.team.saver.partner.request.dto.PartnerRequestUpdateRequest;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.team.saver.common.dto.ErrorMessage.EXIST_RECOMMENDER;
-import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PARTNER_REQUEST;
+import static com.team.saver.common.dto.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +64,23 @@ public class PartnerRequestService {
 
     public long findTotalPartnerRequestCount() {
         return partnerRequestRepository.findTotalPartnerRequestCount();
+    }
+
+    @Transactional
+    public void updatePartnerRequest(CurrentUser currentUser, PartnerRequestUpdateRequest request , long partnerRequestId) {
+        PartnerRequest partnerRequest = partnerRequestRepository.findByIdAndAccountEmail(currentUser.getEmail(), partnerRequestId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
+
+        partnerRequest.update(request);
+    }
+
+    @Transactional
+    public void deletePartnerRequest(CurrentUser currentUser, long partnerRequestId) {
+        long result = partnerRequestRepository.deleteByIdAndAccountEmail(currentUser.getEmail(), partnerRequestId);
+
+        if(result == 0) {
+            throw new CustomRuntimeException(ONLY_DELETE_WRITER);
+        }
     }
 
 }

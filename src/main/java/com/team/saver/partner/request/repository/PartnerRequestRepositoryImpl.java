@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
+import com.team.saver.partner.request.entity.PartnerRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -106,5 +107,29 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                 .orderBy(partnerRecommender.count().desc())
                 .limit(size)
                 .fetch();
+    }
+
+    @Override
+    public Optional<PartnerRequest> findByIdAndAccountEmail(String email, long partnerRequestId) {
+        PartnerRequest result = jpaQueryFactory.select(partnerRequest)
+                .from(partnerRequest)
+                .innerJoin(partnerRequest.requestUser, account).on(account.email.eq(email))
+                .where(partnerRequest.partnerRequestId.eq(partnerRequestId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public long deleteByIdAndAccountEmail(String email, long partnerRequestId) {
+        long result = jpaQueryFactory.select(partnerRequest.partnerRequestId)
+                .from(partnerRequest)
+                .innerJoin(partnerRequest.requestUser, account).on(account.email.eq(email))
+                .where(partnerRequest.partnerRequestId.eq(partnerRequestId))
+                .fetchOne();
+
+        return jpaQueryFactory.delete(partnerRequest)
+                .where(partnerRequest.partnerRequestId.eq(result))
+                .execute();
     }
 }

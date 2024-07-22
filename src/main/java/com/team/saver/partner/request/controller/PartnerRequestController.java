@@ -2,9 +2,12 @@ package com.team.saver.partner.request.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
 import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
+import com.team.saver.partner.request.dto.PartnerRequestUpdateRequest;
+import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.service.PartnerRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_PARTNER_REQUEST;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,6 +75,25 @@ public class PartnerRequestController {
         partnerRequestService.requestPartnerRecommendation(currentUser, partnerRequestId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/v1/partners/requests/{partnerRequestId}")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 수정 API")
+    public ResponseEntity updatePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                     @RequestBody PartnerRequestUpdateRequest request ,
+                                     @PathVariable long partnerRequestId) {
+        partnerRequestService.updatePartnerRequest(currentUser, request, partnerRequestId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/v1/partners/requests/{partnerRequestId}")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 삭제 API")
+    public ResponseEntity deletePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                               @PathVariable long partnerRequestId) {
+        partnerRequestService.deletePartnerRequest(currentUser, partnerRequestId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
