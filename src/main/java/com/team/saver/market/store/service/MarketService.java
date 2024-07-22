@@ -93,7 +93,7 @@ public class MarketService {
         }
     }
 
-    public List<MenuResponse> findMarketMenuById(long marketId) {
+    public List<MenuClassificationResponse> findMarketMenuById(long marketId) {
         return marketRepository.findMarketMenuById(marketId);
     }
 

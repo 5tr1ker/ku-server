@@ -157,21 +157,23 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public List<MenuResponse> findMarketMenuById(long marketId) {
-        return jpaQueryFactory.select(
-                        Projections.constructor(MenuResponse.class,
+    public List<MenuClassificationResponse> findMarketMenuById(long marketId) {
+        return jpaQueryFactory.selectFrom(market)
+                .innerJoin(market.menuContainers, menuContainer)
+                .innerJoin(menuContainer.menus, menu)
+                .where(market.marketId.eq(marketId))
+                .transform(groupBy(market.marketId).list(Projections.constructor(
+                        MenuClassificationResponse.class,
+                        menuContainer.classification,
+                        list(Projections.constructor(
+                                MenuResponse.class,
                                 menu.menuId,
                                 menu.price,
                                 menu.description,
                                 menu.imageUrl,
                                 menu.menuName
-                        )
-                )
-                .from(market)
-                .innerJoin(market.menuContainers, menuContainer)
-                .innerJoin(menuContainer.menus, menu)
-                .where(market.marketId.eq(marketId))
-                .fetch();
+                        ))
+                )));
     }
 
     @Override
