@@ -3,6 +3,7 @@ package com.team.saver.partner.request.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
+import com.team.saver.partner.request.dto.PartnerRequestUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +44,12 @@ public class PartnerRequest {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @Column(nullable = false)
+    private double locationX;
+
+    @Column(nullable = false)
+    private double locationY;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Account requestUser;
@@ -67,6 +74,8 @@ public class PartnerRequest {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .phoneNumber(request.getPhoneNumber())
+                .locationX(request.getLocationX())
+                .locationY(request.getLocationY())
                 .build();
     }
 
@@ -80,4 +89,14 @@ public class PartnerRequest {
         partnerRecommender.setPartnerRequest(this);
     }
 
+    public void update(PartnerRequestUpdateRequest request) {
+        this.requestMarketName = request.getRequestMarketName();
+        this.marketAddress = request.getMarketAddress();
+        this.detailAddress = request.getDetailAddress();
+        this.phoneNumber = request.getPhoneNumber();
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.locationX = request.getLocationX();
+        this.locationY = request.getLocationY();
+    }
 }

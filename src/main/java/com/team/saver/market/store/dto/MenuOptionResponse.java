@@ -13,4 +13,6 @@ public class MenuOptionResponse {
 
     private int optionPrice;
 
+    private boolean isAdultMenu;
+
 }

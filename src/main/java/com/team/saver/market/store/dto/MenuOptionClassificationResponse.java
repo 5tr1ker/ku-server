@@ -7,10 +7,12 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class MenuCreateRequest {
+public class MenuOptionClassificationResponse {
 
     private String classification;
 
-    private List<MenuCreateData> menus;
+    private boolean isMultipleSelection;
+
+    private List<MenuOptionResponse> options;
 
 }

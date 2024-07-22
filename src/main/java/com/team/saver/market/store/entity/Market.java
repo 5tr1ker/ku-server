@@ -40,10 +40,13 @@ public class Market {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
-    private List<Menu> menus = new ArrayList<>();
+    private List<MenuContainer> menuContainers = new ArrayList<>();
 
     @Column(nullable = false)
     private double locationX;
+
+    @Column(nullable = false)
+    private int cookingTime;
 
     @Column(nullable = false)
     private String marketImage;
@@ -83,8 +86,10 @@ public class Market {
         reviews.add(review);
     }
 
-    public void addMenu(Menu menu) {
-        menus.add(menu);
+    public void addMenuContainer(MenuContainer menuContainer) {
+        menuContainers.add(menuContainer);
+
+        menuContainer.setMarket(this);
     }
 
     public static Market createEntity(Account account, MarketCreateRequest request, String marketImage) {
@@ -93,6 +98,7 @@ public class Market {
                 .partner(account)
                 .locationX(request.getLocationX())
                 .locationY(request.getLocationY())
+                .cookingTime(request.getCookingTime())
                 .marketName(request.getMarketName())
                 .marketImage(marketImage)
                 .marketDescription(request.getMarketDescription())

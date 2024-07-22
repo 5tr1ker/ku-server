@@ -1,10 +1,9 @@
 package com.team.saver.partner.request.dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 
 @Getter
-public class PartnerRequestCreateRequest {
+public class PartnerRequestUpdateRequest {
 
     private String requestMarketName;
 

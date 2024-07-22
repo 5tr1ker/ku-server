@@ -15,6 +15,8 @@ public class MarketCreateRequest {
 
     private double locationY;
 
+    private int cookingTime;
+
     private String marketName;
 
     private String marketDescription;

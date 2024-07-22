@@ -71,21 +71,38 @@ public class MarketService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         int index = 0;
+        long priority_menuContainer = 1;
+        long priority_menuOptionContainer = 1;
         for(MenuCreateRequest menuCreateRequest : request) {
-            String imageUrl = s3Service.uploadImage(image.get(index++));
-            Menu menu = Menu.createEntity(menuCreateRequest, imageUrl);
 
-            for(MenuOptionCreateRequest menuOptionCreateRequest : menuCreateRequest.getOptions()) {
-                MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification(), priority_menuContainer++);
 
-                menu.addMenuOption(menuOption);
+            for(MenuCreateData menuCreateData : menuCreateRequest.getMenus()) {
+                String imageUrl = s3Service.uploadImage(image.get(index++));
+
+                Menu menu = Menu.createEntity(menuCreateData, imageUrl);
+
+                for(MenuOptionContainerCreateRequest menuOptionContainerCreateRequest : menuCreateData.getOptionContainers()) {
+                    MenuOptionContainer menuOptionContainer = MenuOptionContainer.createEntity(menuOptionContainerCreateRequest, priority_menuOptionContainer++);
+
+                    for(MenuOptionCreateRequest menuOptionCreateRequest : menuOptionContainerCreateRequest.getMenuOption()) {
+                        MenuOption menuOption = MenuOption.createEntity(menuOptionCreateRequest);
+
+                        menuOptionContainer.addMenuOption(menuOption);
+                    }
+
+                    menu.addMenuOptionContainer(menuOptionContainer);
+
+                }
+
+                menuContainer.addMenu(menu);
             }
 
-            market.addMenu(menu);
+            market.addMenuContainer(menuContainer);
         }
     }
 
-    public List<MenuResponse> findMarketMenuById(long marketId) {
+    public List<MenuClassificationResponse> findMarketMenuById(long marketId) {
         return marketRepository.findMarketMenuById(marketId);
     }
 
@@ -97,8 +114,7 @@ public class MarketService {
         market.setEventMessage(request.getMessage());
     }
 
-    public MenuDetailResponse findMarketMenuAndOptionById(long menuId) {
-        return marketRepository.findMarketMenuAndOptionById(menuId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
+    public List<MenuOptionClassificationResponse> findMarketMenuAndOptionById(long menuId) {
+        return marketRepository.findMenuOptionById(menuId);
     }
 }

@@ -7,10 +7,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class MenuCreateRequest {
+public class MenuClassificationResponse {
 
     private String classification;
 
-    private List<MenuCreateData> menus;
+    private List<MenuResponse> menus;
 
 }

@@ -8,7 +8,7 @@ import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
-import com.team.saver.market.store.entity.MenuOption;
+import com.team.saver.market.store.entity.*;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -23,9 +23,6 @@ import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
-import com.team.saver.market.store.entity.MainCategory;
-import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
@@ -270,7 +267,112 @@ public class InitData implements CommandLineRunner {
         storeData.add(new StoreData("피자나라 치킨공주", "치킨.피자.안주.주류", "Rectangle 2269.png", "리뷰 작성 시 음료 1개 무료 증정 이벤트 진행 중!", Arrays.asList(review2_1, review2_2, review2_3, review2_4, review2_5)));
 
         ReviewData review3_1 = new ReviewData("오랜만에 장작집이 생각나서 다녀왓습니다. 전기구이와 비교할수없는 장작구이만의 맛은 여전하네요 ~ 맛있게 잘 먹고 갑니다", "chicken4.png", 5);
-        storeData.add(new StoreData("태권치킨", "치킨.안주.주류", "Rectangle 2270.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중!", Arrays.asList(review3_1)));
+        StoreData storeData_detail = new StoreData("태권치킨", "치킨.안주.주류", "Rectangle 2270.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중!", Arrays.asList(review3_1));
+        Market market_detail = Market.builder()
+                .marketName(storeData_detail.storeName)
+                .marketDescription(storeData_detail.tag)
+                .detailAddress("충청북도 충주시 단월동")
+                .cookingTime(40)
+                .mainCategory(MainCategory.RESTAURANT)
+                .locationX(35.121658)
+                .locationY(127.2165987)
+                .eventMessage(storeData_detail.eventMessage)
+                .marketImage(uploadFile(new File("src/main/resources/images/" + storeData_detail.imageName)))
+                .partner(account)
+                .closeTime(LocalTime.now())
+                .openTime(LocalTime.now())
+                .marketPhone("01012341234")
+                .build();
+
+        String menuImage_1 = uploadFile(new File("src/main/resources/images/Rectangle 2389.png"));
+        String menuImage_2 = uploadFile(new File("src/main/resources/images/Rectangle 2390.png"));
+        String menuImage_3 = uploadFile(new File("src/main/resources/images/Rectangle 2391.png"));
+        String menuImage_4 = uploadFile(new File("src/main/resources/images/Rectangle 2392.png"));
+        MenuContainer menuContainer_1 = MenuContainer.builder().classification("추천메뉴").priority(1).build();
+
+        Menu menu1_1 = Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build();
+        MenuOptionContainer menuOptionContainer1_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션").build();
+        MenuOptionContainer menuOptionContainer1_2 = MenuOptionContainer.builder().priority(2).isMultipleSelection(true).classification("소스").build();
+        MenuOptionContainer menuOptionContainer1_3 = MenuOptionContainer.builder().priority(3).isMultipleSelection(true).classification("음료").build();
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("뼈(기본)").optionPrice(0).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
+
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("마블링소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("고블링소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("양념치킨소스(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_2.addMenuOption(MenuOption.builder().description("머스타드(+1000원)").optionPrice(1000).build());
+
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("콜라(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("사이다(+1000원)").optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("소주(+1000원)").isAdultMenu(true).optionPrice(1000).build());
+        menuOptionContainer1_3.addMenuOption(MenuOption.builder().description("맥주(+1000원)").isAdultMenu(true).optionPrice(1000).build());
+
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_1);
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_2);
+        menu1_1.addMenuOptionContainer(menuOptionContainer1_3);
+
+        menuContainer_1.addMenu(menu1_1);
+        menuContainer_1.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_2 = MenuContainer.builder().classification("대표메뉴").priority(2).build();
+        menuContainer_2.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_3 = MenuContainer.builder().classification("세트메뉴").priority(3).build();
+        menuContainer_3.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_4 = MenuContainer.builder().classification("단품메뉴").priority(4).build();
+        menuContainer_4.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+
+        String menuImage_5 = uploadFile(new File("src/main/resources/images/Rectangle 2394.png"));
+        String menuImage_6 = uploadFile(new File("src/main/resources/images/Rectangle 2395.png"));
+        String menuImage_7 = uploadFile(new File("src/main/resources/images/Rectangle 2396.png"));
+        String menuImage_8 = uploadFile(new File("src/main/resources/images/Rectangle 2397.png"));
+        MenuContainer menuContainer_5 = MenuContainer.builder().classification("사이드메뉴").priority(5).build();
+        menuContainer_5.addMenu(Menu.builder().menuName("치즈볼(5개)").imageUrl(menuImage_5).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("치즈스틱(3개)").imageUrl(menuImage_6).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(3000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("감자튀김").imageUrl(menuImage_7).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("어니언링").imageUrl(menuImage_8).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(8000).build());
+
+        String menuImage_9 = uploadFile(new File("src/main/resources/images/Rectangle 2399.png"));
+        String menuImage_10 = uploadFile(new File("src/main/resources/images/Rectangle 2400.png"));
+        String menuImage_11 = uploadFile(new File("src/main/resources/images/Rectangle 2401.png"));
+        String menuImage_12 = uploadFile(new File("src/main/resources/images/Rectangle 2402.png"));
+        MenuContainer menuContainer_6 = MenuContainer.builder().classification("소스").priority(6).build();
+        menuContainer_6.addMenu(Menu.builder().menuName("마블링소스").imageUrl(menuImage_9).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("고블링소스").imageUrl(menuImage_10).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("양념치킨소스").imageUrl(menuImage_11).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("머쓱타드").imageUrl(menuImage_12).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        MenuContainer menuContainer_7 = MenuContainer.builder().classification("음료/주류").priority(7).build();
+        menuContainer_7.addMenu(Menu.builder().menuName("콜라").description("콜라").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("사이다").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("소주").description("소주").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("맥주").description("맥주").price(5000).build());
+
+        market_detail.addMenuContainer(menuContainer_1);
+        market_detail.addMenuContainer(menuContainer_2);
+        market_detail.addMenuContainer(menuContainer_3);
+        market_detail.addMenuContainer(menuContainer_4);
+        market_detail.addMenuContainer(menuContainer_5);
+        market_detail.addMenuContainer(menuContainer_6);
+        market_detail.addMenuContainer(menuContainer_7);
+
+        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
+        Coupon coupon_2 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
+
+        market_detail.addCoupon(coupon_1);
+        market_detail.addCoupon(coupon_2);
+        marketRepository.save(market_detail);
+
 
         ReviewData review4_1 = new ReviewData("대학생때부터 진짜 자주 가던 곳이고 항상 스시는 스시도쿠가 맛있다고 말해왔고 인스타도 초창기부터 팔로워해왔는데 오랜만에 포장하러가니깐 진짜 싸가지없음. 포장세트메뉴 밑에 단품스시도 있어서 보는데 갑자기 휙하고 이건 볼 필요없다고 뺏어감.", "sushi1.png", 1);
         ReviewData review4_2 = new ReviewData("가성비는 있지만 초밥의 밥이 푸석(?)퍼석(?)해서 좀 실망했다....흠...그 밖에 음식에 실망한 몇가지 포인트가 있지만 긴 말은 생략하겠다", "sushi2.png", 4);
@@ -351,6 +453,7 @@ public class InitData implements CommandLineRunner {
                     .mainCategory(MainCategory.RESTAURANT)
                     .locationX(33 + randomX)
                     .locationY(125 + randomY)
+                    .cookingTime(40)
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
@@ -359,28 +462,26 @@ public class InitData implements CommandLineRunner {
                     .marketPhone("01012341234")
                     .build();
 
-            // classification
-
             // Menu
             int priceRandom = random.nextInt(20);
             Menu menu1 = Menu.builder().menuName("메뉴1").description("메뉴에 대한 설명").price(priceRandom * 1000).build();
-            market.addMenu(menu1);
+            //market.addMenu(menu1);
             Menu menu2 = Menu.builder().menuName("메뉴2").description("메뉴에 대한 설명").price(priceRandom * 1500).build();
-            market.addMenu(menu2);
+            //market.addMenu(menu2);
             Menu menu3 = Menu.builder().menuName("메뉴3").description("메뉴에 대한 설명").price(priceRandom * 1400).build();
-            market.addMenu(menu3);
+            //market.addMenu(menu3);
             Menu menu4 = Menu.builder().menuName("메뉴4").description("메뉴에 대한 설명").price(priceRandom * 2000).build();
-            market.addMenu(menu4);
+            //market.addMenu(menu4);
             Menu menu5 = Menu.builder().menuName("메뉴5").description("메뉴에 대한 설명").price(priceRandom * 3000).build();
-            market.addMenu(menu5);
+            //market.addMenu(menu5);
 
             // Menu Option
             MenuOption menuOption1 = MenuOption.builder().description("옵션1").optionPrice(100).build();
             MenuOption menuOption2 = MenuOption.builder().description("옵션2").optionPrice(200).build();
             MenuOption menuOption3 = MenuOption.builder().description("옵션3").optionPrice(500).build();
-            menu1.addMenuOption(menuOption1);
-            menu1.addMenuOption(menuOption2);
-            menu1.addMenuOption(menuOption3);
+            //menu1.addMenuOption(menuOption1);
+            //menu1.addMenuOption(menuOption2);
+            //menu1.addMenuOption(menuOption3);
 
             // Coupon
             for (int i = 0; i < 5; i++) {

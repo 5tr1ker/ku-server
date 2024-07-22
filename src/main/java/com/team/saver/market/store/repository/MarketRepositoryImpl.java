@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.store.entity.QMenuOptionContainer.menuOptionContainer;
+import static com.team.saver.market.store.entity.QMenuContainer.menuContainer;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.team.saver.account.entity.QAccount.account;
@@ -156,63 +158,48 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<Market> findMarketAndMenuByMarketId(long marketId) {
-        Market result = jpaQueryFactory.select(market)
-                .from(market)
-                .innerJoin(market.menus).fetchJoin()
+    public List<MenuClassificationResponse> findMarketMenuById(long marketId) {
+        return jpaQueryFactory.selectFrom(market)
+                .innerJoin(market.menuContainers, menuContainer)
+                .innerJoin(menuContainer.menus, menu)
+                .orderBy(menuContainer.priority.asc())
                 .where(market.marketId.eq(marketId))
-                .fetchOne();
-
-        return Optional.ofNullable(result);
-    }
-
-    @Override
-    public List<MenuResponse> findMarketMenuById(long marketId) {
-        return jpaQueryFactory.select(
-                        Projections.constructor(MenuResponse.class,
+                .transform(groupBy(menuContainer.menuContainerId).list(Projections.constructor(
+                        MenuClassificationResponse.class,
+                        menuContainer.classification,
+                        list(Projections.constructor(
+                                MenuResponse.class,
                                 menu.menuId,
                                 menu.price,
                                 menu.description,
                                 menu.imageUrl,
                                 menu.menuName
-                        )
-                )
-                .from(market)
-                .leftJoin(market.menus, menu)
-                .where(market.marketId.eq(marketId))
-                .fetch();
+                        ))
+                )));
     }
 
     @Override
-    public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
-        List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
-                .leftJoin(market.menus, menu)
-                .leftJoin(menu.menuOptions, menuOption)
+    public List<MenuOptionClassificationResponse> findMenuOptionById(long menuId) {
+        return jpaQueryFactory.selectFrom(market)
+                .leftJoin(market.menuContainers, menuContainer)
+                .leftJoin(menuContainer.menus, menu)
+                .leftJoin(menu.menuOptionContainers, menuOptionContainer)
+                .leftJoin(menuOptionContainer.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
-                        groupBy(menu.menuId)
+                        groupBy(menuOptionContainer.menuOptionContainerId)
                                 .list(Projections.constructor(
-                                        MenuDetailResponse.class,
-                                        menu.menuId,
-                                        menu.price,
-                                        market.marketId,
-                                        market.marketName,
-                                        market.marketImage,
-                                        menu.imageUrl,
-                                        menu.menuName,
+                                        MenuOptionClassificationResponse.class,
+                                        menuOptionContainer.classification,
+                                        menuOptionContainer.isMultipleSelection,
                                         list(Projections.constructor(MenuOptionResponse.class,
                                                 menuOption.menuOptionId,
                                                 menuOption.description,
-                                                menuOption.optionPrice
+                                                menuOption.optionPrice,
+                                                menuOption.isAdultMenu
                                         ))
                                 ))
                 );
-
-        if (result.size() == 0) {
-            return Optional.empty();
-        }
-
-        return Optional.of(result.get(0));
     }
 
 }

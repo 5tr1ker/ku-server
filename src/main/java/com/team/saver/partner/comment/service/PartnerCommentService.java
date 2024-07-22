@@ -4,12 +4,12 @@ import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.entity.PartnerComment;
+import com.team.saver.partner.comment.repository.PartnerCommentRepository;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
-import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
-import com.team.saver.partner.comment.repository.PartnerCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,8 @@ public class PartnerCommentService {
         partnerCommentRepository.delete(result);
     }
 
-    public List<PartnerCommentResponse> getPartnerComment(long partnerRequestId) {
+    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId) {
         return partnerCommentRepository.findByPartnerRequestId(partnerRequestId);
     }
+
 }
