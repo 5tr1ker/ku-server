@@ -71,9 +71,10 @@ public class MarketService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
 
         int index = 0;
+        long priority = 1;
         for(MenuCreateRequest menuCreateRequest : request) {
 
-            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification());
+            MenuContainer menuContainer = MenuContainer.createEntity(menuCreateRequest.getClassification(), priority++);
 
             for(MenuCreateData menuCreateData : menuCreateRequest.getMenus()) {
                 String imageUrl = s3Service.uploadImage(image.get(index++));

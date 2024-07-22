@@ -8,7 +8,7 @@ import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
-import com.team.saver.market.store.entity.MenuOption;
+import com.team.saver.market.store.entity.*;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -23,9 +23,6 @@ import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
-import com.team.saver.market.store.entity.MainCategory;
-import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
@@ -286,6 +283,71 @@ public class InitData implements CommandLineRunner {
                 .openTime(LocalTime.now())
                 .marketPhone("01012341234")
                 .build();
+
+        String menuImage_1 = uploadFile(new File("src/main/resources/images/Rectangle 2389.png"));
+        String menuImage_2 = uploadFile(new File("src/main/resources/images/Rectangle 2390.png"));
+        String menuImage_3 = uploadFile(new File("src/main/resources/images/Rectangle 2391.png"));
+        String menuImage_4 = uploadFile(new File("src/main/resources/images/Rectangle 2392.png"));
+        MenuContainer menuContainer_1 = MenuContainer.builder().classification("추천메뉴").priority(1).build();
+        menuContainer_1.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_2 = MenuContainer.builder().classification("대표메뉴").priority(2).build();
+        menuContainer_2.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_3 = MenuContainer.builder().classification("세트메뉴").priority(3).build();
+        menuContainer_3.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        MenuContainer menuContainer_4 = MenuContainer.builder().classification("단품메뉴").priority(4).build();
+        menuContainer_4.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+
+        String menuImage_5 = uploadFile(new File("src/main/resources/images/Rectangle 2394.png"));
+        String menuImage_6 = uploadFile(new File("src/main/resources/images/Rectangle 2395.png"));
+        String menuImage_7 = uploadFile(new File("src/main/resources/images/Rectangle 2396.png"));
+        String menuImage_8 = uploadFile(new File("src/main/resources/images/Rectangle 2397.png"));
+        MenuContainer menuContainer_5 = MenuContainer.builder().classification("사이드메뉴").priority(5).build();
+        menuContainer_5.addMenu(Menu.builder().menuName("치즈볼(5개)").imageUrl(menuImage_5).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("치즈스틱(3개)").imageUrl(menuImage_6).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(3000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("감자튀김").imageUrl(menuImage_7).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().menuName("어니언링").imageUrl(menuImage_8).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(8000).build());
+
+        String menuImage_9 = uploadFile(new File("src/main/resources/images/Rectangle 2399.png"));
+        String menuImage_10 = uploadFile(new File("src/main/resources/images/Rectangle 2400.png"));
+        String menuImage_11 = uploadFile(new File("src/main/resources/images/Rectangle 2401.png"));
+        String menuImage_12 = uploadFile(new File("src/main/resources/images/Rectangle 2402.png"));
+        MenuContainer menuContainer_6 = MenuContainer.builder().classification("소스").priority(6).build();
+        menuContainer_6.addMenu(Menu.builder().menuName("마블링소스").imageUrl(menuImage_9).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("고블링소스").imageUrl(menuImage_10).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("양념치킨소스").imageUrl(menuImage_11).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().menuName("머쓱타드").imageUrl(menuImage_12).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        MenuContainer menuContainer_7 = MenuContainer.builder().classification("음료/주류").priority(7).build();
+        menuContainer_7.addMenu(Menu.builder().menuName("콜라").description("콜라").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("사이다").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("소주").description("소주").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("맥주").description("맥주").price(5000).build());
+
+        market_detail.addMenuContainer(menuContainer_1);
+        market_detail.addMenuContainer(menuContainer_2);
+        market_detail.addMenuContainer(menuContainer_3);
+        market_detail.addMenuContainer(menuContainer_4);
+        market_detail.addMenuContainer(menuContainer_5);
+        market_detail.addMenuContainer(menuContainer_6);
+        market_detail.addMenuContainer(menuContainer_7);
+
+        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
+        Coupon coupon_2 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
+
+        market_detail.addCoupon(coupon_1);
+        market_detail.addCoupon(coupon_2);
+        marketRepository.save(market_detail);
 
 
         ReviewData review4_1 = new ReviewData("대학생때부터 진짜 자주 가던 곳이고 항상 스시는 스시도쿠가 맛있다고 말해왔고 인스타도 초창기부터 팔로워해왔는데 오랜만에 포장하러가니깐 진짜 싸가지없음. 포장세트메뉴 밑에 단품스시도 있어서 보는데 갑자기 휙하고 이건 볼 필요없다고 뺏어감.", "sushi1.png", 1);

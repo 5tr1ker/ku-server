@@ -18,7 +18,6 @@ public class MenuContainer {
     private long menuContainerId;
 
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long priority;
 
     @Column(nullable = false)
@@ -39,9 +38,10 @@ public class MenuContainer {
         menu.setMenuContainer(this);
     }
 
-    public static MenuContainer createEntity(String classification) {
+    public static MenuContainer createEntity(String classification, long priority) {
         return MenuContainer.builder()
                 .classification(classification)
+                .priority(priority)
                 .build();
     }
 

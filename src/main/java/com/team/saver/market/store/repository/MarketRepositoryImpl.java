@@ -161,6 +161,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
         return jpaQueryFactory.selectFrom(market)
                 .innerJoin(market.menuContainers, menuContainer)
                 .innerJoin(menuContainer.menus, menu)
+                .orderBy(menuContainer.priority.asc())
                 .where(market.marketId.eq(marketId))
                 .transform(groupBy(menuContainer.menuContainerId).list(Projections.constructor(
                         MenuClassificationResponse.class,
@@ -179,9 +180,9 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     @Override
     public Optional<MenuDetailResponse> findMarketMenuAndOptionById(long menuId) {
         List<MenuDetailResponse> result = jpaQueryFactory.selectFrom(market)
-                .innerJoin(market.menuContainers, menuContainer)
-                .innerJoin(menuContainer.menus, menu)
-                .innerJoin(menu.menuOptions, menuOption)
+                .leftJoin(market.menuContainers, menuContainer)
+                .leftJoin(menuContainer.menus, menu)
+                .leftJoin(menu.menuOptions, menuOption)
                 .where(menu.menuId.eq(menuId))
                 .transform(
                         groupBy(menu.menuId)
