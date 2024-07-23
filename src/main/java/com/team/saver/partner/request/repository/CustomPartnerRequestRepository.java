@@ -23,6 +23,4 @@ public interface CustomPartnerRequestRepository {
 
     Optional<PartnerRequest> findByIdAndAccountEmail(String email, long partnerRequestId);
 
-    long deleteByIdAndAccountEmail(String email, long partnerRequestId);
-
 }

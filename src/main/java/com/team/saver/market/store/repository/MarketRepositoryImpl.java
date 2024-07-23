@@ -138,8 +138,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         review.countDistinct()
                 ))
                 .from(market)
-                .innerJoin(market.reviews, review)
-                .groupBy(market)
+                .leftJoin(market.reviews, review)
+                .groupBy(market.marketId)
                 .where(market.marketId.eq(marketId))
                 .fetchOne();
 

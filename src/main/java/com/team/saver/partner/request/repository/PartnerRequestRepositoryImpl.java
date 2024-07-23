@@ -120,16 +120,4 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
         return Optional.ofNullable(result);
     }
 
-    @Override
-    public long deleteByIdAndAccountEmail(String email, long partnerRequestId) {
-        long result = jpaQueryFactory.select(partnerRequest.partnerRequestId)
-                .from(partnerRequest)
-                .innerJoin(partnerRequest.requestUser, account).on(account.email.eq(email))
-                .where(partnerRequest.partnerRequestId.eq(partnerRequestId))
-                .fetchOne();
-
-        return jpaQueryFactory.delete(partnerRequest)
-                .where(partnerRequest.partnerRequestId.eq(result))
-                .execute();
-    }
 }
