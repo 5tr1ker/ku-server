@@ -281,7 +281,7 @@ public class InitData implements CommandLineRunner {
                 .partner(account)
                 .closeTime(LocalTime.now())
                 .openTime(LocalTime.now())
-                .marketPhone("01012341234")
+                .marketPhone("010-1234-1234")
                 .build();
 
         String menuImage_1 = uploadFile(new File("src/main/resources/images/Rectangle 2389.png"));
@@ -459,7 +459,7 @@ public class InitData implements CommandLineRunner {
                     .partner(account)
                     .closeTime(LocalTime.now())
                     .openTime(LocalTime.now())
-                    .marketPhone("01012341234")
+                    .marketPhone("010-1234-1234")
                     .build();
 
             // Menu

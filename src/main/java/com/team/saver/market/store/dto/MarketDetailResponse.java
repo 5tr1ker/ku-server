@@ -22,6 +22,8 @@ public class MarketDetailResponse {
 
     private int minimumOrderPrice;
 
+    private int cookingTime;
+
     private String detailAddress;
 
     private String eventMessage;

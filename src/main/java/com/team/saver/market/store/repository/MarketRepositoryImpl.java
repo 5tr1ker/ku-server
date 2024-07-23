@@ -128,6 +128,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.marketName,
                         market.marketDescription,
                         market.minimumOrderPrice,
+                        market.cookingTime,
                         market.detailAddress,
                         market.eventMessage,
                         market.openTime,
