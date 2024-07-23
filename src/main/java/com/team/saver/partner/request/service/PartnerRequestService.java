@@ -76,11 +76,10 @@ public class PartnerRequestService {
 
     @Transactional
     public void deletePartnerRequest(CurrentUser currentUser, long partnerRequestId) {
-        long result = partnerRequestRepository.deleteByIdAndAccountEmail(currentUser.getEmail(), partnerRequestId);
+        PartnerRequest partnerRequest = partnerRequestRepository.findByIdAndAccountEmail(currentUser.getEmail(), partnerRequestId)
+            .orElseThrow(() -> new CustomRuntimeException(ONLY_DELETE_WRITER));
 
-        if(result == 0) {
-            throw new CustomRuntimeException(ONLY_DELETE_WRITER);
-        }
+        partnerRequestRepository.delete(partnerRequest);
     }
 
 }
