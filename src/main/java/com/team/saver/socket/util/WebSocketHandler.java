@@ -2,6 +2,9 @@ package com.team.saver.socket.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team.saver.account.entity.Account;
+import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.socket.dto.ChatRequest;
 import com.team.saver.socket.dto.ChatResponse;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_CHATROOM;
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private WebSocketSession ADMINS = null;
     private final ObjectMapper objectMapper;
     private final ChatRoomRepository chatRoomRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -61,9 +66,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void joinChatBySession(long accountId, WebSocketSession session) {
+        addChatRoomByAccountIdIfNotExists(accountId);
+
         if(!CLIENTS.containsKey(accountId)) {
             CLIENTS.put(accountId , session);
         }
+    }
+
+    private ChatRoom addChatRoomByAccountIdIfNotExists(long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+
+        return chatRoomRepository.findByAccount(account)
+                .orElseGet(() -> chatRoomRepository.save(createChatRoom(account)));
+    }
+
+    private ChatRoom createChatRoom(Account account) {
+        return ChatRoom.builder()
+                .account(account)
+                .build();
     }
 
     private Chat sendChat(ChatRequest chatRequest, boolean isAdmin) throws IOException {
