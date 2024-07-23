@@ -3,6 +3,11 @@ package com.team.saver.socket.dto;
 public enum MessageType {
 
     ENTER,
-    SEND;
+
+    ENTER_ADMIN,
+
+    SEND,
+
+    SEND_ADMIN;
 
 }

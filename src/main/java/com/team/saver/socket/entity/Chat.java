@@ -19,20 +19,25 @@ public class Chat {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long chatId;
 
+    @Column(nullable = false)
     private String message;
 
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime sendTime;
 
+    @Column(nullable = false)
+    private boolean isAdmin;
+
     @Setter
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
 
-    public static Chat createEntity(String message) {
+    public static Chat createEntity(String message, boolean isAdmin) {
         return Chat.builder()
                 .message(message)
+                .isAdmin(isAdmin)
                 .build();
     }
 
