@@ -11,6 +11,7 @@ import com.team.saver.socket.dto.ChatResponse;
 import com.team.saver.socket.dto.MessageType;
 import com.team.saver.socket.entity.Chat;
 import com.team.saver.socket.entity.ChatRoom;
+import com.team.saver.socket.repository.ChatRepository;
 import com.team.saver.socket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatRoomRepository chatRoomRepository;
     private final AccountRepository accountRepository;
+    private final ChatRepository chatRepository;
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -109,14 +111,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
         session.sendMessage(new TextMessage(body));
     }
 
-    private Chat saveChatData(ChatRequest chatRequest, boolean isAdmin) {
+    protected Chat saveChatData(ChatRequest chatRequest, boolean isAdmin) {
         ChatRoom chatRoom = chatRoomRepository.findByAccountId(chatRequest.getAccountId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_CHATROOM));
 
         Chat chat = Chat.createEntity(chatRequest.getMessage(), isAdmin);
 
-        chatRoom.addChat(chat);
-        return chat;
+        chat.addFromChatRoom(chatRoom);
+
+        return chatRepository.save(chat);
     }
 
 }

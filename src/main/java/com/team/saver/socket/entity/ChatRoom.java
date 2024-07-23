@@ -25,13 +25,8 @@ public class ChatRoom {
     @OneToOne(fetch = FetchType.LAZY)
     private Account account;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @Builder.Default
+    @OneToMany(mappedBy = "chatRoom", cascade = { CascadeType.REMOVE }, orphanRemoval = true)
     private List<Chat> chat = new ArrayList<>();
-
-    public void addChat(Chat chat) {
-        this.chat.add(chat);
-
-        chat.setChatRoom(this);
-    }
 
 }

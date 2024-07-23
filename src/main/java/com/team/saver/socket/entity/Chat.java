@@ -34,6 +34,12 @@ public class Chat {
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
 
+    public void addFromChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+
+        chatRoom.getChat().add(this);
+    }
+
     public static Chat createEntity(String message, boolean isAdmin) {
         return Chat.builder()
                 .message(message)
