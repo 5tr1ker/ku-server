@@ -149,7 +149,7 @@ public class Trie {
     }
 
     protected Node createOrLoadAutoComplete(String word) {
-        AutoComplete autoComplete = autoCompleteRepository.findAutoCompleteByWord(word)
+        AutoComplete autoComplete = autoCompleteRepository.findByWord(word)
                 .orElseGet(() -> autoCompleteRepository.save(AutoComplete.createAutoComplete(word)));
 
         autoComplete.increaseFrequency(1);

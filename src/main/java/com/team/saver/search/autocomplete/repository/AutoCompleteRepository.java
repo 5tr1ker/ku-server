@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AutoCompleteRepository extends JpaRepository<AutoComplete, Long> {
 
-    Optional<AutoComplete> findAutoCompleteByWord(String word);
+    Optional<AutoComplete> findByWord(String word);
 
     long deleteByWord(String word);
 
