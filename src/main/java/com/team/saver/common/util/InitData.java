@@ -30,6 +30,9 @@ import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
 import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepository;
+import com.team.saver.search.popular.entity.SearchWord;
+import com.team.saver.search.popular.repository.SearchWordRepository;
+import com.team.saver.search.popular.service.PopularSearchService;
 import com.team.saver.search.popular.util.SearchWordScheduler;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -137,6 +140,7 @@ class PartnerCommentData {
 }
 
 
+
 @Component
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
@@ -149,6 +153,7 @@ public class InitData implements CommandLineRunner {
     private final SearchWordScheduler searchWordScheduler;
     private final PromotionRepository promotionRepository;
     private final PromotionTagRepository promotionTagRepository;
+    private final SearchWordRepository searchWordRepository;
     private final AmazonS3Client amazonS3Client;
     private final MarketDocumentRepository marketDocumentRepository;
     private final AttractionRepository attractionRepository;
@@ -175,6 +180,14 @@ public class InitData implements CommandLineRunner {
         for (S3ObjectSummary object : s3objects) {
             amazonS3Client.deleteObject(bucketName, object.getKey());
         }
+    }
+
+    @Transactional
+    public void addPopularSearch(String searchWord) {
+        SearchWord searchWordEntity = searchWordRepository.findBySearchWord(searchWord)
+                .orElseGet(() -> searchWordRepository.save(SearchWord.createEntity(searchWord)));
+        searchWordEntity.updateSearch();
+
     }
 
     private String uploadFile(File file) {
@@ -371,8 +384,9 @@ public class InitData implements CommandLineRunner {
 
         market_detail.addCoupon(coupon_1);
         market_detail.addCoupon(coupon_2);
+        addPopularSearch(market_detail.getMarketName());
+        autoCompleteService.addSearchWord(market_detail.getMarketName());
         marketRepository.save(market_detail);
-
 
         ReviewData review4_1 = new ReviewData("대학생때부터 진짜 자주 가던 곳이고 항상 스시는 스시도쿠가 맛있다고 말해왔고 인스타도 초창기부터 팔로워해왔는데 오랜만에 포장하러가니깐 진짜 싸가지없음. 포장세트메뉴 밑에 단품스시도 있어서 보는데 갑자기 휙하고 이건 볼 필요없다고 뺏어감.", "sushi1.png", 1);
         ReviewData review4_2 = new ReviewData("가성비는 있지만 초밥의 밥이 푸석(?)퍼석(?)해서 좀 실망했다....흠...그 밖에 음식에 실망한 몇가지 포인트가 있지만 긴 말은 생략하겠다", "sushi2.png", 4);
@@ -527,9 +541,10 @@ public class InitData implements CommandLineRunner {
                 market.addReview(review);
             }
 
-            marketRepository.save(market);
             autoCompleteService.addSearchWord(market.getMarketName());
             marketDocumentRepository.save(MarketDocument.createEntity(market));
+            addPopularSearch(market.getMarketName());
+            marketRepository.save(market);
         }
 
         // 홍보 데이터 ( 메인 )
