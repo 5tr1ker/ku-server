@@ -9,6 +9,7 @@ import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
 import com.team.saver.market.basket.entity.Basket;
 import com.team.saver.market.basket.entity.BasketMenu;
+import com.team.saver.market.basket.entity.BasketMenuOption;
 import com.team.saver.market.basket.repository.BasketMenuRepository;
 import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.market.store.entity.Market;
@@ -45,13 +46,10 @@ public class BasketService {
         Menu menu = menuRepository.findById(request.getMenuId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU));
 
-        MenuOption menuOption = null;
-        if(request.getMenuOptionId() != 0) {
-            menuOption = menuOptionRepository.findById(request.getMenuOptionId())
-                    .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU_OPTION));
-        }
+        BasketMenu basketMenu = BasketMenu.createEntity(menu, request.getAmount());
+        List<MenuOption> menuOptions = menuOptionRepository.findAllById(request.getMenuOptionIds());
+        basketMenu.updateMenuOption(menuOptions);
 
-        BasketMenu basketMenu = BasketMenu.createEntity(menu, menuOption, request.getAmount());
         basket.addBasketMenu(basketMenu);
     }
 
@@ -67,8 +65,7 @@ public class BasketService {
         BasketMenu basketMenu = basketMenuRepository.findByAccountEmailAndId(currentUser.getEmail(), basketMenuId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_BASKET_MENU));
 
-        MenuOption menuOption = menuOptionRepository.findById(request.getMenuOptionId())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MENU_OPTION));
+        List<MenuOption> menuOption = menuOptionRepository.findAllById(request.getMenuOptionIds());
 
         basketMenu.updateMenuOption(menuOption);
         basketMenu.updateAmount(request.getAmount());

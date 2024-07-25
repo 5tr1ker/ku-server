@@ -2,10 +2,12 @@ package com.team.saver.market.basket.dto;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class MenuOptionUpdateRequest {
 
-    private long menuOptionId;
+    private List<Long> menuOptionIds;
 
     private long amount;
 
