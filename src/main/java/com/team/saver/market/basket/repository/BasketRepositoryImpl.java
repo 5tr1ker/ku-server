@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.saver.market.basket.entity.QBasketMenuOption.basketMenuOption;
 import static com.team.saver.market.store.entity.QMenuOption.menuOption;
 import static com.team.saver.market.store.entity.QMenu.menu;
 import static com.querydsl.core.group.GroupBy.list;
@@ -42,7 +43,8 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .innerJoin(basket.account, account).on(account.email.eq(email))
                 .innerJoin(basket.market, market)
                 .innerJoin(basket.basketMenus, basketMenu)
-                .leftJoin(basketMenu.menuOption, menuOption)
+                .leftJoin(basketMenu.basketMenuOptions, basketMenuOption)
+                .innerJoin(basketMenuOption.menuOption, menuOption)
                 .innerJoin(basketMenu.menu, menu)
                 .orderBy(basket.updateTime.desc())
                 .transform(groupBy(basket.basketId).list(
@@ -71,7 +73,8 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .innerJoin(basket.account, account).on(account.email.eq(email))
                 .innerJoin(basket.market, market)
                 .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(ids))
-                .leftJoin(basketMenu.menuOption, menuOption)
+                .leftJoin(basketMenu.basketMenuOptions, basketMenuOption)
+                .innerJoin(basketMenuOption.menuOption, menuOption)
                 .innerJoin(basketMenu.menu, menu)
                 .orderBy(basket.updateTime.desc())
                 .transform(groupBy(basket.basketId).list(

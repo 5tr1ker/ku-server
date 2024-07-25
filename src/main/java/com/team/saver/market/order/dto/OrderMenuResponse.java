@@ -3,6 +3,8 @@ package com.team.saver.market.order.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class OrderMenuResponse {
@@ -13,12 +15,8 @@ public class OrderMenuResponse {
 
     private long price;
 
-    private String optionDescription;
-
-    private long optionPrice;
-
     private long amount;
 
-    private long finalPrice;
+    private List<OrderOptionResponse> options;
 
 }

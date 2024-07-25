@@ -24,6 +24,8 @@ public class OrderResponse {
 
     private String marketName;
 
+    private long amountOfPayment;
+
     private List<OrderMenuResponse> orderMenus;
 
 }

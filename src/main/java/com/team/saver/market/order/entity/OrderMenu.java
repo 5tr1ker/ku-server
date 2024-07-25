@@ -6,6 +6,9 @@ import com.team.saver.market.store.entity.MenuOption;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -19,37 +22,30 @@ public class OrderMenu {
 
     private String menuName;
 
-    private String optionDescription;
-
-    private long optionPrice;
-
     private long price;
 
     private long amount;
+
+    @Builder.Default
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "orderMenu")
+    private List<OrderOption> options = new ArrayList<>();
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Order order;
 
-    public static OrderMenu createEntity(BasketMenu basketMenu) {
-        MenuOption menuOption = basketMenu.getMenuOption();
-        Menu menu = basketMenu.getMenu();
+    public void addOption(OrderOption orderOption) {
+        this.options.add(orderOption);
 
-        if(menuOption == null) {
-            return OrderMenu.builder()
-                    .menuName(menu.getMenuName())
-                    .price(menu.getPrice())
-                    .optionPrice(0)
-                    .amount(basketMenu.getAmount())
-                    .build();
-        }
+        orderOption.setOrderMenu(this);
+    }
+
+    public static OrderMenu createEntity(BasketMenu basketMenu) {
+        Menu menu = basketMenu.getMenu();
 
         return OrderMenu.builder()
                 .menuName(menu.getMenuName())
-                .optionDescription(menuOption.getDescription())
-                .price(menu.getPrice() + menuOption.getOptionPrice())
-                .optionPrice(menuOption.getOptionPrice())
                 .amount(basketMenu.getAmount())
                 .build();
     }

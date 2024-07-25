@@ -7,6 +7,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.entity.Basket;
 import com.team.saver.market.basket.entity.BasketMenu;
+import com.team.saver.market.basket.entity.BasketMenuOption;
 import com.team.saver.market.basket.repository.BasketMenuRepository;
 import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.market.coupon.entity.Coupon;
@@ -17,9 +18,11 @@ import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderDetail;
 import com.team.saver.market.order.entity.OrderMenu;
+import com.team.saver.market.order.entity.OrderOption;
 import com.team.saver.market.order.repository.OrderRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
+import com.team.saver.market.store.entity.MenuOption;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,28 +52,29 @@ public class OrderService {
         Market market = marketRepository.findById(request.getMarketId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
         Account account = accountService.getProfile(currentUser);
+
         Order order = Order.createEntity(market, account);
 
         long amountOfPayment = 0;
+        long optionPrice = 0;
         for(BasketMenu basketMenu : basketMenus) {
-            long totalPrice = calculateTotalPrice(basketMenu);
-            amountOfPayment += totalPrice;
-
+            List<MenuOption> menuOptions = basketMenuRepository.findMenuOptionById(basketMenu.getBasketMenuId());
             OrderMenu orderMenu = OrderMenu.createEntity(basketMenu);
+
+            for(MenuOption menuOption : menuOptions) {
+                OrderOption orderOption = OrderOption.createEntity(menuOption);
+
+                optionPrice += orderOption.getOptionPrice();
+                orderMenu.addOption(orderOption);
+            }
+            amountOfPayment += (optionPrice + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
+
             order.addOrderMenu(orderMenu);
         }
 
         OrderDetail orderDetail = createOrderDetail(request, market, amountOfPayment);
         order.setOrderDetail(orderDetail);
         orderRepository.save(order);
-    }
-
-    private long calculateTotalPrice(BasketMenu basketMenu) {
-        if(basketMenu.getMenuOption() == null) {
-            return basketMenu.getMenu().getPrice() * basketMenu.getAmount();
-        }
-
-        return (basketMenu.getMenuOption().getOptionPrice() + basketMenu.getMenu().getPrice()) * basketMenu.getAmount();
     }
 
     private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long amountOfPayment) {
