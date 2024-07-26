@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.dto.OrderDetailResponse;
 import com.team.saver.market.order.dto.OrderMenuResponse;
+import com.team.saver.market.order.dto.OrderOptionResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
@@ -44,9 +45,18 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
 
     @Override
     public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview) {
-        QOrderMenu qOrderMenu = new QOrderMenu("orderMenu_2");
-
-        JPAQuery<Order> result = jpaQueryFactory.selectFrom(order)
+        JPAQuery<OrderResponse> result = jpaQueryFactory.select(
+                        Projections.constructor(
+                                OrderResponse.class,
+                                order.orderId,
+                                orderDetail.orderDateTime,
+                                market.marketName,
+                                market.marketImage,
+                                orderDetail.finalPrice,
+                                orderMenu.count(),
+                                orderMenu.menuName
+                        )
+                ).from(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
@@ -59,27 +69,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
             result.where(review.isNull());
         }
 
-        return result.transform(groupBy(order.orderId)
-                .list(Projections.constructor(
-                        OrderResponse.class,
-                        order.orderId,
-                        orderDetail.orderDateTime,
-                        market.marketName,
-                        orderDetail.finalPrice,
-                        list(Projections.constructor(
-                                OrderMenuResponse.class,
-                                orderMenu.orderMenuId,
-                                orderMenu.menuName,
-                                orderMenu.price,
-                                orderMenu.amount,
-                                select(Projections.constructor(
-                                        OrderMenuResponse.class,
-                                        orderOption.optionDescription,
-                                        orderOption.optionPrice
-                                )).from(orderOption)
-                                        .innerJoin(orderOption.orderMenu, qOrderMenu).on(qOrderMenu.eq(orderMenu))
-                        ))
-                )));
+        return result.fetch();
     }
 
     @Override
@@ -113,12 +103,13 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                                 orderMenu.menuName,
                                                 orderMenu.price,
                                                 orderMenu.amount,
-                                                select(Projections.constructor(
-                                                        OrderMenuResponse.class,
-                                                        orderOption.optionDescription,
-                                                        orderOption.optionPrice
-                                                )).from(orderOption)
-                                                        .innerJoin(orderOption.orderMenu, qOrderMenu).on(qOrderMenu.eq(orderMenu))
+                                                list(select(Projections.constructor(
+                                                                OrderOptionResponse.class,
+                                                                orderOption.optionDescription,
+                                                                orderOption.optionPrice
+                                                        )).from(orderOption)
+                                                                .innerJoin(orderOption.orderMenu, qOrderMenu).on(qOrderMenu.eq(orderMenu))
+                                                )
                                         )
                                 )
                         )

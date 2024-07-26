@@ -1,10 +1,11 @@
 package com.team.saver.market.basket.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
-@AllArgsConstructor
 public class BasketMenuResponse {
 
     private long basketMenuId;
@@ -17,8 +18,20 @@ public class BasketMenuResponse {
 
     private long amount;
 
-    private String optionDescription;
+    private long optionTotalPrice;
 
-    private int optionPrice;
+
+    public BasketMenuResponse(long basketMenuId, String menuName, String menuImageUrl, int menuPrice, long amount, Object optionTotalPrice) {
+        this.basketMenuId = basketMenuId;
+        this.menuName = menuName;
+        this.menuImageUrl = menuImageUrl;
+        this.menuPrice = menuPrice;
+        this.amount = amount;
+        this.optionTotalPrice = Long.valueOf(optionTotalPrice.toString());
+    }
+
+    @Setter
+    private List<BasketOptionResponse> options;
+
 
 }

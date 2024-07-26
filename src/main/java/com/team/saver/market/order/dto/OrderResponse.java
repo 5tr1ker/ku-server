@@ -24,8 +24,12 @@ public class OrderResponse {
 
     private String marketName;
 
+    private String marketImage;
+
     private long amountOfPayment;
 
-    private List<OrderMenuResponse> orderMenus;
+    private long menuCount;
+
+    private String show_menu;
 
 }
