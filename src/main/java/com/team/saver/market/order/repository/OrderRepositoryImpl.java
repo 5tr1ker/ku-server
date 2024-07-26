@@ -60,7 +60,8 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenus, orderMenu);
+                .innerJoin(order.orderMenus, orderMenu)
+                .groupBy(order.orderId);
 
         if (existReview) {
             result.innerJoin(order.review);
@@ -96,20 +97,12 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                 orderDetail.discountAmount,
                                 orderDetail.paymentType,
                                 orderDetail.finalPrice,
-                                list(
-                                        Projections.constructor(
+                                list(Projections.constructor(
                                                 OrderMenuResponse.class,
                                                 orderMenu.orderMenuId,
                                                 orderMenu.menuName,
                                                 orderMenu.price,
-                                                orderMenu.amount,
-                                                list(select(Projections.constructor(
-                                                                OrderOptionResponse.class,
-                                                                orderOption.optionDescription,
-                                                                orderOption.optionPrice
-                                                        )).from(orderOption)
-                                                                .innerJoin(orderOption.orderMenu, qOrderMenu).on(qOrderMenu.eq(orderMenu))
-                                                )
+                                                orderMenu.amount
                                         )
                                 )
                         )
@@ -117,6 +110,20 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
 
         if (result.size() == 0) {
             return Optional.empty();
+        }
+
+        for (OrderMenuResponse orderMenuResponse : result.get(0).getOrderMenus()) {
+            orderMenuResponse.setOptions(
+                    jpaQueryFactory.select(
+                                    Projections.constructor(
+                                            OrderOptionResponse.class,
+                                            orderOption.optionDescription,
+                                            orderOption.optionPrice
+                                    )
+                            ).from(orderOption)
+                            .innerJoin(orderOption.orderMenu, orderMenu).on(orderMenu.orderMenuId.eq(orderMenuResponse.getOrderMenuId()))
+                            .fetch()
+            );
         }
 
         return Optional.ofNullable(result.get(0));

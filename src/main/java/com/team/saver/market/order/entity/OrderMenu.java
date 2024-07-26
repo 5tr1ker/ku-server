@@ -46,6 +46,7 @@ public class OrderMenu {
 
         return OrderMenu.builder()
                 .menuName(menu.getMenuName())
+                .price(menu.getPrice())
                 .amount(basketMenu.getAmount())
                 .build();
     }
