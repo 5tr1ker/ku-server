@@ -6,9 +6,11 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.dto.OrderDetailResponse;
 import com.team.saver.market.order.dto.OrderMenuResponse;
+import com.team.saver.market.order.dto.OrderOptionResponse;
 import com.team.saver.market.order.dto.OrderResponse;
 import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
+import com.team.saver.market.order.entity.QOrderMenu;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
+import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.saver.market.order.entity.QOrderOption.orderOption;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.order.entity.QOrder.order;
@@ -41,11 +45,23 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
 
     @Override
     public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview) {
-        JPAQuery<Order> result = jpaQueryFactory.selectFrom(order)
+        JPAQuery<OrderResponse> result = jpaQueryFactory.select(
+                        Projections.constructor(
+                                OrderResponse.class,
+                                order.orderId,
+                                orderDetail.orderDateTime,
+                                market.marketName,
+                                market.marketImage,
+                                orderDetail.finalPrice,
+                                orderMenu.count(),
+                                orderMenu.menuName
+                        )
+                ).from(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
-                .innerJoin(order.orderMenus, orderMenu);
+                .innerJoin(order.orderMenus, orderMenu)
+                .groupBy(order.orderId);
 
         if (existReview) {
             result.innerJoin(order.review);
@@ -54,27 +70,13 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
             result.where(review.isNull());
         }
 
-        return result.transform(groupBy(order.orderId)
-                .list(Projections.constructor(
-                        OrderResponse.class,
-                        order.orderId,
-                        orderDetail.orderDateTime,
-                        market.marketName,
-                        list(Projections.constructor(
-                                OrderMenuResponse.class,
-                                orderMenu.orderMenuId,
-                                orderMenu.menuName,
-                                orderMenu.price,
-                                orderMenu.optionDescription,
-                                orderMenu.optionPrice,
-                                orderMenu.amount,
-                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
-                        ))
-                )));
+        return result.fetch();
     }
 
     @Override
     public Optional<OrderDetailResponse> findOrderDetailByOrderIdAndEmail(long orderId, String email) {
+        QOrderMenu qOrderMenu = new QOrderMenu("orderMenu_2");
+
         List<OrderDetailResponse> result = jpaQueryFactory.selectFrom(order)
                 .innerJoin(order.account, account).on(account.email.eq(email))
                 .innerJoin(order.orderDetail, orderDetail)
@@ -95,16 +97,12 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                                 orderDetail.discountAmount,
                                 orderDetail.paymentType,
                                 orderDetail.finalPrice,
-                                list(
-                                        Projections.constructor(
+                                list(Projections.constructor(
                                                 OrderMenuResponse.class,
                                                 orderMenu.orderMenuId,
                                                 orderMenu.menuName,
                                                 orderMenu.price,
-                                                orderMenu.optionDescription,
-                                                orderMenu.optionPrice,
-                                                orderMenu.amount,
-                                                orderMenu.price.add(orderMenu.optionPrice).multiply(orderMenu.amount)
+                                                orderMenu.amount
                                         )
                                 )
                         )
@@ -112,6 +110,20 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
 
         if (result.size() == 0) {
             return Optional.empty();
+        }
+
+        for (OrderMenuResponse orderMenuResponse : result.get(0).getOrderMenus()) {
+            orderMenuResponse.setOptions(
+                    jpaQueryFactory.select(
+                                    Projections.constructor(
+                                            OrderOptionResponse.class,
+                                            orderOption.optionDescription,
+                                            orderOption.optionPrice
+                                    )
+                            ).from(orderOption)
+                            .innerJoin(orderOption.orderMenu, orderMenu).on(orderMenu.orderMenuId.eq(orderMenuResponse.getOrderMenuId()))
+                            .fetch()
+            );
         }
 
         return Optional.ofNullable(result.get(0));

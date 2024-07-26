@@ -39,6 +39,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                 .innerJoin(partnerRequest.requestUser, account)
                 .leftJoin(partnerRequest.partnerComment, partnerComment)
                 .groupBy(partnerRequest.partnerRequestId)
+                .orderBy(partnerRequest.writeTime.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

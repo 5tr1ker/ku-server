@@ -5,6 +5,9 @@ import com.team.saver.market.store.entity.MenuOption;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -18,8 +21,9 @@ public class BasketMenu {
     @OneToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private MenuOption menuOption;
+    @Builder.Default
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE },orphanRemoval = true , mappedBy = "basketMenu")
+    private List<BasketMenuOption> basketMenuOptions = new ArrayList<>();
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,18 +31,23 @@ public class BasketMenu {
 
     private long amount;
 
-    public void updateMenuOption(MenuOption menuOption) {
-        this.menuOption = menuOption;
+    public void updateMenuOption(List<MenuOption> menuOptions) {
+        this.basketMenuOptions.clear();
+
+        for(MenuOption menuOption : menuOptions) {
+            BasketMenuOption basketMenuOption = BasketMenuOption.createEntity(menuOption, this);
+
+            this.basketMenuOptions.add(basketMenuOption);
+        }
     }
 
     public void updateAmount(long amount) {
         this.amount = amount;
     }
 
-    public static BasketMenu createEntity(Menu menu, MenuOption menuOption, long amount) {
+    public static BasketMenu createEntity(Menu menu, long amount) {
         return BasketMenu.builder()
                 .menu(menu)
-                .menuOption(menuOption)
                 .amount(amount)
                 .build();
     }
