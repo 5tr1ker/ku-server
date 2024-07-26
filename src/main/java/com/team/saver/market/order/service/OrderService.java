@@ -60,6 +60,7 @@ public class OrderService {
         for(BasketMenu basketMenu : basketMenus) {
             List<MenuOption> menuOptions = basketMenuRepository.findMenuOptionById(basketMenu.getBasketMenuId());
             OrderMenu orderMenu = OrderMenu.createEntity(basketMenu);
+            optionPrice = 0;
 
             for(MenuOption menuOption : menuOptions) {
                 OrderOption orderOption = OrderOption.createEntity(menuOption);
