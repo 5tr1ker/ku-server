@@ -31,6 +31,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
+                        coupon.conditionToUseAmount,
                         coupon.saleRate
                 ))
                 .from(coupon)
@@ -80,6 +81,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         downloadCoupon.isUsage,
                         coupon.couponName,
                         coupon.couponDescription,
+                        coupon.conditionToUseAmount,
                         coupon.saleRate,
                         market.marketId,
                         market.marketName
@@ -119,12 +121,13 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
+                        coupon.conditionToUseAmount,
                         coupon.saleRate
                 ))
                 .from(downloadCoupon)
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
                 .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice))
-                .innerJoin(coupon.market).on(market.marketId.eq(marketId))
+                .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
                 .where(downloadCoupon.isUsage.eq(false))
                 .fetch();
     }

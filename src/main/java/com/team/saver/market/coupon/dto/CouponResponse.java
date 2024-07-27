@@ -16,6 +16,8 @@ public class CouponResponse {
 
     private String couponDescription;
 
+    private int conditionToUseAmount;
+
     private int saleRate;
 
 }
