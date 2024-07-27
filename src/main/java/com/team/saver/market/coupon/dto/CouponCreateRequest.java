@@ -8,8 +8,6 @@ public class CouponCreateRequest {
 
     private String couponName;
 
-    private String couponDescription;
-
     private int conditionToUseAmount;
 
     private ConditionToUse conditionToUse;
