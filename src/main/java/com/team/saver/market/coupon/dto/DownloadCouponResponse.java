@@ -15,9 +15,9 @@ public class DownloadCouponResponse {
 
     private String couponDescription;
 
-    private double saleRate;
+    private int conditionToUseAmount;
 
-    private int saleAmount;
+    private int saleRate;
 
     private long marketId;
 

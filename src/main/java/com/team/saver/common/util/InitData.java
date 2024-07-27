@@ -8,6 +8,8 @@ import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
+import com.team.saver.market.coupon.dto.CouponCreateRequest;
+import com.team.saver.market.coupon.entity.ConditionToUse;
 import com.team.saver.market.store.entity.*;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRecommender;
@@ -45,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -379,11 +382,15 @@ public class InitData implements CommandLineRunner {
         market_detail.addMenuContainer(menuContainer_6);
         market_detail.addMenuContainer(menuContainer_7);
 
-        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
-        Coupon coupon_2 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").build();
+        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("10,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(10000).build();
+        Coupon coupon_2 = Coupon.builder().saleRate(3000).couponName("3,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(20000).build();
+        Coupon coupon_3 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(50000).build();
+        Coupon coupon_4 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(50000).build();
 
         market_detail.addCoupon(coupon_1);
         market_detail.addCoupon(coupon_2);
+        market_detail.addCoupon(coupon_3);
+        market_detail.addCoupon(coupon_4);
         addPopularSearch(market_detail.getMarketName());
         autoCompleteService.addSearchWord(market_detail.getMarketName());
         marketRepository.save(market_detail);
@@ -453,6 +460,7 @@ public class InitData implements CommandLineRunner {
         ReviewData review16_3 = new ReviewData("광화문 교보문고 근처 돈까스  냉모밀 맛집", "porkcutlet3.png", 5);
         storeData.add(new StoreData("왕돈까쓰", "돈까스", "Rectangle 2426.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중! 대충 메세지 임을 알려줍니다. 이건 말도 안된다고 아잇 정말 맛업ㅈㅅ어 죽겠네 어그로 끌지마라 임니니니니 라항항항항항항하", Arrays.asList(review16_1, review16_2, review16_3)));
 
+        int menuIndex = 1;
         for (StoreData data : storeData) {
             // locationX = 33 ~ 38 , LocationY = 125 ~ 130
             double randomX = random.nextDouble(5);
@@ -477,36 +485,27 @@ public class InitData implements CommandLineRunner {
                     .build();
 
             // Menu
-            int priceRandom = random.nextInt(20);
-            Menu menu1 = Menu.builder().menuName("메뉴1").description("메뉴에 대한 설명").price(priceRandom * 1000).build();
-            //market.addMenu(menu1);
-            Menu menu2 = Menu.builder().menuName("메뉴2").description("메뉴에 대한 설명").price(priceRandom * 1500).build();
-            //market.addMenu(menu2);
-            Menu menu3 = Menu.builder().menuName("메뉴3").description("메뉴에 대한 설명").price(priceRandom * 1400).build();
-            //market.addMenu(menu3);
-            Menu menu4 = Menu.builder().menuName("메뉴4").description("메뉴에 대한 설명").price(priceRandom * 2000).build();
-            //market.addMenu(menu4);
-            Menu menu5 = Menu.builder().menuName("메뉴5").description("메뉴에 대한 설명").price(priceRandom * 3000).build();
-            //market.addMenu(menu5);
+            int titleRandom = 12;
+            for(int i = 0; i < titleRandom; i ++) {
+                int contentRandom = i + 1;
 
-            // Menu Option
-            MenuOption menuOption1 = MenuOption.builder().description("옵션1").optionPrice(100).build();
-            MenuOption menuOption2 = MenuOption.builder().description("옵션2").optionPrice(200).build();
-            MenuOption menuOption3 = MenuOption.builder().description("옵션3").optionPrice(500).build();
-            //menu1.addMenuOption(menuOption1);
-            //menu1.addMenuOption(menuOption2);
-            //menu1.addMenuOption(menuOption3);
+                MenuContainer menuContainer_data = MenuContainer.builder().classification(String.format("%d 메뉴", i + 1)).priority(2).build();
+                for(int j = 0; j < contentRandom; j++) {
+                    menuContainer_data.addMenu(Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build());
+                }
 
+                market.addMenuContainer(menuContainer_data);
+            }
+
+
+            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             // Coupon
-            for (int i = 0; i < 5; i++) {
-                int randomData = random.nextInt(10) * 1000;
+            for (int i = 0; i < 3; i++) {
+                int randomData = random.nextInt(10) * 10000;
+                int randomData_2 = random.nextInt(10) * 500;
 
-                Coupon coupon = Coupon.builder()
-                        .couponName("쿠폰 이름 " + i)
-                        .couponDescription("쿠폰 설명")
-                        .market(market)
-                        .saleRate(randomData)
-                        .build();
+                CouponCreateRequest couponCreateRequest = new CouponCreateRequest(String.format("%s원 할인 쿠폰", numberFormat.format(randomData_2)), randomData, ConditionToUse.MINIMUM_AMOUNT, randomData_2);
+                Coupon coupon = Coupon.createEntity(couponCreateRequest);
 
                 market.addCoupon(coupon);
             }
