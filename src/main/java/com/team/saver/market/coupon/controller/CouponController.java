@@ -37,6 +37,16 @@ public class CouponController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/{marketId}/coupons/downloads/can-use")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰에서 해당 주문에 사용할 수 있는 쿠폰 조회")
+    public ResponseEntity findCouponThatCanBeUsedFromDownloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                                                    @PathVariable long marketId,
+                                                                    @RequestParam long orderPrice) {
+        List<CouponResponse> result = couponService.findCouponThatCanBeUsedFromDownloadCoupon(currentUser, marketId, orderPrice);
+
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/v1/markets/coupons/{couponId}/downloads")
     @Operation(summary = "[ 로그인 ] 쿠폰 다운로드")
     public ResponseEntity downloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,

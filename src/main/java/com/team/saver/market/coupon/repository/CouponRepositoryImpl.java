@@ -29,6 +29,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         CouponResponse.class,
                         coupon.couponId,
                         coupon.couponName,
+                        coupon.conditionToUse,
                         coupon.couponDescription,
                         coupon.saleRate
                 ))
@@ -108,5 +109,23 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<CouponResponse> findCouponThatCanBeUsedFromDownloadCoupon(String email, long marketId, long orderPrice) {
+        return jpaQueryFactory.select(Projections.constructor(
+                        CouponResponse.class,
+                        coupon.couponId,
+                        coupon.couponName,
+                        coupon.conditionToUse,
+                        coupon.couponDescription,
+                        coupon.saleRate
+                ))
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice))
+                .innerJoin(coupon.market).on(market.marketId.eq(marketId))
+                .where(downloadCoupon.isUsage.eq(false))
+                .fetch();
     }
 }

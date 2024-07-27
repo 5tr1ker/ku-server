@@ -16,13 +16,19 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long couponId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Market market;
 
     @Column(nullable = false)
     private String couponName;
+
+    @Column(nullable = false)
+    private ConditionToUse conditionToUse;
+
+    @Column(nullable = false)
+    private int conditionToUseAmount;
 
     @Column(nullable = false)
     private String couponDescription;
@@ -35,6 +41,8 @@ public class Coupon {
         return Coupon.builder()
                 .couponName(request.getCouponName())
                 .couponDescription(request.getCouponDescription())
+                .conditionToUse(request.getConditionToUse())
+                .conditionToUseAmount(request.getConditionToUseAmount())
                 .saleRate(request.getSaleRate())
                 .build();
     }

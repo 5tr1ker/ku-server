@@ -35,6 +35,10 @@ public class CouponService {
         return couponRepository.findByMarketId(marketId);
     }
 
+    public List<CouponResponse> findCouponThatCanBeUsedFromDownloadCoupon(CurrentUser currentUser, long marketId, long orderPrice) {
+        return couponRepository.findCouponThatCanBeUsedFromDownloadCoupon(currentUser.getEmail(), marketId, orderPrice);
+    }
+
     @Transactional
     public void downloadCoupon(CurrentUser currentUser, long couponId) {
         if(couponRepository.findDownloadCouponByCouponIdAndUserEmail(currentUser.getEmail(), couponId).isPresent()) {
