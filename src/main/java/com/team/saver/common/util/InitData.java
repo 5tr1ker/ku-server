@@ -460,6 +460,7 @@ public class InitData implements CommandLineRunner {
         ReviewData review16_3 = new ReviewData("광화문 교보문고 근처 돈까스  냉모밀 맛집", "porkcutlet3.png", 5);
         storeData.add(new StoreData("왕돈까쓰", "돈까스", "Rectangle 2426.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중! 대충 메세지 임을 알려줍니다. 이건 말도 안된다고 아잇 정말 맛업ㅈㅅ어 죽겠네 어그로 끌지마라 임니니니니 라항항항항항항하", Arrays.asList(review16_1, review16_2, review16_3)));
 
+        int menuIndex = 1;
         for (StoreData data : storeData) {
             // locationX = 33 ~ 38 , LocationY = 125 ~ 130
             double randomX = random.nextDouble(5);
@@ -490,7 +491,7 @@ public class InitData implements CommandLineRunner {
 
                 MenuContainer menuContainer_data = MenuContainer.builder().classification(String.format("%d 메뉴", i + 1)).priority(2).build();
                 for(int j = 0; j < contentRandom; j++) {
-                    menuContainer_data.addMenu(Menu.builder().menuName(String.format("%d 상세메뉴", i + j)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build());
+                    menuContainer_data.addMenu(Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build());
                 }
 
                 market.addMenuContainer(menuContainer_data);
