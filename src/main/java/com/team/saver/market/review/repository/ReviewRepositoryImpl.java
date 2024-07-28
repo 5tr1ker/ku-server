@@ -184,4 +184,36 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 , review.reviewId)
                 ));
     }
+
+    @Override
+    public Optional<ReviewResponse> findDetailByReviewId(long reviewId) {
+        List<ReviewResponse> result = jpaQueryFactory.selectFrom(review)
+                .innerJoin(review.market, market)
+                .innerJoin(review.reviewer, account)
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .where(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
+                .transform(groupBy(review.reviewId)
+                        .list(Projections.constructor(
+                                ReviewResponse.class,
+                                review.reviewId,
+                                account.accountId,
+                                account.email,
+                                review.content,
+                                review.writeTime,
+                                market.marketId,
+                                market.marketName,
+                                review.score,
+                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                list(Projections.constructor(ReviewImageResponse.class,
+                                        reviewImage.reviewImageId,
+                                        reviewImage.imageUrl))
+                        ))
+                );
+
+        if(result.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(result.get(0));
+    }
 }

@@ -2,6 +2,7 @@ package com.team.saver.market.review.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_REVIEW;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +36,14 @@ public class ReviewController {
     @Operation(summary = "리뷰 총 평점 및 점수 별 갯수 통계 가져오기")
     public ResponseEntity findReviewStatisticsByMarketId(@PathVariable long marketId) {
         ReviewStatisticsResponse result = reviewService.findReviewStatisticsByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/reviews/{reviewId}")
+    @Operation(summary = "특정 ID의 리뷰 데이터 가져오기")
+    public ResponseEntity findDetailByReviewId(@PathVariable long reviewId) {
+        ReviewResponse result = reviewService.findDetailByReviewId(reviewId);
 
         return ResponseEntity.ok(result);
     }

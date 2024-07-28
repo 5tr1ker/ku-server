@@ -43,6 +43,11 @@ public class ReviewService {
         return reviewRepository.findByUserEmail(currentUser.getEmail());
     }
 
+    public ReviewResponse findDetailByReviewId(long reviewId) {
+        return reviewRepository.findDetailByReviewId(reviewId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
+    }
+
     @Transactional
     public void updateReview(CurrentUser currentUser, long reviewId, ReviewUpdateRequest request, List<MultipartFile> images) {
         Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)

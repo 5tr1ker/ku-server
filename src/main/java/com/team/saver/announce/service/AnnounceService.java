@@ -1,6 +1,7 @@
 package com.team.saver.announce.service;
 
 import com.team.saver.announce.dto.AnnounceCreateRequest;
+import com.team.saver.announce.dto.AnnounceDetailResponse;
 import com.team.saver.announce.dto.AnnounceResponse;
 import com.team.saver.announce.dto.AnnounceUpdateRequest;
 import com.team.saver.announce.entity.Announce;
@@ -44,11 +45,11 @@ public class AnnounceService {
         announce.delete();
     }
 
-    public List<AnnounceResponse> findAllAnnounce(Pageable pageable) {
-        return announceRepository.findAllAnnounce(pageable);
+    public List<AnnounceResponse> findAllAnnounce(Pageable pageable, boolean isImportant) {
+        return announceRepository.findAllAnnounce(pageable, isImportant);
     }
 
-    public AnnounceResponse findAnnounceDetail(long announceId) {
+    public AnnounceDetailResponse findAnnounceDetail(long announceId) {
         return announceRepository.findAnnounceDetail(announceId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ANNOUNCE));
     }

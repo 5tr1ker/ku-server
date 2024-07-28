@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class AnnounceResponse {
+public class AnnounceDetailResponse {
 
     private long announceId;
 
@@ -17,6 +17,8 @@ public class AnnounceResponse {
     private LocalDateTime writeTime;
 
     private String title;
+
+    private String description;
 
     private AnnounceType announceType;
 

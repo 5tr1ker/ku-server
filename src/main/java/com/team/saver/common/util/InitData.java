@@ -6,6 +6,9 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.announce.entity.Announce;
+import com.team.saver.announce.entity.AnnounceType;
+import com.team.saver.announce.repository.AnnounceRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
@@ -39,6 +42,7 @@ import com.team.saver.search.popular.util.SearchWordScheduler;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -47,8 +51,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.Annotation;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -142,6 +148,16 @@ class PartnerCommentData {
 
 }
 
+@AllArgsConstructor
+class AnnounceData {
+
+    String title;
+
+    AnnounceType announceType;
+
+    boolean isImportant;
+
+}
 
 
 @Component
@@ -161,6 +177,7 @@ public class InitData implements CommandLineRunner {
     private final MarketDocumentRepository marketDocumentRepository;
     private final AttractionRepository attractionRepository;
     private final PartnerRequestRepository partnerRequestRepository;
+    private final AnnounceRepository announceRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -665,6 +682,36 @@ public class InitData implements CommandLineRunner {
             }
 
             partnerRequestRepository.save(request);
+        }
+
+        // Events
+        List<AnnounceData> announceData = new ArrayList<>();
+        announceData.add(new AnnounceData("잎사이 관련 자주 올라오는 질문사항", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("6월 이벤트 진행 안내사항", AnnounceType.EVENT, false));
+        announceData.add(new AnnounceData("파트너쉽 업체 등록하는 방법", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 1.2.3 버전 버그 수정 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 쿠폰보관함 관련 문의사항 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 쿠폰보관함 관련 문의사항 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("파트너쉽 업체 등록하는 방법", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 사용 관련 공지사항", AnnounceType.ANNOUNCE, true));
+        announceData.add(new AnnounceData("잎사이 보안 관련 안내사항", AnnounceType.EVENT, true));
+        announceData.add(new AnnounceData("신규 회원전용 잎사이 사용방법 안내", AnnounceType.ANNOUNCE, true));
+
+        for (AnnounceData data : announceData) {
+            Announce announce = Announce.builder()
+                    .isImportant(data.isImportant)
+                    .title(data.title)
+                    .announceType(data.announceType)
+                    .description("잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. ")
+                    .build();
+
+            announceRepository.save(announce);
         }
 
         settingInitData();

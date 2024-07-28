@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.announce.dto.AnnounceDetailResponse;
 import com.team.saver.announce.dto.AnnounceResponse;
 import com.team.saver.announce.entity.Announce;
 import lombok.RequiredArgsConstructor;
@@ -22,32 +23,29 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<AnnounceResponse> findAllAnnounce(Pageable pageable) {
-        NumberTemplate<Integer> isImportantAsNumber = Expressions.numberTemplate(Integer.class, "case when {0} then 1 else 0 end", announce.isImportant);
-
+    public List<AnnounceResponse> findAllAnnounce(Pageable pageable, boolean isImportant) {
         return jpaQueryFactory.select(
                         Projections.constructor(
                                 AnnounceResponse.class,
                                 announce.announceId,
                                 announce.writeTime,
                                 announce.title,
-                                announce.description,
                                 announce.announceType,
                                 announce.isImportant
                         )
                 ).from(announce)
-                .orderBy(isImportantAsNumber.desc(), announce.announceId.desc())
-                .where(announce.isDelete.eq(false))
+                .orderBy(announce.announceId.desc())
+                .where(announce.isImportant.eq(isImportant).and(announce.isDelete.eq(false)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
     }
 
     @Override
-    public Optional<AnnounceResponse> findAnnounceDetail(long announceId) {
-        AnnounceResponse result = jpaQueryFactory.select(
+    public Optional<AnnounceDetailResponse> findAnnounceDetail(long announceId) {
+        AnnounceDetailResponse result = jpaQueryFactory.select(
                         Projections.constructor(
-                                AnnounceResponse.class,
+                                AnnounceDetailResponse.class,
                                 announce.announceId,
                                 announce.writeTime,
                                 announce.title,
