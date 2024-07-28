@@ -24,7 +24,6 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class FavoriteService {
 
     private final MarketRepository marketRepository;
-    private final MarketSortTool marketSortTool;
     private final AccountRepository accountRepository;
     private final FavoriteRepository favoriteRepository;
 
