@@ -50,6 +50,7 @@ import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepos
 import com.team.saver.search.popular.entity.SearchWord;
 import com.team.saver.search.popular.repository.SearchWordRepository;
 import com.team.saver.search.popular.util.SearchWordScheduler;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -184,6 +185,7 @@ class EventData {
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
 
+    private final EntityManager entityManager;
     private final AccountRepository accountRepository;
     private final MarketRepository marketRepository;
     private final RecommendAlgorithm recommendAlgorithm;
@@ -745,6 +747,8 @@ public class InitData implements CommandLineRunner {
             announceRepository.save(announce);
         }
 
+        entityManager.flush();
+
         couponService.downloadCoupon(currentUser1, 1);
         couponService.downloadCoupon(currentUser1, 2);
         couponService.downloadCoupon(currentUser1, 3);
@@ -802,16 +806,16 @@ public class InitData implements CommandLineRunner {
                 .build();
         basketService.addBasket(currentUser1, 2, basketCreateRequest6);
 
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L,2L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L), PaymentType.KAKAO_PAY));
         orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L), PaymentType.KAKAO_PAY));
         orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L,3L), PaymentType.NAVER_PAY));
         orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L,2L,3L), PaymentType.KAKAO_PAY));
         orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
         orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(2,2, Arrays.asList(4L), PaymentType.KG_INICIS));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
         orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
         orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(2,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
 
         List<ReviewData> reviewDataList = new ArrayList<>();
         reviewDataList.add(new ReviewData("예약하고 방문하세요! 나오는데 오래걸립니다아 맛있고 맥주랑 잘어울림다", "chicken8.png", 4));
