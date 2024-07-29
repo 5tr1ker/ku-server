@@ -98,6 +98,11 @@ public class ReviewService {
         review.delete();
     }
 
+    public ReviewStatisticResponse findReviewStatisticsByEmail(CurrentUser currentUser) {
+        return reviewRepository.findReviewStatisticsByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+    }
+
     @Transactional
     public void recommendReview(CurrentUser currentUser, long reviewId) {
         if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId).isPresent()) {

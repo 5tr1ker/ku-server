@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_REVIEW;
+import static com.team.saver.common.dto.ErrorMessage.NOT_FOUND_USER;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +45,14 @@ public class ReviewController {
     @Operation(summary = "특정 ID의 리뷰 데이터 가져오기")
     public ResponseEntity findDetailByReviewId(@PathVariable long reviewId) {
         ReviewResponse result = reviewService.findDetailByReviewId(reviewId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/statistics")
+    @Operation(summary = "[ 로그인 ] 작성한 리뷰, 작성할 수 있는 통계 가져오기")
+    public ResponseEntity findReviewStatisticsByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        ReviewStatisticResponse result = reviewService.findReviewStatisticsByEmail(currentUser);
 
         return ResponseEntity.ok(result);
     }

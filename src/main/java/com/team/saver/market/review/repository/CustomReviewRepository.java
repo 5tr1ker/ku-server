@@ -3,6 +3,7 @@ package com.team.saver.market.review.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.team.saver.market.review.dto.PhotoReviewResponse;
 import com.team.saver.market.review.dto.ReviewResponse;
+import com.team.saver.market.review.dto.ReviewStatisticResponse;
 import com.team.saver.market.review.dto.ReviewStatisticsResponse;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
@@ -31,4 +32,7 @@ public interface CustomReviewRepository {
     List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId);
 
     Optional<ReviewResponse> findDetailByReviewId(long reviewId);
+
+    Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email);
+
 }

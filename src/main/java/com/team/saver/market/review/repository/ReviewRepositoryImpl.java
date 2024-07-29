@@ -4,7 +4,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.market.order.entity.QOrder;
 import com.team.saver.market.review.dto.*;
+import com.team.saver.market.review.entity.QReview;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.stream.IntStream;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
+import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.saver.market.order.entity.QOrder.order;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
@@ -210,10 +214,27 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         ))
                 );
 
-        if(result.size() == 0) {
+        if (result.size() == 0) {
             return Optional.empty();
         }
 
         return Optional.ofNullable(result.get(0));
+    }
+
+    @Override
+    public Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email) {
+        QReview qReview = new QReview("qReview1");
+        QOrder qOrder = new QOrder("qOrder1");
+
+        ReviewStatisticResponse result = jpaQueryFactory.select(Projections.constructor(
+                        ReviewStatisticResponse.class,
+                        select(qOrder.count()).from(qOrder).leftJoin(qOrder.review, qReview).where(qReview.isNull()),
+                        review.count()
+                )).from(order)
+                .innerJoin(order.review, review)
+                .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }
