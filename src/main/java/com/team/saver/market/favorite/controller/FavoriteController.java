@@ -38,11 +38,11 @@ public class FavoriteController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/v1/markets/{marketId}/favorites")
+    @DeleteMapping("/v1/markets/favorites")
     @Operation(summary = "[ 로그인 ] 내가 추가한 관심 가게 제거")
-    public ResponseEntity deleteFavoriteMarketById(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                                   @PathVariable long marketId) {
-        favoriteService.deleteFavoriteMarketById(currentUser, marketId);
+    public ResponseEntity deleteFavoriteIds(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                                   @RequestParam List<Long> id) {
+        favoriteService.deleteFavoriteIds(currentUser, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
