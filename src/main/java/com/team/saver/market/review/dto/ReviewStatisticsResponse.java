@@ -13,8 +13,10 @@ public class ReviewStatisticsResponse {
 
     private double averageScore;
 
-    public static ReviewStatisticsResponse createDto(List<ReviewStatisticsData> reviewStatisticData, double averageScore) {
-        return new ReviewStatisticsResponse(reviewStatisticData, averageScore);
+    private long totalReviewCount;
+
+    public static ReviewStatisticsResponse createDto(List<ReviewStatisticsData> reviewStatisticData, double averageScore, long totalReviewCount) {
+        return new ReviewStatisticsResponse(reviewStatisticData, averageScore, totalReviewCount);
     }
 
 }

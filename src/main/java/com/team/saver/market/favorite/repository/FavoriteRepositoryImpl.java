@@ -68,4 +68,12 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .where(favorite.favoriteId.in(ids))
                 .fetch();
     }
+
+    @Override
+    public long findFavoriteMarketCountByUserEmail(String email) {
+        return jpaQueryFactory.select(favorite.count())
+                .from(favorite)
+                .innerJoin(favorite.account, account).on(account.email.eq(email))
+                .fetchOne();
+    }
 }

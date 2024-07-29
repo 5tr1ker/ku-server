@@ -56,4 +56,7 @@ public class FavoriteService {
         favoriteRepository.deleteAll(favorite);
     }
 
+    public long findFavoriteMarketCountByUserEmail(CurrentUser currentUser) {
+        return favoriteRepository.findFavoriteMarketCountByUserEmail(currentUser.getEmail());
+    }
 }

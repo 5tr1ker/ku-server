@@ -113,6 +113,14 @@ public class ReviewController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/{marketId}/reviews/images/counts")
+    @Operation(summary = "포토리뷰 갯수 가져오기")
+    public ResponseEntity findPhotoReviewCountByMarketId(@PathVariable long marketId) {
+        long result = reviewService.findPhotoReviewCountByMarketId(marketId);
+
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/v1/markets/reviews/{reviewId}")
     @Operation(summary = "[ 로그인 ] 리뷰 삭제")
     public ResponseEntity deleteReview(@PathVariable long reviewId,

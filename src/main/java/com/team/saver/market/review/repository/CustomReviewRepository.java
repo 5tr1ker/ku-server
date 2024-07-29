@@ -35,4 +35,5 @@ public interface CustomReviewRepository {
 
     Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email);
 
+    long findPhotoReviewCountByMarketId(long marketId);
 }

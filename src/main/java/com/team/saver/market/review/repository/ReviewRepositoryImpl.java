@@ -172,7 +172,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .where(review.isDelete.eq(false))
                 .fetchOne();
 
-        return ReviewStatisticsResponse.createDto(results, averageScore);
+        long totalReviewCount = jpaQueryFactory
+                .select(review.count())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .where(review.isDelete.eq(false))
+                .fetchOne();
+
+        return ReviewStatisticsResponse.createDto(results, averageScore, totalReviewCount);
     }
 
     @Override
@@ -236,5 +243,15 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public long findPhotoReviewCountByMarketId(long marketId) {
+        return jpaQueryFactory.select(reviewImage.count())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .where(review.isDelete.eq(false))
+                .fetchOne();
     }
 }

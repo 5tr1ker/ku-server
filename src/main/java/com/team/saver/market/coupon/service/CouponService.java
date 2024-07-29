@@ -82,4 +82,8 @@ public class CouponService {
     public List<DownloadCouponResponse> findDownloadCouponByUserEmail(CurrentUser currentUser) {
         return couponRepository.findDownloadCouponByUserEmail(currentUser.getEmail());
     }
+
+    public long findDownloadCouponCountByUserEmail(CurrentUser currentUser) {
+        return couponRepository.findDownloadCouponCountByUserEmail(currentUser.getEmail());
+    }
 }

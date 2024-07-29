@@ -123,4 +123,8 @@ public class ReviewService {
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         return reviewRepository.findReviewStatisticsByMarketId(marketId);
     }
+
+    public long findPhotoReviewCountByMarketId(long marketId) {
+        return reviewRepository.findPhotoReviewCountByMarketId(marketId);
+    }
 }

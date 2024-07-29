@@ -38,6 +38,14 @@ public class FavoriteController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/favorites/counts")
+    @Operation(summary = "[ 로그인 ] 나의 관심 가게 갯수 조회")
+    public ResponseEntity findFavoriteMarketCountByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        long result = favoriteService.findFavoriteMarketCountByUserEmail(currentUser);
+
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/v1/markets/favorites")
     @Operation(summary = "[ 로그인 ] 내가 추가한 관심 가게 제거")
     public ResponseEntity deleteFavoriteIds(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
