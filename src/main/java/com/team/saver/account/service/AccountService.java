@@ -1,9 +1,6 @@
 package com.team.saver.account.service;
 
-import com.team.saver.account.dto.AccountResponse;
-import com.team.saver.account.dto.AccountUpdateRequest;
-import com.team.saver.account.dto.MyPageResponse;
-import com.team.saver.account.dto.SchoolCertRequest;
+import com.team.saver.account.dto.*;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
@@ -40,6 +37,13 @@ public class AccountService {
         Account account = getProfile(currentUser);
 
         return AccountResponse.of(account);
+    }
+
+    @Transactional
+    public void updateAccountSetting(CurrentUser currentUser, AccountNotificationSetting request) {
+        Account account = getProfile(currentUser);
+
+        account.updateSetting(request);
     }
 
     public void sendCodeInOrderToCertStudent(CurrentUser currentUser, SchoolCertRequest request) {

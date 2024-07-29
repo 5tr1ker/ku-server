@@ -1,9 +1,6 @@
 package com.team.saver.account.controller;
 
-import com.team.saver.account.dto.AccountResponse;
-import com.team.saver.account.dto.AccountUpdateRequest;
-import com.team.saver.account.dto.MyPageResponse;
-import com.team.saver.account.dto.SchoolCertRequest;
+import com.team.saver.account.dto.*;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
@@ -89,6 +86,15 @@ public class AccountController {
         accountService.updateAccount(currentUser, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/v1/accounts/settings")
+    @Operation(summary = "[ 로그인 ] 사용자 설정 정보 수정")
+    public ResponseEntity updateAccountSetting(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                               @RequestBody AccountNotificationSetting request) {
+        accountService.updateAccountSetting(currentUser, request);
+
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/v1/accounts/images")
