@@ -12,4 +12,7 @@ public interface CustomFavoriteRepository {
 
     List<MarketResponse> findFavoriteMarketByUserEmail(String email);
 
+    List<Favorite> findByUserEmailAndIds(String email, List<Long> ids);
+
+    long findFavoriteMarketCountByUserEmail(String email);
 }

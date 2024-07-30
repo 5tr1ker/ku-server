@@ -43,6 +43,11 @@ public class ReviewService {
         return reviewRepository.findByUserEmail(currentUser.getEmail());
     }
 
+    public ReviewResponse findDetailByReviewId(long reviewId) {
+        return reviewRepository.findDetailByReviewId(reviewId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
+    }
+
     @Transactional
     public void updateReview(CurrentUser currentUser, long reviewId, ReviewUpdateRequest request, List<MultipartFile> images) {
         Review review = reviewRepository.findByReviewerAndReviewId(currentUser.getEmail(), reviewId)
@@ -56,8 +61,12 @@ public class ReviewService {
         review.update(request);
     }
 
-    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
-        return reviewRepository.findAllReviewImageByMarketId(marketId);
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, Long size) {
+        if(size == null) {
+            return reviewRepository.findAllReviewImageByMarketId(marketId);
+        }
+
+        return reviewRepository.findAllReviewImageByMarketId(marketId, size);
     }
 
     @Transactional
@@ -93,6 +102,11 @@ public class ReviewService {
         review.delete();
     }
 
+    public ReviewStatisticResponse findReviewStatisticsByEmail(CurrentUser currentUser) {
+        return reviewRepository.findReviewStatisticsByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+    }
+
     @Transactional
     public void recommendReview(CurrentUser currentUser, long reviewId) {
         if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId).isPresent()) {
@@ -112,5 +126,9 @@ public class ReviewService {
 
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         return reviewRepository.findReviewStatisticsByMarketId(marketId);
+    }
+
+    public long findPhotoReviewCountByMarketId(long marketId) {
+        return reviewRepository.findPhotoReviewCountByMarketId(marketId);
     }
 }

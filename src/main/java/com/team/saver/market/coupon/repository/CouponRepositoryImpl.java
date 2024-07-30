@@ -131,4 +131,12 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .where(downloadCoupon.isUsage.eq(false))
                 .fetch();
     }
+
+    @Override
+    public long findDownloadCouponCountByUserEmail(String email) {
+        return jpaQueryFactory.select(downloadCoupon.count())
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .fetchOne();
+    }
 }

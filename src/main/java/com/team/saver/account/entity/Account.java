@@ -1,5 +1,6 @@
 package com.team.saver.account.entity;
 
+import com.team.saver.account.dto.AccountNotificationSetting;
 import com.team.saver.account.dto.AccountUpdateRequest;
 import com.team.saver.market.deliveryaddress.entity.DeliveryAddress;
 import com.team.saver.oauth.dto.AccountInfo;
@@ -71,6 +72,18 @@ public class Account implements UserDetails {
     @Builder.Default
     @Column(nullable = false)
     private long usePoint = 0;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean autoUpdate = true;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean pushAlert = true;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean autoLogin = false;
 
     @Builder.Default
     @Column(nullable = false)
@@ -163,5 +176,11 @@ public class Account implements UserDetails {
         this.phone = request.getPhone();
         this.age = request.getAge();
         this.name = request.getName();
+    }
+
+    public void updateSetting(AccountNotificationSetting request) {
+        this.pushAlert = request.isPushAlert();
+        this.autoUpdate = request.isAutoUpdate();
+        this.autoLogin = request.isAutoLogin();
     }
 }

@@ -4,7 +4,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.market.order.entity.QOrder;
 import com.team.saver.market.review.dto.*;
+import com.team.saver.market.review.entity.QReview;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.stream.IntStream;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
+import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.saver.market.order.entity.QOrder.order;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.review.entity.QReview.review;
 import static com.team.saver.market.review.entity.QReviewImage.reviewImage;
@@ -168,7 +172,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .where(review.isDelete.eq(false))
                 .fetchOne();
 
-        return ReviewStatisticsResponse.createDto(results, averageScore);
+        long totalReviewCount = jpaQueryFactory
+                .select(review.count())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .where(review.isDelete.eq(false))
+                .fetchOne();
+
+        return ReviewStatisticsResponse.createDto(results, averageScore, totalReviewCount);
     }
 
     @Override
@@ -177,11 +188,85 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .leftJoin(review.reviewImage, reviewImage)
-                .where(review.isDelete.eq(false))
+                .where(review.isDelete.eq(false).and(reviewImage.imageUrl.isNotNull()))
                 .transform(groupBy(review.reviewId).list(
                         Projections.constructor(PhotoReviewResponse.class,
                                 list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
                                 , review.reviewId)
                 ));
+    }
+
+    @Override
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, long size) {
+        return jpaQueryFactory
+                .selectFrom(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .where(review.isDelete.eq(false).and(reviewImage.imageUrl.isNotNull()))
+                .limit(size)
+                .transform(groupBy(review.reviewId).list(
+                        Projections.constructor(PhotoReviewResponse.class,
+                                list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
+                                , review.reviewId)
+                ));
+    }
+
+    @Override
+    public Optional<ReviewResponse> findDetailByReviewId(long reviewId) {
+        List<ReviewResponse> result = jpaQueryFactory.selectFrom(review)
+                .innerJoin(review.market, market)
+                .innerJoin(review.reviewer, account)
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .where(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
+                .transform(groupBy(review.reviewId)
+                        .list(Projections.constructor(
+                                ReviewResponse.class,
+                                review.reviewId,
+                                account.accountId,
+                                account.email,
+                                review.content,
+                                review.writeTime,
+                                market.marketId,
+                                market.marketName,
+                                review.score,
+                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                list(Projections.constructor(ReviewImageResponse.class,
+                                        reviewImage.reviewImageId,
+                                        reviewImage.imageUrl))
+                        ))
+                );
+
+        if (result.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(result.get(0));
+    }
+
+    @Override
+    public Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email) {
+        QReview qReview = new QReview("qReview1");
+        QOrder qOrder = new QOrder("qOrder1");
+
+        ReviewStatisticResponse result = jpaQueryFactory.select(Projections.constructor(
+                        ReviewStatisticResponse.class,
+                        select(qOrder.count()).from(qOrder).leftJoin(qOrder.review, qReview).where(qReview.isNull()),
+                        review.count()
+                )).from(order)
+                .innerJoin(order.review, review)
+                .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public long findPhotoReviewCountByMarketId(long marketId) {
+        return jpaQueryFactory.select(reviewImage.count())
+                .from(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .where(review.isDelete.eq(false))
+                .fetchOne();
     }
 }

@@ -24,7 +24,6 @@ import static com.team.saver.common.dto.ErrorMessage.*;
 public class FavoriteService {
 
     private final MarketRepository marketRepository;
-    private final MarketSortTool marketSortTool;
     private final AccountRepository accountRepository;
     private final FavoriteRepository favoriteRepository;
 
@@ -32,7 +31,7 @@ public class FavoriteService {
     public void addFavorite(CurrentUser currentUser, long marketId) {
         if(favoriteRepository.findByUserEmailAndMarketId(currentUser.getEmail(), marketId).isPresent()) {
             throw new CustomRuntimeException(ALREADY_FAVORITE_MARKET);
-        };
+        }
 
         Account account = accountRepository.findByEmail(currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
@@ -51,11 +50,13 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavoriteMarketById(CurrentUser currentUser, long marketId) {
-        Favorite favorite = favoriteRepository.findByUserEmailAndMarketId(currentUser.getEmail(), marketId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_FAVORITE));
+    public void deleteFavoriteIds(CurrentUser currentUser, List<Long> ids) {
+        List<Favorite> favorite = favoriteRepository.findByUserEmailAndIds(currentUser.getEmail(), ids);
 
-        favoriteRepository.delete(favorite);
+        favoriteRepository.deleteAll(favorite);
     }
 
+    public long findFavoriteMarketCountByUserEmail(CurrentUser currentUser) {
+        return favoriteRepository.findFavoriteMarketCountByUserEmail(currentUser.getEmail());
+    }
 }

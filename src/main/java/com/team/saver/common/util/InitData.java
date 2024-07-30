@@ -6,11 +6,33 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.announce.entity.Announce;
+import com.team.saver.announce.entity.AnnounceType;
+import com.team.saver.announce.repository.AnnounceRepository;
 import com.team.saver.attraction.entity.Attraction;
 import com.team.saver.attraction.repository.AttractionRepository;
+import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.exception.CustomRuntimeException;
+import com.team.saver.event.entity.Event;
+import com.team.saver.event.repository.EventRepository;
+import com.team.saver.market.basket.dto.BasketCreateRequest;
+import com.team.saver.market.basket.service.BasketService;
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
 import com.team.saver.market.coupon.entity.ConditionToUse;
+import com.team.saver.market.coupon.entity.Coupon;
+import com.team.saver.market.coupon.service.CouponService;
+import com.team.saver.market.favorite.service.FavoriteService;
+import com.team.saver.market.order.dto.OrderCreateRequest;
+import com.team.saver.market.order.dto.PaymentType;
+import com.team.saver.market.order.entity.Order;
+import com.team.saver.market.order.repository.OrderRepository;
+import com.team.saver.market.order.service.OrderService;
+import com.team.saver.market.review.entity.Review;
+import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.store.entity.*;
+import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.market.store.util.RecommendAlgorithm;
+import com.team.saver.oauth.util.OAuthType;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
@@ -21,22 +43,14 @@ import com.team.saver.promotion.entity.PromotionTag;
 import com.team.saver.promotion.entity.PromotionTagRelationShip;
 import com.team.saver.promotion.repository.PromotionRepository;
 import com.team.saver.promotion.repository.PromotionTagRepository;
-import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.market.coupon.entity.Coupon;
-import com.team.saver.market.review.entity.Review;
-import com.team.saver.market.review.entity.ReviewRecommender;
-import com.team.saver.market.store.repository.MarketRepository;
-import com.team.saver.market.store.util.RecommendAlgorithm;
-import com.team.saver.oauth.util.OAuthType;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
 import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepository;
 import com.team.saver.search.popular.entity.SearchWord;
 import com.team.saver.search.popular.repository.SearchWordRepository;
-import com.team.saver.search.popular.service.PopularSearchService;
 import com.team.saver.search.popular.util.SearchWordScheduler;
-import jakarta.persistence.Column;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -142,12 +156,36 @@ class PartnerCommentData {
 
 }
 
+@AllArgsConstructor
+class AnnounceData {
+
+    String title;
+
+    AnnounceType announceType;
+
+    boolean isImportant;
+
+}
+
+@AllArgsConstructor
+class EventData {
+
+    String title;
+
+    String imageName;
+
+    LocalDate eventStartDate;
+
+    LocalDate eventEndDate;
+
+}
 
 
 @Component
 @RequiredArgsConstructor
 public class InitData implements CommandLineRunner {
 
+    private final EntityManager entityManager;
     private final AccountRepository accountRepository;
     private final MarketRepository marketRepository;
     private final RecommendAlgorithm recommendAlgorithm;
@@ -161,6 +199,13 @@ public class InitData implements CommandLineRunner {
     private final MarketDocumentRepository marketDocumentRepository;
     private final AttractionRepository attractionRepository;
     private final PartnerRequestRepository partnerRequestRepository;
+    private final AnnounceRepository announceRepository;
+    private final CouponService couponService;
+    private final FavoriteService favoriteService;
+    private final BasketService basketService;
+    private final OrderService orderService;
+    private final OrderRepository orderRepository;
+    private final EventRepository eventRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -228,6 +273,7 @@ public class InitData implements CommandLineRunner {
                 .phone("01012341234")
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
+                .usePoint(120)
                 .profileImage(image_url_account_1)
                 .role(UserRole.STUDENT)
                 .oAuthType(OAuthType.KAKAO)
@@ -265,14 +311,18 @@ public class InitData implements CommandLineRunner {
 
         accountRepository.save(account3);
 
+        CurrentUser currentUser1 = new CurrentUser(account.getEmail());
+        CurrentUser currentUser2 = new CurrentUser(account2.getEmail());
+        CurrentUser currentUser3 = new CurrentUser(account3.getEmail());
+
         List<StoreData> storeData = new ArrayList<>();
 
-        ReviewData review1_1 = new ReviewData("맛은 평범한 듯 맛있어요. 깨끗한 기름에 튀긴 것이 느껴지고 꽈리고추, 떡, 닭똥집, 고구마 등도 함께 튀겨나오는데 구성이 혜자네요! 잘 먹었습니다^^", 4, "chicken1.png" , "chicken23.png");
-        ReviewData review1_2 = new ReviewData("성시경 맛집이라는 곳이네여 줄 짧아서 먹어봤는데.. 흠 제가 치킨류 알못이라 (미쳐있는 정도가 아니라;;) 그런지 그냥 치킨 맛이었구요 그냥 고추튀김이 맛있어요", 3, "chicken2.png" , "chicken24.png" , "chicken25.png");
+        ReviewData review1_1 = new ReviewData("맛은 평범한 듯 맛있어요. 깨끗한 기름에 튀긴 것이 느껴지고 꽈리고추, 떡, 닭똥집, 고구마 등도 함께 튀겨나오는데 구성이 혜자네요! 잘 먹었습니다^^", 4, "chicken1.png", "chicken23.png");
+        ReviewData review1_2 = new ReviewData("성시경 맛집이라는 곳이네여 줄 짧아서 먹어봤는데.. 흠 제가 치킨류 알못이라 (미쳐있는 정도가 아니라;;) 그런지 그냥 치킨 맛이었구요 그냥 고추튀김이 맛있어요", 3, "chicken2.png", "chicken24.png", "chicken25.png");
         ReviewData review1_3 = new ReviewData("옛날 시장통닭 맛이 좋습니다. 오랜 노포 느낌의 가게 분위기가 치킨과 잘 어울립니다. 혼자 주문쳐내시는 젊은 여자분, 작은 사장님이신가 ? 는 모르겠는데 일당백의 일처리에 멋있었습니다", "chicken3.png", 4);
         ReviewData review1_4 = new ReviewData("효도치킨 한남동 처음 생겼을때부터 다녔는데, 순살치킨이 강정마냥 작아지고 전 같지 않네요..", "chicken16.png", 2);
-        ReviewData review1_5 = new ReviewData("맛있는 치킨과 꽈리고추와 멸치의 궁합이 좋아 계속 들어갔던 곳 !!", 5, "chicken17.png" , "chicken18.png" , "chicken19.png" , "chicken20.png");
-        ReviewData review1_6 = new ReviewData("불친절하다는 후기를 많이봤는데 유명한 곳이라 한번 가봄. 멸치 엄청 바삭거리고 치킨도 전체적으로 간이 빡-!!!!! 짜서 무조건 콜라는 마셔야할 것 같음. ", 4, "chicken21.png" , "chicken22.png");
+        ReviewData review1_5 = new ReviewData("맛있는 치킨과 꽈리고추와 멸치의 궁합이 좋아 계속 들어갔던 곳 !!", 5, "chicken17.png", "chicken18.png", "chicken19.png", "chicken20.png");
+        ReviewData review1_6 = new ReviewData("불친절하다는 후기를 많이봤는데 유명한 곳이라 한번 가봄. 멸치 엄청 바삭거리고 치킨도 전체적으로 간이 빡-!!!!! 짜서 무조건 콜라는 마셔야할 것 같음. ", 4, "chicken21.png", "chicken22.png");
         storeData.add(new StoreData("짱돌", "치킨.안주.주류", "Rectangle 2208.png", "첫 구매시 3,000원", Arrays.asList(review1_1, review1_2, review1_3, review1_4, review1_5, review1_6)));
 
         ReviewData review2_1 = new ReviewData("비주얼은 좋은데 맛아…", "pizza1.png", 4);
@@ -486,11 +536,11 @@ public class InitData implements CommandLineRunner {
 
             // Menu
             int titleRandom = 12;
-            for(int i = 0; i < titleRandom; i ++) {
+            for (int i = 0; i < titleRandom; i++) {
                 int contentRandom = i + 1;
 
                 MenuContainer menuContainer_data = MenuContainer.builder().classification(String.format("%d 메뉴", i + 1)).priority(2).build();
-                for(int j = 0; j < contentRandom; j++) {
+                for (int j = 0; j < contentRandom; j++) {
                     menuContainer_data.addMenu(Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build());
                 }
 
@@ -528,7 +578,7 @@ public class InitData implements CommandLineRunner {
                 }
 
                 // Recommendation
-                for(int i = 0; i < recommenderCount; i++) {
+                for (int i = 0; i < recommenderCount; i++) {
                     ReviewRecommender reviewRecommender = ReviewRecommender.builder()
                             .review(review)
                             .account(account)
@@ -548,12 +598,12 @@ public class InitData implements CommandLineRunner {
 
         // 홍보 데이터 ( 메인 )
         List<PromotionData> promotionData = new ArrayList<>();
-        promotionData.add(new PromotionData("스카이캡슐\n반값으로 입장하기",PromotionLocation.MAIN , new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
-        promotionData.add(new PromotionData("튤립정원\n축제 학생할인 받는 방법",PromotionLocation.MAIN , new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
-        promotionData.add(new PromotionData("양떼목장\n체험해보고 싶다면?",PromotionLocation.MAIN , new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
-        promotionData.add(new PromotionData("데이트하기 좋은\n호숫가 위 보트체험",PromotionLocation.MAIN , new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
-        promotionData.add(new PromotionData("할인 받고 튤립 호수공원에서 인생샷 남기기",PromotionLocation.ATTRACTION , new String[]{"튤립", "인생샷"}, "Rectangle 2450.png"));
-        promotionData.add(new PromotionData("부산여행 가고 싶은데 돈이 걱정이라면?",PromotionLocation.ATTRACTION , new String[]{"부산", "여행"}, "Rectangle 2452.png"));
+        promotionData.add(new PromotionData("스카이캡슐\n반값으로 입장하기", PromotionLocation.MAIN, new String[]{"부산", "관광지"}, "Rectangle 2436.png"));
+        promotionData.add(new PromotionData("튤립정원\n축제 학생할인 받는 방법", PromotionLocation.MAIN, new String[]{"튤립", "인생사진"}, "Rectangle 2437.png"));
+        promotionData.add(new PromotionData("양떼목장\n체험해보고 싶다면?", PromotionLocation.MAIN, new String[]{"양", "목장체험"}, "Rectangle 2439.png"));
+        promotionData.add(new PromotionData("데이트하기 좋은\n호숫가 위 보트체험", PromotionLocation.MAIN, new String[]{"호수", "데이트명소"}, "Rectangle 2440.png"));
+        promotionData.add(new PromotionData("할인 받고 튤립 호수공원에서 인생샷 남기기", PromotionLocation.ATTRACTION, new String[]{"튤립", "인생샷"}, "Rectangle 2450.png"));
+        promotionData.add(new PromotionData("부산여행 가고 싶은데 돈이 걱정이라면?", PromotionLocation.ATTRACTION, new String[]{"부산", "여행"}, "Rectangle 2452.png"));
 
         for (PromotionData data : promotionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageName);
@@ -582,17 +632,17 @@ public class InitData implements CommandLineRunner {
 
         // 관광 시설
         List<AttractionData> attractionData = new ArrayList<>();
-        attractionData.add(new AttractionData("롯데월드" , "놀이공원.어트랙션.퍼레이드" , LocalTime.now() , LocalTime.now().plusHours(5) , "학생할인 최대 30%까지 진행 중" ,  "Rectangle 2295.png"));
-        attractionData.add(new AttractionData("경복궁" , "경복궁.한옥.한복" , LocalTime.now() , LocalTime.now().plusHours(5) , "한복 체험 10% 할인 가능" ,  "Rectangle 2455.png"));
-        attractionData.add(new AttractionData("KTX 승차권" , "KTK.대중교통" , LocalTime.now() , LocalTime.now().plusHours(5) , "승차권 주중 15% 할인 예매 가능" ,  "Rectangle 2457.png"));
-        attractionData.add(new AttractionData("서울스카이" , "서울.전망대.야경" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 1+1 행사 이벤트 진행 중" ,  "Rectangle 2459.png"));
-        attractionData.add(new AttractionData("제주도" , "제주도.관광지.바다" , LocalTime.now() , LocalTime.now().plusHours(5) , "제주도 내 관광지 할인 쿠폰 제공" ,  "Rectangle 2461.png"));
-        attractionData.add(new AttractionData("남산타워" , "서울.전망대.야경" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 1+1 행사 이벤트 진행 중" ,  "Rectangle 2470.png"));
-        attractionData.add(new AttractionData("부산 아쿠아리움" , "부산.아쿠아리움" , LocalTime.now() , LocalTime.now().plusHours(5) , "입장권 5% 할인 및 식사권 제공" ,  "Rectangle 2468.png"));
-        attractionData.add(new AttractionData("캐리비안베이" , "워터파크.어트랙션.퍼레이드" , LocalTime.now() , LocalTime.now().plusHours(5) , "학생할인 20% 할인 입장권 제공" ,  "Rectangle 2467.png"));
-        attractionData.add(new AttractionData("부산 스카이캡슐" , "부산.관광지.스카이캡슐" , LocalTime.now() , LocalTime.now().plusHours(5) , "승차권 주중 15% 할인 예매 가능" ,  "Rectangle 2472.png"));
-        attractionData.add(new AttractionData("전주 한옥마을" , "한옥.한복" , LocalTime.now() , LocalTime.now().plusHours(5) , "한복 대여 10% 할인쿠폰 제공" ,  "Rectangle 2471.png"));
-        for(AttractionData data : attractionData) {
+        attractionData.add(new AttractionData("롯데월드", "놀이공원.어트랙션.퍼레이드", LocalTime.now(), LocalTime.now().plusHours(5), "학생할인 최대 30%까지 진행 중", "Rectangle 2295.png"));
+        attractionData.add(new AttractionData("경복궁", "경복궁.한옥.한복", LocalTime.now(), LocalTime.now().plusHours(5), "한복 체험 10% 할인 가능", "Rectangle 2455.png"));
+        attractionData.add(new AttractionData("KTX 승차권", "KTK.대중교통", LocalTime.now(), LocalTime.now().plusHours(5), "승차권 주중 15% 할인 예매 가능", "Rectangle 2457.png"));
+        attractionData.add(new AttractionData("서울스카이", "서울.전망대.야경", LocalTime.now(), LocalTime.now().plusHours(5), "입장권 1+1 행사 이벤트 진행 중", "Rectangle 2459.png"));
+        attractionData.add(new AttractionData("제주도", "제주도.관광지.바다", LocalTime.now(), LocalTime.now().plusHours(5), "제주도 내 관광지 할인 쿠폰 제공", "Rectangle 2461.png"));
+        attractionData.add(new AttractionData("남산타워", "서울.전망대.야경", LocalTime.now(), LocalTime.now().plusHours(5), "입장권 1+1 행사 이벤트 진행 중", "Rectangle 2470.png"));
+        attractionData.add(new AttractionData("부산 아쿠아리움", "부산.아쿠아리움", LocalTime.now(), LocalTime.now().plusHours(5), "입장권 5% 할인 및 식사권 제공", "Rectangle 2468.png"));
+        attractionData.add(new AttractionData("캐리비안베이", "워터파크.어트랙션.퍼레이드", LocalTime.now(), LocalTime.now().plusHours(5), "학생할인 20% 할인 입장권 제공", "Rectangle 2467.png"));
+        attractionData.add(new AttractionData("부산 스카이캡슐", "부산.관광지.스카이캡슐", LocalTime.now(), LocalTime.now().plusHours(5), "승차권 주중 15% 할인 예매 가능", "Rectangle 2472.png"));
+        attractionData.add(new AttractionData("전주 한옥마을", "한옥.한복", LocalTime.now(), LocalTime.now().plusHours(5), "한복 대여 10% 할인쿠폰 제공", "Rectangle 2471.png"));
+        for (AttractionData data : attractionData) {
             File fileImage = new File("src/main/resources/images/" + data.imageUrl);
             String imageUrl = uploadFile(fileImage);
 
@@ -633,7 +683,7 @@ public class InitData implements CommandLineRunner {
         partnerCommentData.add(new PartnerCommentData("헉 너무 공감이라 추천을 안 누를 수가 없네용"));
         partnerCommentData.add(new PartnerCommentData("그니까요 잎사이 치킨집 대체 언제 들어오는지,,,"));
 
-        for(PartnerRequestData data : partnerRequestData) {
+        for (PartnerRequestData data : partnerRequestData) {
             PartnerRequest request = PartnerRequest.builder()
                     .requestMarketName(data.requestMarketName)
                     .marketAddress(data.marketAddress)
@@ -645,7 +695,7 @@ public class InitData implements CommandLineRunner {
                     .build();
 
             int recommend = random.nextInt(20);
-            for(int i = 0; i < recommend; i++) {
+            for (int i = 0; i < recommend; i++) {
                 PartnerRecommender recommender = PartnerRecommender.builder()
                         .partnerRequest(request)
                         .account(account2)
@@ -654,7 +704,7 @@ public class InitData implements CommandLineRunner {
                 request.addPartnerRecommender(recommender);
             }
 
-            for(PartnerCommentData data2 : partnerCommentData) {
+            for (PartnerCommentData data2 : partnerCommentData) {
                 PartnerComment partnerComment = PartnerComment.builder()
                         .message(data2.message)
                         .writer(account3)
@@ -665,6 +715,151 @@ public class InitData implements CommandLineRunner {
             }
 
             partnerRequestRepository.save(request);
+        }
+
+        // Events
+        List<AnnounceData> announceData = new ArrayList<>();
+        announceData.add(new AnnounceData("잎사이 관련 자주 올라오는 질문사항", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("6월 이벤트 진행 안내사항", AnnounceType.EVENT, false));
+        announceData.add(new AnnounceData("파트너쉽 업체 등록하는 방법", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 1.2.3 버전 버그 수정 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 쿠폰보관함 관련 문의사항 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 쿠폰보관함 관련 문의사항 안내", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("파트너쉽 업체 등록하는 방법", AnnounceType.ANNOUNCE, false));
+        announceData.add(new AnnounceData("잎사이 사용 관련 공지사항", AnnounceType.ANNOUNCE, true));
+        announceData.add(new AnnounceData("잎사이 보안 관련 안내사항", AnnounceType.EVENT, true));
+        announceData.add(new AnnounceData("신규 회원전용 잎사이 사용방법 안내", AnnounceType.ANNOUNCE, true));
+
+        for (AnnounceData data : announceData) {
+            Announce announce = Announce.builder()
+                    .isImportant(data.isImportant)
+                    .title(data.title)
+                    .announceType(data.announceType)
+                    .description("잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            "\n" +
+                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. ")
+                    .build();
+
+            announceRepository.save(announce);
+        }
+
+        entityManager.flush();
+
+        couponService.downloadCoupon(currentUser1, 1);
+        couponService.downloadCoupon(currentUser1, 2);
+        couponService.downloadCoupon(currentUser1, 3);
+        couponService.downloadCoupon(currentUser1, 4);
+        couponService.downloadCoupon(currentUser1, 5);
+        couponService.downloadCoupon(currentUser1, 6);
+        couponService.downloadCoupon(currentUser1, 7);
+        couponService.downloadCoupon(currentUser1, 8);
+        favoriteService.addFavorite(currentUser1, 1);
+        favoriteService.addFavorite(currentUser1, 2);
+        favoriteService.addFavorite(currentUser1, 3);
+        favoriteService.addFavorite(currentUser1, 4);
+        favoriteService.addFavorite(currentUser1, 5);
+        favoriteService.addFavorite(currentUser1, 6);
+        favoriteService.addFavorite(currentUser1, 7);
+        favoriteService.addFavorite(currentUser1, 8);
+        favoriteService.addFavorite(currentUser1, 9);
+        favoriteService.addFavorite(currentUser1, 10);
+        favoriteService.addFavorite(currentUser1, 11);
+        favoriteService.addFavorite(currentUser1, 12);
+        BasketCreateRequest basketCreateRequest1 = BasketCreateRequest.builder()
+                .menuId(1)
+                .amount(1)
+                .menuOptionIds(Arrays.asList(1L,2L,3L))
+                .build();
+        basketService.addBasket(currentUser1, 1, basketCreateRequest1);
+        BasketCreateRequest basketCreateRequest2 = BasketCreateRequest.builder()
+                .menuId(2)
+                .amount(2)
+                .menuOptionIds(Arrays.asList(1L))
+                .build();
+        basketService.addBasket(currentUser1, 1, basketCreateRequest2);
+        BasketCreateRequest basketCreateRequest3 = BasketCreateRequest.builder()
+                .menuId(3)
+                .amount(1)
+                .menuOptionIds(Arrays.asList(4L,5L))
+                .build();
+        basketService.addBasket(currentUser1, 1, basketCreateRequest3);
+        BasketCreateRequest basketCreateRequest4 = BasketCreateRequest.builder()
+                .menuId(4)
+                .amount(3)
+                .menuOptionIds(Arrays.asList(1L))
+                .build();
+        basketService.addBasket(currentUser1, 2, basketCreateRequest4);
+        BasketCreateRequest basketCreateRequest5 = BasketCreateRequest.builder()
+                .menuId(3)
+                .amount(2)
+                .menuOptionIds(Arrays.asList(4L,5L))
+                .build();
+        basketService.addBasket(currentUser1, 2, basketCreateRequest5);
+        BasketCreateRequest basketCreateRequest6 = BasketCreateRequest.builder()
+                .menuId(5)
+                .amount(8)
+                .menuOptionIds(Arrays.asList(4L,5L))
+                .build();
+        basketService.addBasket(currentUser1, 2, basketCreateRequest6);
+
+        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L,2L,3L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+
+        List<ReviewData> reviewDataList = new ArrayList<>();
+        reviewDataList.add(new ReviewData("예약하고 방문하세요! 나오는데 오래걸립니다아 맛있고 맥주랑 잘어울림다", "chicken8.png", 4));
+        reviewDataList.add(new ReviewData("너무 맛있게 잘 먹었어요! 비빔국수랑 누룽지통닭이랑 조합이 짱입니다! 비빔국수 안 시켰으면 후회 할 뻔 했어요", "chicken9.png", 4));
+        reviewDataList.add(new ReviewData("오랜만에 장작집이 생각나서 다녀왓습니다. 전기구이와 비교할수없는 장작구이만의 맛은 여전하네요 ~ 맛있게 잘 먹고 갑니다", "chicken7.png", 5));
+        List<Order> orderList = orderRepository.findAllById(Arrays.asList(1L,2L,3L));
+        int index = 0;
+        for (ReviewData reviewData: reviewDataList) {
+            Review review = Review.builder()
+                    .reviewer(account)
+                    .score(4)
+                    .content(reviewData.data)
+                    .order(orderList.get(index))
+                    .market(market_detail)
+                    .build();
+
+            orderList.get(index++).setReview(review);
+            market_detail.addReview(review);
+        }
+
+        List<EventData> eventData = new ArrayList<>();
+        eventData.add(new EventData("캐시백 이벤트로 만원 돌려받으세요!", "Rectangle 22222.png" , LocalDate.now().minusDays(7) , LocalDate.now().plusDays(7)));
+        eventData.add(new EventData("리뷰작성 후 추첨으로 3,000원 받아가세요!", "Rectangle 2223.png" , LocalDate.now().minusDays(7) , LocalDate.now().plusDays(7)));
+        eventData.add(new EventData("가입 시 스페셜 웰컴킷 증정 이벤트 진행중!", "Rectangle 2222.png" , LocalDate.of(2000,3,2) , LocalDate.of(2001,6,21)));
+        for(EventData event : eventData) {
+            String eventImages = uploadFile(new File("src/main/resources/images/" + event.imageName));
+
+            Event eventEntity = Event.builder()
+                    .title(event.title)
+                    .description("이벤트 관련 내용글입니다.\n" +
+                            "\n" +
+                            "이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.\n" +
+                            "\n" +
+                            "이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.\n" +
+                            "\n" +
+                            "이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.이벤트 관련 내용글입니다.\n" +
+                            "\n" +
+                            "이벤트 관련 내용글입니다.")
+                    .imageUrl(eventImages)
+                    .eventStartDate(event.eventStartDate)
+                    .eventEndDate(event.eventEndDate)
+                    .build();
+
+            eventRepository.save(eventEntity);
         }
 
         settingInitData();

@@ -37,6 +37,14 @@ public class CouponController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/coupons/downloads/counts")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 갯수 조회")
+    public ResponseEntity findDownloadCouponCountByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        long result = couponService.findDownloadCouponCountByUserEmail(currentUser);
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/v1/markets/{marketId}/coupons/downloads/can-use")
     @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰에서 해당 주문에 사용할 수 있는 쿠폰 조회")
     public ResponseEntity findCouponThatCanBeUsedFromDownloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,

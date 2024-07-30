@@ -36,7 +36,7 @@ public class Review {
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "review")
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)

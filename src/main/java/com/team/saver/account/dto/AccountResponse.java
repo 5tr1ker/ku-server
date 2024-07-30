@@ -31,6 +31,12 @@ public class AccountResponse {
 
     private LocalDate lastedLoginDate;
 
+    private boolean autoUpdate;
+
+    private boolean pushAlert;
+
+    private boolean autoLogin;
+
     private long loginCount;
 
     private String role;
@@ -49,6 +55,9 @@ public class AccountResponse {
                 .lastedLoginDate(account.getLastedLoginDate())
                 .loginCount(account.getLoginCount())
                 .role(account.getRole().getTitle())
+                .pushAlert(account.isPushAlert())
+                .autoUpdate(account.isAutoUpdate())
+                .autoLogin(account.isAutoLogin())
                 .build();
     }
 

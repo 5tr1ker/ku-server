@@ -1,10 +1,12 @@
 package com.team.saver.announce.controller;
 
 import com.team.saver.announce.dto.AnnounceCreateRequest;
+import com.team.saver.announce.dto.AnnounceDetailResponse;
 import com.team.saver.announce.dto.AnnounceResponse;
 import com.team.saver.announce.dto.AnnounceUpdateRequest;
 import com.team.saver.announce.service.AnnounceService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,9 @@ public class AnnounceController {
 
     @GetMapping("/v1/announces")
     @Operation(summary = "모든 공지사항 데이터 가져오기")
-    public ResponseEntity findAllAnnounce(Pageable pageable) {
-        List<AnnounceResponse> result = announceService.findAllAnnounce(pageable);
+    public ResponseEntity findAllAnnounce(Pageable pageable,
+                                          @RequestParam boolean isImportant) {
+        List<AnnounceResponse> result = announceService.findAllAnnounce(pageable, isImportant);
 
         return ResponseEntity.ok(result);
     }
@@ -30,7 +33,7 @@ public class AnnounceController {
     @GetMapping("/v1/announces/{announceId}")
     @Operation(summary = "특정 공지사항 데이터 가져오기")
     public ResponseEntity findAnnounceDetail(@PathVariable long announceId) {
-        AnnounceResponse result = announceService.findAnnounceDetail(announceId);
+        AnnounceDetailResponse result = announceService.findAnnounceDetail(announceId);
 
         return ResponseEntity.ok(result);
     }
