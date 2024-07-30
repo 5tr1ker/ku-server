@@ -197,6 +197,21 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, long size) {
+        return jpaQueryFactory
+                .selectFrom(review)
+                .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(review.reviewImage, reviewImage)
+                .where(review.isDelete.eq(false))
+                .limit(size)
+                .transform(groupBy(review.reviewId).list(
+                        Projections.constructor(PhotoReviewResponse.class,
+                                list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
+                                , review.reviewId)
+                ));
+    }
+
+    @Override
     public Optional<ReviewResponse> findDetailByReviewId(long reviewId) {
         List<ReviewResponse> result = jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)

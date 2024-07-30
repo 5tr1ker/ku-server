@@ -31,6 +31,8 @@ public interface CustomReviewRepository {
 
     List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId);
 
+    List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, long size);
+
     Optional<ReviewResponse> findDetailByReviewId(long reviewId);
 
     Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email);

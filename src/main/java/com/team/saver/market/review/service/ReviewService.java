@@ -61,8 +61,12 @@ public class ReviewService {
         review.update(request);
     }
 
-    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId) {
-        return reviewRepository.findAllReviewImageByMarketId(marketId);
+    public List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, Long size) {
+        if(size == null) {
+            return reviewRepository.findAllReviewImageByMarketId(marketId);
+        }
+
+        return reviewRepository.findAllReviewImageByMarketId(marketId, size);
     }
 
     @Transactional
