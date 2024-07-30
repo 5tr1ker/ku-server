@@ -188,7 +188,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .leftJoin(review.reviewImage, reviewImage)
-                .where(review.isDelete.eq(false))
+                .where(review.isDelete.eq(false).and(reviewImage.imageUrl.isNotNull()))
                 .transform(groupBy(review.reviewId).list(
                         Projections.constructor(PhotoReviewResponse.class,
                                 list(Projections.constructor(ReviewImageResponse.class, reviewImage.reviewImageId, reviewImage.imageUrl))
@@ -202,7 +202,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .leftJoin(review.reviewImage, reviewImage)
-                .where(review.isDelete.eq(false))
+                .where(review.isDelete.eq(false).and(reviewImage.imageUrl.isNotNull()))
                 .limit(size)
                 .transform(groupBy(review.reviewId).list(
                         Projections.constructor(PhotoReviewResponse.class,
