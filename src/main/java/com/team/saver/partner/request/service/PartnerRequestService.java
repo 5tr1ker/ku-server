@@ -53,8 +53,8 @@ public class PartnerRequestService {
         partnerRequest.addPartnerRecommender(partnerRecommender);
     }
 
-    public PartnerRequestDetailResponse findDetailById(long partnerRequestId) {
-        return partnerRequestRepository.findDetailById(partnerRequestId)
+    public PartnerRequestDetailResponse findDetailById(CurrentUser currentUser, long partnerRequestId) {
+        return partnerRequestRepository.findDetailById(partnerRequestId, currentUser.getEmail())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
     }
 

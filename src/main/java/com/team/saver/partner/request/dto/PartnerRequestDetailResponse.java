@@ -37,4 +37,6 @@ public class PartnerRequestDetailResponse {
 
     private double locationY;
 
+    private boolean isRecommendation;
+
 }

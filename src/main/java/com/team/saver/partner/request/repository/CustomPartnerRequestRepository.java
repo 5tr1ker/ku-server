@@ -13,7 +13,7 @@ public interface CustomPartnerRequestRepository {
 
     List<PartnerRequestResponse> findAllEntity(Pageable pageable);
 
-    Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId);
+    Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId, String email);
 
     Optional<PartnerRecommender> findRecommenderByEmailAndRequestId(String email, long partnerRequestId);
 
