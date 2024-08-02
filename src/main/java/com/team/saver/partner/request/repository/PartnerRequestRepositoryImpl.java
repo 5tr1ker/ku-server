@@ -1,11 +1,14 @@
 package com.team.saver.partner.request.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.account.entity.QAccount;
 import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
+import com.team.saver.partner.request.entity.QPartnerRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -46,7 +49,18 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
     }
 
     @Override
-    public Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId) {
+    public Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId, String email) {
+        long isRecommended = jpaQueryFactory.select(partnerRecommender.count())
+                .from(partnerRecommender)
+                .innerJoin(partnerRecommender.partnerRequest, partnerRequest).on(partnerRequest.partnerRequestId.eq(partnerRequestId))
+                .innerJoin(partnerRecommender.account, account).on(account.email.eq(email))
+                .fetchOne();
+
+        SimpleTemplate<Long> longTemplate = Expressions.template(Long.class, "{0}", isRecommended);
+        BooleanExpression booleanExpression = new CaseBuilder()
+                .when(longTemplate.ne(0L)).then(true)
+                .otherwise(false);
+
         PartnerRequestDetailResponse result = jpaQueryFactory.select(
                         Projections.constructor(PartnerRequestDetailResponse.class,
                                 partnerRequest.partnerRequestId,
@@ -61,8 +75,9 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                                 account.profileImage,
                                 partnerRequest.writeTime,
                                 partnerRequest.locationX,
-                                partnerRequest.locationY
-                                )
+                                partnerRequest.locationY,
+                                booleanExpression
+                        )
                 ).from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
                 .where(partnerRequest.partnerRequestId.eq(partnerRequestId))

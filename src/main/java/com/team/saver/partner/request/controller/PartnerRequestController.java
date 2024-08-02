@@ -45,9 +45,9 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}")
-    @Operation(summary = "파트너십 상세 데이터 가져오기")
-    public ResponseEntity findDetailById(@PathVariable long partnerRequestId) {
-        PartnerRequestDetailResponse result = partnerRequestService.findDetailById(partnerRequestId);
+    @Operation(summary = "[ 로그인 ] 파트너십 상세 데이터 가져오기")
+    public ResponseEntity findDetailById(@Parameter(hidden = true) @LogIn CurrentUser currentUser, @PathVariable long partnerRequestId) {
+        PartnerRequestDetailResponse result = partnerRequestService.findDetailById(currentUser, partnerRequestId);
 
         return ResponseEntity.ok(result);
     }
