@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Builder
@@ -13,6 +15,7 @@ import java.util.Locale;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Coupon {
 
     @Id
@@ -36,6 +39,9 @@ public class Coupon {
     @Column(nullable = false)
     private String couponDescription;
 
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "coupon")
+    private List<DownloadCoupon> downloadCoupons = new ArrayList<>();
+
     @Builder.Default
     @Column(nullable = false)
     private int saleRate = 0;
@@ -51,6 +57,12 @@ public class Coupon {
                 .conditionToUseAmount(request.getConditionToUseAmount())
                 .saleRate(request.getSaleRate())
                 .build();
+    }
+
+    public void addDownloadCoupon(DownloadCoupon downloadCoupon) {
+        this.downloadCoupons.add(downloadCoupon);
+
+        downloadCoupon.setCoupon(this);
     }
 
 }

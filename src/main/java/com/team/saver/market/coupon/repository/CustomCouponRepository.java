@@ -12,6 +12,8 @@ public interface CustomCouponRepository {
 
     List<CouponResponse> findByMarketIdAndIsDownload(String email, long marketId);
 
+    List<Coupon> findByMarketIdWithoutDownloadCoupon(String email, long marketId);
+
     Optional<Coupon> findByPartnerEmailAndCouponId(String partnerEmail, long couponId);
 
     Optional<DownloadCoupon> findDownloadCouponByCouponIdAndUserEmail(String email, long couponId);

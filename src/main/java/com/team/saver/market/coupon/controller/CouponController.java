@@ -66,6 +66,14 @@ public class CouponController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/v1/markets/{marketId}/coupons/downloads/all")
+    public ResponseEntity downloadAllCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                            @PathVariable long marketId) {
+        couponService.downloadAllCoupon(currentUser, marketId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/v1/markets/{marketId}/coupons")
     @Operation(summary = "[ 로그인 ] 새로운 쿠폰 생성")
     public ResponseEntity createCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,

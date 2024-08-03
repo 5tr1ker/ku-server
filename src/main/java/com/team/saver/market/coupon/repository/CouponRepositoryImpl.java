@@ -53,6 +53,16 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
     }
 
     @Override
+    public List<Coupon> findByMarketIdWithoutDownloadCoupon(String email, long marketId) {
+        return jpaQueryFactory.select(coupon)
+                .from(coupon)
+                .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(coupon.downloadCoupons, downloadCoupon).on(downloadCoupon.account.email.eq(email))
+                .where(downloadCoupon.isNull())
+                .fetch();
+    }
+
+    @Override
     public Optional<Coupon> findByPartnerEmailAndCouponId(String partnerEmail, long couponId) {
         Coupon result = jpaQueryFactory.select(coupon)
                 .from(coupon)
