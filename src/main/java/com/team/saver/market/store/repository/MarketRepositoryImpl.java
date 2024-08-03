@@ -51,6 +51,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .from(market)
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
+                .where(market.isDelete.eq(false))
                 .groupBy(market)
                 .fetch();
     }
@@ -78,7 +79,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .where(conditional)
+                .where(conditional.and(market.isDelete.eq(false)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -107,6 +108,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
+                .where(market.isDelete.eq(false))
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
@@ -141,7 +143,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .from(market)
                 .leftJoin(market.reviews, review)
                 .groupBy(market.marketId)
-                .where(market.marketId.eq(marketId))
+                .where(market.marketId.eq(marketId).and(market.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -152,7 +154,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
         Market result = jpaQueryFactory.select(market)
                 .from(market)
                 .innerJoin(market.partner, account).on(account.email.eq(partnerEmail))
-                .where(market.marketId.eq(marketId))
+                .where(market.marketId.eq(marketId).and(market.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -164,7 +166,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .innerJoin(market.menuContainers, menuContainer)
                 .innerJoin(menuContainer.menus, menu)
                 .orderBy(menuContainer.priority.asc())
-                .where(market.marketId.eq(marketId))
+                .where(market.marketId.eq(marketId).and(market.isDelete.eq(false)))
                 .transform(groupBy(menuContainer.menuContainerId).list(Projections.constructor(
                         MenuClassificationResponse.class,
                         menuContainer.classification,
@@ -186,7 +188,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(menuContainer.menus, menu)
                 .leftJoin(menu.menuOptionContainers, menuOptionContainer)
                 .leftJoin(menuOptionContainer.menuOptions, menuOption)
-                .where(menu.menuId.eq(menuId))
+                .where(menu.menuId.eq(menuId).and(market.isDelete.eq(false)))
                 .transform(
                         groupBy(menuOptionContainer.menuOptionContainerId)
                                 .list(Projections.constructor(
