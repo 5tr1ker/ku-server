@@ -24,7 +24,7 @@ public class CouponController {
 
     @GetMapping("/v1/markets/{marketId}/coupons")
     @Operation(summary = "[ 비-로그인 ] 해당 마켓에 다운로드 가능한 쿠폰 모두 조회")
-    public ResponseEntity findCouponByMarketId(@LogInNotEssential CurrentUser currentUser, @PathVariable long marketId) {
+    public ResponseEntity findCouponByMarketId(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser, @PathVariable long marketId) {
         List<CouponResponse> result = couponService.findCouponByMarketId(currentUser, marketId);
 
         return ResponseEntity.ok(result);
@@ -67,6 +67,7 @@ public class CouponController {
     }
 
     @PostMapping("/v1/markets/{marketId}/coupons/downloads/all")
+    @Operation(summary = "[ 로그인 ] 모든 쿠폰 다운로드")
     public ResponseEntity downloadAllCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long marketId) {
         couponService.downloadAllCoupon(currentUser, marketId);

@@ -76,6 +76,14 @@ public class Market {
 
     private String marketPhone;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isDelete = false;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean eventCouponMarket = false;
+
     public void addCoupon(Coupon coupon) {
         coupon.setMarket(this);
         coupons.add(coupon);

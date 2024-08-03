@@ -311,6 +311,39 @@ public class InitData implements CommandLineRunner {
 
         accountRepository.save(account3);
 
+        Market market_detail_admin = Market.builder()
+                .marketName("잎사이")
+                .marketDescription("잎사이")
+                .detailAddress("충청북도 충주시 단월동")
+                .cookingTime(0)
+                .mainCategory(MainCategory.RESTAURANT)
+                .locationX(0)
+                .locationY(0)
+                .eventMessage("-")
+                .marketImage("empty")
+                .partner(account)
+                .closeTime(LocalTime.now())
+                .openTime(LocalTime.now())
+                .marketPhone("000-0000-0000")
+                .isDelete(true)
+                .eventCouponMarket(true)
+                .build();
+
+        Coupon admin_coupon = Coupon.builder()
+                .conditionToUseAmount(10000)
+                .priority(-1)
+                .market(market_detail_admin)
+                .couponDescription("첫 구매시 사용 가능")
+                .couponName("잎사이 쿠폰")
+                .conditionToUse(ConditionToUse.FIRST_PURCHASE)
+                .saleRate(2000)
+                .build();
+
+        market_detail_admin.addCoupon(admin_coupon);
+
+        marketRepository.save(market_detail_admin);
+
+
         CurrentUser currentUser1 = new CurrentUser(account.getEmail());
         CurrentUser currentUser2 = new CurrentUser(account2.getEmail());
         CurrentUser currentUser3 = new CurrentUser(account3.getEmail());
@@ -444,6 +477,7 @@ public class InitData implements CommandLineRunner {
         addPopularSearch(market_detail.getMarketName());
         autoCompleteService.addSearchWord(market_detail.getMarketName());
         marketRepository.save(market_detail);
+        marketDocumentRepository.save(MarketDocument.createEntity(market_detail));
 
         ReviewData review4_1 = new ReviewData("대학생때부터 진짜 자주 가던 곳이고 항상 스시는 스시도쿠가 맛있다고 말해왔고 인스타도 초창기부터 팔로워해왔는데 오랜만에 포장하러가니깐 진짜 싸가지없음. 포장세트메뉴 밑에 단품스시도 있어서 보는데 갑자기 휙하고 이건 볼 필요없다고 뺏어감.", "sushi1.png", 1);
         ReviewData review4_2 = new ReviewData("가성비는 있지만 초밥의 밥이 푸석(?)퍼석(?)해서 좀 실망했다....흠...그 밖에 음식에 실망한 몇가지 포인트가 있지만 긴 말은 생략하겠다", "sushi2.png", 4);
@@ -750,6 +784,8 @@ public class InitData implements CommandLineRunner {
         entityManager.flush();
 
         couponService.downloadCoupon(currentUser1, 1);
+        couponService.downloadCoupon(currentUser2, 1);
+        couponService.downloadCoupon(currentUser3, 1);
         couponService.downloadCoupon(currentUser1, 2);
         couponService.downloadCoupon(currentUser1, 3);
         couponService.downloadCoupon(currentUser1, 4);
