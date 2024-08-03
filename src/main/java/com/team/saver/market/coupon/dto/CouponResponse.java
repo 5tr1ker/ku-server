@@ -10,6 +10,8 @@ public class CouponResponse {
 
     private long couponId;
 
+    private String marketName;
+
     private String couponName;
 
     private ConditionToUse conditionToUse;

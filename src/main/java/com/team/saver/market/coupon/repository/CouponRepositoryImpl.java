@@ -28,6 +28,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
         return jpaQueryFactory.select(Projections.constructor(
                         CouponResponse.class,
                         coupon.couponId,
+                        market.marketName,
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
@@ -118,6 +119,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
         return jpaQueryFactory.select(Projections.constructor(
                         CouponResponse.class,
                         coupon.couponId,
+                        market.marketName,
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
