@@ -1,6 +1,8 @@
 package com.team.saver.market.coupon.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.team.saver.market.coupon.dto.CouponResponse;
@@ -8,8 +10,10 @@ import com.team.saver.market.coupon.dto.CouponResponse;
 import com.team.saver.market.coupon.dto.DownloadCouponResponse;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.entity.DownloadCoupon;
+import com.team.saver.market.coupon.entity.QCoupon;
 import lombok.RequiredArgsConstructor;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.saver.market.coupon.entity.QDownloadCoupon.downloadCoupon;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
@@ -24,18 +28,37 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<CouponResponse> findByMarketId(long marketId) {
+    public List<CouponResponse> findByMarketIdAndIsDownload(String email, long marketId) {
+        QCoupon qCoupon = new QCoupon("qCoupon2");
+
+        StringTemplate castExpression = Expressions.stringTemplate("CONVERT({0}, CHAR(255))", email);
+
         return jpaQueryFactory.select(Projections.constructor(
                         CouponResponse.class,
                         coupon.couponId,
+                        market.marketName,
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
                         coupon.conditionToUseAmount,
-                        coupon.saleRate
+                        coupon.saleRate,
+                        select(downloadCoupon.isNotNull())
+                                .from(downloadCoupon)
+                                .innerJoin(downloadCoupon.coupon, qCoupon).on(qCoupon.eq(coupon))
+                                .innerJoin(downloadCoupon.account, account).on(castExpression.eq(account.email))
                 ))
                 .from(coupon)
                 .innerJoin(coupon.market).on(market.marketId.eq(marketId))
+                .fetch();
+    }
+
+    @Override
+    public List<Coupon> findByMarketIdWithoutDownloadCoupon(String email, long marketId) {
+        return jpaQueryFactory.select(coupon)
+                .from(coupon)
+                .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
+                .leftJoin(coupon.downloadCoupons, downloadCoupon).on(downloadCoupon.account.email.eq(email))
+                .where(downloadCoupon.isNull())
                 .fetch();
     }
 
@@ -118,11 +141,13 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
         return jpaQueryFactory.select(Projections.constructor(
                         CouponResponse.class,
                         coupon.couponId,
+                        market.marketName,
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
                         coupon.conditionToUseAmount,
-                        coupon.saleRate
+                        coupon.saleRate,
+                        Expressions.booleanPath("true")
                 ))
                 .from(downloadCoupon)
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))

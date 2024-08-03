@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface CustomCouponRepository {
 
-    List<CouponResponse> findByMarketId(long marketId);
+    List<CouponResponse> findByMarketIdAndIsDownload(String email, long marketId);
+
+    List<Coupon> findByMarketIdWithoutDownloadCoupon(String email, long marketId);
 
     Optional<Coupon> findByPartnerEmailAndCouponId(String partnerEmail, long couponId);
 

@@ -3,10 +3,7 @@ package com.team.saver.market.coupon.entity;
 import com.team.saver.account.entity.Account;
 import com.team.saver.market.store.entity.Market;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +22,7 @@ public class DownloadCoupon {
     @JoinColumn(nullable = false)
     private Account account;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Coupon coupon;

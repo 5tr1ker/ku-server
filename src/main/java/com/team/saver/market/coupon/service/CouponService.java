@@ -31,8 +31,8 @@ public class CouponService {
     private final AccountRepository accountRepository;
     private final CouponDownloadRepository couponDownloadRepository;
 
-    public List<CouponResponse> findCouponByMarketId(long marketId) {
-        return couponRepository.findByMarketId(marketId);
+    public List<CouponResponse> findCouponByMarketId(CurrentUser currentUser, long marketId) {
+        return couponRepository.findByMarketIdAndIsDownload(currentUser.getEmail(), marketId);
     }
 
     public List<CouponResponse> findCouponThatCanBeUsedFromDownloadCoupon(CurrentUser currentUser, long marketId, long orderPrice) {
@@ -41,7 +41,7 @@ public class CouponService {
 
     @Transactional
     public void downloadCoupon(CurrentUser currentUser, long couponId) {
-        if(couponRepository.findDownloadCouponByCouponIdAndUserEmail(currentUser.getEmail(), couponId).isPresent()) {
+        if (couponRepository.findDownloadCouponByCouponIdAndUserEmail(currentUser.getEmail(), couponId).isPresent()) {
             throw new CustomRuntimeException(EXIST_COUPON);
         }
 
@@ -51,11 +51,23 @@ public class CouponService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_COUPON));
 
         DownloadCoupon downloadCoupon = DownloadCoupon.createEntity(account, coupon, coupon.getMarket());
-        couponDownloadRepository.save(downloadCoupon);
+        coupon.addDownloadCoupon(downloadCoupon);
     }
 
     @Transactional
-    public void createCoupon(CurrentUser currentUser ,long marketId ,CouponCreateRequest request) {
+    public void downloadAllCoupon(CurrentUser currentUser, long marketId) {
+        Account account = accountRepository.findByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
+        List<Coupon> coupons = couponRepository.findByMarketIdWithoutDownloadCoupon(currentUser.getEmail(), marketId);
+
+        for(Coupon coupon : coupons) {
+            DownloadCoupon downloadCoupon = DownloadCoupon.createEntity(account, coupon, coupon.getMarket());
+            coupon.addDownloadCoupon(downloadCoupon);
+        }
+    }
+
+    @Transactional
+    public void createCoupon(CurrentUser currentUser, long marketId, CouponCreateRequest request) {
         Market market = marketRepository.findMarketByMarketIdAndPartnerEmail(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 

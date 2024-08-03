@@ -10,6 +10,8 @@ public class CouponResponse {
 
     private long couponId;
 
+    private String marketName;
+
     private String couponName;
 
     private ConditionToUse conditionToUse;
@@ -19,5 +21,7 @@ public class CouponResponse {
     private int conditionToUseAmount;
 
     private int saleRate;
+
+    private boolean isDownload;
 
 }
