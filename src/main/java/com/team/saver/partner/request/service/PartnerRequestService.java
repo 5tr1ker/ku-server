@@ -10,6 +10,7 @@ import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.dto.PartnerRequestUpdateRequest;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
+import com.team.saver.partner.request.repository.PartnerRecommenderRepository;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class PartnerRequestService {
 
     private final PartnerRequestRepository partnerRequestRepository;
     private final AccountService accountService;
+    private final PartnerRecommenderRepository partnerRecommenderRepository;
 
     @Transactional
     public void requestNewPartner(PartnerRequestCreateRequest request, CurrentUser currentUser) {
@@ -82,4 +84,11 @@ public class PartnerRequestService {
         partnerRequestRepository.delete(partnerRequest);
     }
 
+    @Transactional
+    public void deleteRecommendation(CurrentUser currentUser, long partnerRequestId) {
+        PartnerRecommender result = partnerRequestRepository.findRecommenderByEmailAndRequestId(currentUser.getEmail(), partnerRequestId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_RECOMMENDATION));
+
+        partnerRecommenderRepository.delete(result);
+    }
 }

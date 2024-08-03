@@ -77,6 +77,15 @@ public class PartnerRequestController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/v1/partners/requests/{partnerRequestId}/recommendation")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 취소 API")
+    public ResponseEntity deleteRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                                       @PathVariable long partnerRequestId) {
+        partnerRequestService.deleteRecommendation(currentUser, partnerRequestId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/v1/partners/requests/{partnerRequestId}")
     @Operation(summary = "[ 로그인 ] 파트너쉽 수정 API")
     public ResponseEntity updatePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
