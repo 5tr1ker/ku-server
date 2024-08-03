@@ -113,7 +113,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(downloadCoupon.coupon, coupon)
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(userEmail))
                 .innerJoin(downloadCoupon.market, market)
-                .orderBy(coupon.priority.asc())
+                .orderBy(coupon.priority.desc())
                 .fetch();
     }
 
@@ -154,7 +154,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
                 .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice))
                 .innerJoin(coupon.market, market).on(market.marketId.eq(marketId).or(market.eventCouponMarket.eq(true)))
-                .orderBy(coupon.priority.asc())
+                .orderBy(coupon.priority.desc())
                 .where(downloadCoupon.isUsage.eq(false))
                 .fetch();
     }
