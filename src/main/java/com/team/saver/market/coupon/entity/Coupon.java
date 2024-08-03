@@ -39,8 +39,13 @@ public class Coupon {
     @Column(nullable = false)
     private String couponDescription;
 
+    @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "coupon")
     private List<DownloadCoupon> downloadCoupons = new ArrayList<>();
+
+    @Builder.Default
+    @Column(nullable = false)
+    private long priority = 0;
 
     @Builder.Default
     @Column(nullable = false)
