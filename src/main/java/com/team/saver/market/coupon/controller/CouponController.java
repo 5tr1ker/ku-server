@@ -2,6 +2,7 @@ package com.team.saver.market.coupon.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.LogInNotEssential;
 import com.team.saver.market.coupon.dto.CouponCreateRequest;
 import com.team.saver.market.coupon.dto.CouponResponse;
 import com.team.saver.market.coupon.dto.DownloadCouponResponse;
@@ -22,9 +23,9 @@ public class CouponController {
     private final CouponService couponService;
 
     @GetMapping("/v1/markets/{marketId}/coupons")
-    @Operation(summary = "marketId 로 다운로드 가능한 쿠폰 모두 조회")
-    public ResponseEntity findCouponByMarketId(@PathVariable long marketId) {
-        List<CouponResponse> result = couponService.findCouponByMarketId(marketId);
+    @Operation(summary = "[ 비-로그인 ] 해당 마켓에 다운로드 가능한 쿠폰 모두 조회")
+    public ResponseEntity findCouponByMarketId(@LogInNotEssential CurrentUser currentUser, @PathVariable long marketId) {
+        List<CouponResponse> result = couponService.findCouponByMarketId(currentUser, marketId);
 
         return ResponseEntity.ok(result);
     }

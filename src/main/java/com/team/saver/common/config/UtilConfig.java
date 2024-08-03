@@ -3,6 +3,7 @@ package com.team.saver.common.config;
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.common.util.CurrentUserArgumentResolver;
+import com.team.saver.common.util.CurrentUserNotEssentialArgumentResolver;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import jakarta.persistence.EntityManager;
@@ -21,11 +22,13 @@ import java.util.List;
 public class UtilConfig implements WebMvcConfigurer {
 
     private final CurrentUserArgumentResolver currentUserArgumentResolver;
+    private final CurrentUserNotEssentialArgumentResolver currentUserNotEssentialArgumentResolver;
 
     // Custom Annotation
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(currentUserArgumentResolver);
+        resolvers.add(currentUserNotEssentialArgumentResolver);
     }
 
     // RestTemplate

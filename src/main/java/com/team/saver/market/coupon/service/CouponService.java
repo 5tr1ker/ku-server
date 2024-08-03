@@ -31,8 +31,8 @@ public class CouponService {
     private final AccountRepository accountRepository;
     private final CouponDownloadRepository couponDownloadRepository;
 
-    public List<CouponResponse> findCouponByMarketId(long marketId) {
-        return couponRepository.findByMarketId(marketId);
+    public List<CouponResponse> findCouponByMarketId(CurrentUser currentUser, long marketId) {
+        return couponRepository.findByMarketIdAndIsDownload(currentUser.getEmail(), marketId);
     }
 
     public List<CouponResponse> findCouponThatCanBeUsedFromDownloadCoupon(CurrentUser currentUser, long marketId, long orderPrice) {

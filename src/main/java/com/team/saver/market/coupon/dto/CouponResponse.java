@@ -22,4 +22,6 @@ public class CouponResponse {
 
     private int saleRate;
 
+    private boolean isDownload;
+
 }
