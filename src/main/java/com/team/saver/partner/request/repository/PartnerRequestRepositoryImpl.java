@@ -8,6 +8,7 @@ import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
 import com.team.saver.partner.request.dto.PartnerRequestResponse;
 import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
+import com.team.saver.partner.request.entity.QPartnerRecommender;
 import com.team.saver.partner.request.entity.QPartnerRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -50,16 +51,9 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId, String email) {
-        long isRecommended = jpaQueryFactory.select(partnerRecommender.count())
-                .from(partnerRecommender)
-                .innerJoin(partnerRecommender.partnerRequest, partnerRequest).on(partnerRequest.partnerRequestId.eq(partnerRequestId))
-                .innerJoin(partnerRecommender.account, account).on(account.email.eq(email))
-                .fetchOne();
-
-        SimpleTemplate<Long> longTemplate = Expressions.template(Long.class, "{0}", isRecommended);
-        BooleanExpression booleanExpression = new CaseBuilder()
-                .when(longTemplate.ne(0L)).then(true)
-                .otherwise(false);
+        QAccount qAccount = new QAccount("qAccount2");
+        QPartnerRequest qPartnerRequest = new QPartnerRequest("qPartnerRequest2");
+        StringTemplate castExpression = Expressions.stringTemplate("CONVERT({0}, CHAR(255))", email);
 
         PartnerRequestDetailResponse result = jpaQueryFactory.select(
                         Projections.constructor(PartnerRequestDetailResponse.class,
@@ -76,7 +70,10 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                                 partnerRequest.writeTime,
                                 partnerRequest.locationX,
                                 partnerRequest.locationY,
-                                booleanExpression
+                                select(partnerRecommender.isNotNull())
+                                        .from(partnerRecommender)
+                                        .innerJoin(partnerRecommender.partnerRequest, qPartnerRequest).on(qPartnerRequest.partnerRequestId.eq(partnerRequestId))
+                                        .innerJoin(partnerRecommender.account, qAccount).on(castExpression.eq(qAccount.email))
                         )
                 ).from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
