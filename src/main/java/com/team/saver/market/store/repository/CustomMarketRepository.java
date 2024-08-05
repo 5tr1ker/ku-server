@@ -25,4 +25,5 @@ public interface CustomMarketRepository {
 
     List<MenuOptionClassificationResponse> findMenuOptionById(long menuId);
 
+    Optional<MarketResponse> findByMarketName(String marketName);
 }
