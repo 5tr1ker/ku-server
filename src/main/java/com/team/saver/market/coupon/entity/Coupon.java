@@ -51,6 +51,10 @@ public class Coupon {
     @Column(nullable = false)
     private int saleRate = 0;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isDelete = false;
+
     public static Coupon createEntity(CouponCreateRequest request) {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
         String formattedNumber = numberFormat.format(request.getConditionToUseAmount());
@@ -68,6 +72,10 @@ public class Coupon {
         this.downloadCoupons.add(downloadCoupon);
 
         downloadCoupon.setCoupon(this);
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 
 }

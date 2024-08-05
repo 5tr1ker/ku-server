@@ -29,7 +29,6 @@ public class CouponService {
     private final MarketRepository marketRepository;
     private final CouponRepository couponRepository;
     private final AccountRepository accountRepository;
-    private final CouponDownloadRepository couponDownloadRepository;
 
     public List<CouponResponse> findCouponByMarketId(CurrentUser currentUser, long marketId) {
         return couponRepository.findByMarketIdAndIsDownload(currentUser.getEmail(), marketId);
@@ -80,7 +79,7 @@ public class CouponService {
         Coupon coupon = couponRepository.findByPartnerEmailAndCouponId(currentUser.getEmail(), couponId)
                 .orElseThrow(() -> new CustomRuntimeException(ONLY_ACCESS_OWNER_PARTNER));
 
-        couponRepository.delete(coupon);
+        coupon.delete();
     }
 
     @Transactional
