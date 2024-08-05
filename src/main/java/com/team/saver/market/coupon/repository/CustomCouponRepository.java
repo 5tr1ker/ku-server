@@ -16,6 +16,8 @@ public interface CustomCouponRepository {
 
     Optional<Coupon> findByPartnerEmailAndCouponId(String partnerEmail, long couponId);
 
+    Optional<Coupon> findById(long couponId);
+
     Optional<DownloadCoupon> findDownloadCouponByCouponIdAndUserEmail(String email, long couponId);
 
     Optional<DownloadCoupon> findDownloadCouponByIdAndUserEmail(String email, long id);

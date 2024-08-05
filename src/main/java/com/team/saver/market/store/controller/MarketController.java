@@ -105,6 +105,14 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/{marketName}/search")
+    @Operation(summary = "Market 이름에 일치하는 Market 정보 가져오기")
+    public ResponseEntity findByMarketName(@PathVariable String marketName) {
+        MarketResponse result = marketService.findByMarketName(marketName);
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/v1/markets/categories/{categoryData}")
     @Operation(summary = "category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
     public ResponseEntity findMarketByMainCategory(MarketSearchRequest request,

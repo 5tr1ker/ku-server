@@ -49,6 +49,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 ))
                 .from(coupon)
                 .innerJoin(coupon.market).on(market.marketId.eq(marketId))
+                .where(coupon.isDelete.eq(false))
                 .fetch();
     }
 
@@ -58,7 +59,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .from(coupon)
                 .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
                 .leftJoin(coupon.downloadCoupons, downloadCoupon).on(downloadCoupon.account.email.eq(email))
-                .where(downloadCoupon.isNull())
+                .where(coupon.isDelete.eq(false).and(downloadCoupon.isNull()))
                 .fetch();
     }
 
@@ -69,6 +70,16 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(coupon.market, market)
                 .innerJoin(market.partner, account).on(account.email.eq(partnerEmail))
                 .where(coupon.couponId.eq(couponId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Coupon> findById(long couponId) {
+        Coupon result = jpaQueryFactory.select(coupon)
+                .from(coupon)
+                .where(coupon.couponId.eq(couponId).and(coupon.isDelete.eq(false)))
                 .fetchOne();
 
         return Optional.ofNullable(result);

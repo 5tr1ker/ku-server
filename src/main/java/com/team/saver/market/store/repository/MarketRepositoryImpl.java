@@ -205,4 +205,34 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 );
     }
 
+    @Override
+    public Optional<MarketResponse> findByMarketName(String marketName) {
+        MarketResponse result = jpaQueryFactory.select(
+                        Projections.constructor(MarketResponse.class,
+                                market.marketId,
+                                market.mainCategory,
+                                market.locationX,
+                                market.locationY,
+                                market.marketImage,
+                                market.marketName,
+                                market.marketDescription,
+                                market.detailAddress,
+                                market.eventMessage,
+                                market.openTime,
+                                market.closeTime,
+                                market.closedDays,
+                                review.score.avg(),
+                                review.countDistinct(),
+                                coupon.saleRate.max())
+                )
+                .from(market)
+                .leftJoin(market.coupons, coupon)
+                .leftJoin(market.reviews, review)
+                .groupBy(market)
+                .where(market.marketName.eq(marketName))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
 }
