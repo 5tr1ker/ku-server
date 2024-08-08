@@ -30,7 +30,7 @@ public class AccountController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/v1/accounts/sign-in")
-    @Operation(summary = "테스트를 위한 로그인 API")
+    @Operation(summary = "테스트를 위한 로그인 API ( 0 ) ")
     public ResponseEntity signIn(@RequestParam String email, HttpServletResponse response) {
         Account account = accountRepository.findByEmail(email).get();
         authService.updateLoginCount(account);
@@ -40,7 +40,7 @@ public class AccountController {
     }
 
     @PostMapping("/v1/accounts/logout")
-    @Operation(summary = "로그아웃 API")
+    @Operation(summary = "로그아웃 API ( 1 ) ")
     public ResponseEntity logout(HttpServletResponse response) {
         jwtTokenProvider.deleteJwtCookieFromResponse(response);
 
@@ -48,7 +48,7 @@ public class AccountController {
     }
 
     @PostMapping("/v1/accounts/tokens")
-    @Operation(summary = "[ 로그인 ] 토큰 재발급 API")
+    @Operation(summary = "[ 로그인 ] 토큰 재발급 API ( 2 ) ")
     public ResponseEntity reissueToken(HttpServletResponse response, HttpServletRequest request) {
         Token token = jwtTokenProvider.reissueToken(response, request);
 
@@ -56,7 +56,7 @@ public class AccountController {
     }
 
     @GetMapping("/v1/accounts/profiles")
-    @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기")
+    @Operation(summary = "[ 로그인 ] 사용자 정보 가져오기 ( 3 ) ")
     public ResponseEntity getProfile(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         AccountResponse result = accountService.findAccountDetail(currentUser);
 
@@ -64,7 +64,7 @@ public class AccountController {
     }
 
     @GetMapping("/v1/accounts/my-page")
-    @Operation(summary = "[ 로그인 ] 사용자 마이페이지 정보 가져오기")
+    @Operation(summary = "[ 로그인 ] 사용자 마이페이지 정보 가져오기 ( 4 ) ")
     public ResponseEntity getMyPageInfo(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         MyPageResponse result = accountService.getMyPageInfo(currentUser);
 
@@ -72,7 +72,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/v1/accounts")
-    @Operation(summary = "[ 로그인 ] 계정 탈퇴")
+    @Operation(summary = "[ 로그인 ] 계정 탈퇴 ( 5 ) ")
     public ResponseEntity deleteAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         accountService.deleteAccount(currentUser);
 
@@ -80,7 +80,7 @@ public class AccountController {
     }
 
     @PutMapping("/v1/accounts")
-    @Operation(summary = "[ 로그인 ] 사용자 계정 정보 수정")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 정보 수정 ( 6 ) ")
     public ResponseEntity updateAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                         @RequestBody AccountUpdateRequest request) {
         accountService.updateAccount(currentUser, request);
@@ -89,7 +89,7 @@ public class AccountController {
     }
 
     @PutMapping("/v1/accounts/settings")
-    @Operation(summary = "[ 로그인 ] 사용자 설정 정보 수정")
+    @Operation(summary = "[ 로그인 ] 사용자 설정 정보 수정 ( 7 ) ")
     public ResponseEntity updateAccountSetting(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                @RequestBody AccountNotificationSetting request) {
         accountService.updateAccountSetting(currentUser, request);
@@ -98,7 +98,7 @@ public class AccountController {
     }
 
     @PatchMapping("/v1/accounts/images")
-    @Operation(summary = "[ 로그인 ] 사용자 계정 이미지 수정")
+    @Operation(summary = "[ 로그인 ] 사용자 계정 이미지 수정 ( 8 ) ")
     public ResponseEntity updateAccountImage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                              @RequestPart MultipartFile image) {
         accountService.updateAccountImage(currentUser, image);
@@ -107,7 +107,7 @@ public class AccountController {
     }
 
     @PostMapping("/v1/accounts/certs/students/send-mail")
-    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API")
+    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 전송 API ( 9 ) ")
     public ResponseEntity sendCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                        @RequestBody SchoolCertRequest request) {
         accountService.sendCodeInOrderToCertStudent(currentUser, request);
@@ -116,7 +116,7 @@ public class AccountController {
     }
 
     @PatchMapping("/v1/accounts/certs/students/code-check")
-    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API")
+    @Operation(summary = "[ 로그인 ] 학생으로 권한 변경을 위한 메일 확인 API ( 10 ) ")
     public ResponseEntity checkCodeInOrderToCertStudent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                         @RequestBody MailSendRequest request) {
         accountService.checkCodeInOrderToCertStudent(currentUser, request);

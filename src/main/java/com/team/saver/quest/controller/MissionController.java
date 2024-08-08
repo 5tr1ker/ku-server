@@ -23,7 +23,7 @@ public class MissionController {
     private final MissionService missionService;
 
     @GetMapping("/v1/missions")
-    @Operation(summary = "[ 로그인 ] 미션 데이터 목록 가져오기")
+    @Operation(summary = "[ 로그인 ] 미션 데이터 목록 가져오기 ( 92 )")
     public ResponseEntity getMissionByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<MissionResponse> result = missionService.getMissionByEmail(currentUser);
 
@@ -31,7 +31,7 @@ public class MissionController {
     }
 
     @GetMapping("/v1/missions/level")
-    @Operation(summary = "[ 로그인 ] 미션 수행으로 인한 레벨가져오기")
+    @Operation(summary = "[ 로그인 ] 미션 수행으로 인한 레벨가져오기 ( 93 )")
     public ResponseEntity getMissionLevelByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         MissionLevelResponse result = missionService.getMissionLevelByEmail(currentUser);
 

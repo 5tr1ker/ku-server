@@ -22,7 +22,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/v1/services/chat-rooms/chats")
-    @Operation(summary = "[ 로그인 ] 내 1:1 고객센터 문의 가져오기")
+    @Operation(summary = "[ 로그인 ] 내 1:1 고객센터 문의 가져오기 ( 105 )")
     public ResponseEntity findByAccountEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<ChatResponse> result = chatService.findByAccountEmail(currentUser);
 
@@ -30,7 +30,7 @@ public class ChatController {
     }
 
     @GetMapping("/v1/services/chat-rooms/all")
-    @Operation(summary = "모든 고객센터 문의 데이터방 가져오기")
+    @Operation(summary = "모든 고객센터 문의 데이터방 가져오기 ( 106 )")
     public ResponseEntity findAllChatRoom(Pageable pageable) {
         List<ChatRoomResponse> result = chatService.findAllChatRoom(pageable);
 

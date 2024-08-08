@@ -17,7 +17,7 @@ public class AutoCompleteController {
     private final AutoCompleteService autoCompleteService;
 
     @PostMapping("/v1/auto-complete")
-    @Operation(summary = "자동 완성 글자 추가")
+    @Operation(summary = "자동 완성 글자 추가 ( 95 )")
     public ResponseEntity addSearchWord(@RequestBody WordAddRequest request) {
         autoCompleteService.addSearchWord(request);
 
@@ -25,7 +25,7 @@ public class AutoCompleteController {
     }
 
     @GetMapping("/v1/auto-complete")
-    @Operation(summary = "빈도수를 기반으로 자동 검색 탐색")
+    @Operation(summary = "빈도수를 기반으로 자동 검색 탐색 ( 96 )")
     public ResponseEntity findSearchComplete(@RequestParam String word) {
         List<WordResponse> result = autoCompleteService.findSearchComplete(word);
 
@@ -33,7 +33,7 @@ public class AutoCompleteController {
     }
 
     @DeleteMapping("/v1/auto-complete")
-    @Operation(summary = "자동 완성 글자 제거 [ 삭제하면 검색 수와 함께 삭제됩니다. ]")
+    @Operation(summary = "자동 완성 글자 제거 [ 삭제하면 검색 수와 함께 삭제됩니다. ] ( 97 )")
     public ResponseEntity deleteSearchWord(@RequestParam String word) {
         autoCompleteService.deleteWord(word);
 

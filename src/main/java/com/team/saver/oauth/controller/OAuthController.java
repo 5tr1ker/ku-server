@@ -20,7 +20,7 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @PostMapping("/v1/account/oauth/sign-in")
-    @Operation(summary = "OAuth 로그인")
+    @Operation(summary = "OAuth 로그인 ( 75 )")
     public ResponseEntity signIn(HttpServletResponse response, @RequestBody OAuthAccountCreateRequest request) {
         Token result = oAuthService.SignInOAuthAccount(response, request);
 
@@ -28,7 +28,7 @@ public class OAuthController {
     }
 
     @PatchMapping("/v1/account/oauth/transfer")
-    @Operation(summary = "[ 로그인 ] OAuth 새로운 계정 이전")
+    @Operation(summary = "[ 로그인 ] OAuth 새로운 계정 이전 ( 76 )")
     public ResponseEntity accountTransfer(@RequestBody OAuthInfoTransferRequest request, @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         oAuthService.accountTransfer(request, currentUser);
 
