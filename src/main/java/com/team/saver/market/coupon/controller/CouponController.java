@@ -76,7 +76,7 @@ public class CouponController {
     }
 
     @PostMapping("/v1/markets/{marketId}/coupons")
-    @Operation(summary = "[ 로그인 ] 새로운 쿠폰 생성")
+    @Operation(summary = "[ 로그인 ] 새로운 쿠폰 생성 ( 34 )")
     public ResponseEntity createCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long marketId,
                                        @RequestBody CouponCreateRequest request) {
@@ -87,7 +87,7 @@ public class CouponController {
     }
 
     @DeleteMapping("/v1/markets/coupons/{couponId}")
-    @Operation(summary = "[ 로그인 ] 생성한 쿠폰 삭제")
+    @Operation(summary = "[ 로그인 ] 생성한 쿠폰 삭제 ( 35 )")
     public ResponseEntity deleteCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long couponId) {
 
@@ -97,7 +97,7 @@ public class CouponController {
     }
 
     @PatchMapping("/v1/markets/coupons/{downloadCouponId}/use")
-    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰을 사용한 쿠폰으로 수정")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰을 사용한 쿠폰으로 수정 ( 36 )")
     public ResponseEntity updateCouponUsage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long downloadCouponId) {
 

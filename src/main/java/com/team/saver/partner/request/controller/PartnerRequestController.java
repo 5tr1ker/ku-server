@@ -29,7 +29,7 @@ public class PartnerRequestController {
     private final PartnerRequestService partnerRequestService;
 
     @PostMapping("/v1/partners/requests")
-    @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API")
+    @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API ( 80 )")
     public ResponseEntity requestNewPartner(@RequestBody PartnerRequestCreateRequest request
             , @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         partnerRequestService.requestNewPartner(request, currentUser);
@@ -38,7 +38,7 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests")
-    @Operation(summary = "요청된 모든 파트너십 데이터 가져오기")
+    @Operation(summary = "요청된 모든 파트너십 데이터 가져오기 ( 81 )")
     public ResponseEntity findAllEntity(Pageable pageable) {
         List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(pageable);
 
@@ -46,7 +46,7 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}")
-    @Operation(summary = "[ 비 - 로그인 ] 파트너십 상세 데이터 가져오기")
+    @Operation(summary = "[ 비 - 로그인 ] 파트너십 상세 데이터 가져오기 ( 82 )")
     public ResponseEntity findDetailById(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser, @PathVariable long partnerRequestId) {
         PartnerRequestDetailResponse result = partnerRequestService.findDetailById(currentUser, partnerRequestId);
 
@@ -54,7 +54,7 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests/bests")
-    @Operation(summary = "가장 인기있는 파트너십 데이터 가져오기")
+    @Operation(summary = "가장 인기있는 파트너십 데이터 가져오기 ( 83 )")
     public ResponseEntity findMostRecommend(@RequestParam long size) {
         List<PartnerRequestResponse> result = partnerRequestService.findMostRecommend(size);
 
@@ -62,7 +62,7 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests/totals")
-    @Operation(summary = "전체 파트너십 데이터 갯수 가져오기")
+    @Operation(summary = "전체 파트너십 데이터 갯수 가져오기 ( 84 )")
     public ResponseEntity findTotalPartnerRequestCount() {
         long result = partnerRequestService.findTotalPartnerRequestCount();
 
@@ -70,7 +70,7 @@ public class PartnerRequestController {
     }
 
     @PostMapping("/v1/partners/requests/{partnerRequestId}/recommendation")
-    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 API")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 API ( 85 )")
     public ResponseEntity requestPartnerRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                        @PathVariable long partnerRequestId) {
         partnerRequestService.requestPartnerRecommendation(currentUser, partnerRequestId);
@@ -79,7 +79,7 @@ public class PartnerRequestController {
     }
 
     @DeleteMapping("/v1/partners/requests/{partnerRequestId}/recommendation")
-    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 취소 API")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 추천 취소 API ( 86 )")
     public ResponseEntity deleteRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                        @PathVariable long partnerRequestId) {
         partnerRequestService.deleteRecommendation(currentUser, partnerRequestId);
@@ -88,7 +88,7 @@ public class PartnerRequestController {
     }
 
     @PutMapping("/v1/partners/requests/{partnerRequestId}")
-    @Operation(summary = "[ 로그인 ] 파트너쉽 수정 API")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 수정 API ( 87 )")
     public ResponseEntity updatePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                      @RequestBody PartnerRequestUpdateRequest request ,
                                      @PathVariable long partnerRequestId) {
@@ -98,7 +98,7 @@ public class PartnerRequestController {
     }
 
     @DeleteMapping("/v1/partners/requests/{partnerRequestId}")
-    @Operation(summary = "[ 로그인 ] 파트너쉽 삭제 API")
+    @Operation(summary = "[ 로그인 ] 파트너쉽 삭제 API ( 88 )")
     public ResponseEntity deletePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                @PathVariable long partnerRequestId) {
         partnerRequestService.deletePartnerRequest(currentUser, partnerRequestId);

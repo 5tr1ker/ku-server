@@ -21,7 +21,7 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/v1/{location}/promotions")
-    @Operation(summary = "특정 위치에 있는 홍보 데이터 등록")
+    @Operation(summary = "특정 위치에 있는 홍보 데이터 등록 ( 89 )")
     public ResponseEntity addPromotionFromMain(@RequestPart PromotionCreateRequest request,
                                                @PathVariable PromotionLocation location,
                                                @RequestPart MultipartFile image) {
@@ -31,7 +31,7 @@ public class PromotionController {
     }
 
     @DeleteMapping("/v1/{location}/promotions/{promotionId}")
-    @Operation(summary = "특정 위치에 있는 홍보 데이터 제거")
+    @Operation(summary = "특정 위치에 있는 홍보 데이터 제거 ( 90 )")
     public ResponseEntity deletePromotion(@PathVariable long promotionId,
                                           @PathVariable PromotionLocation location) {
         promotionService.deleteByIdAndLocation(promotionId, location);
@@ -40,7 +40,7 @@ public class PromotionController {
     }
 
     @GetMapping("/v1/{location}/promotions")
-    @Operation(summary = "특정 위치의 홍보 데이터 조회 [ MAIN : 메인 , ATTRACTION : 관광 조회 페이지 ]")
+    @Operation(summary = "특정 위치의 홍보 데이터 조회 [ MAIN : 메인 , ATTRACTION : 관광 조회 페이지 ] ( 91 )")
     public ResponseEntity getPromotion(Pageable pageable, @PathVariable PromotionLocation location) {
         List<PromotionResponse> result = promotionService.getPromotion(pageable, location);
 

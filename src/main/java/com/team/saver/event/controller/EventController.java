@@ -22,7 +22,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("/v1/events")
-    @Operation(summary = "이벤트 데이터 가져오기")
+    @Operation(summary = "이벤트 데이터 가져오기 ( 20 )")
     public ResponseEntity findEvent(Pageable pageable) {
         List<EventResponse> result = eventService.findEvent(pageable);
 
@@ -30,7 +30,7 @@ public class EventController {
     }
 
     @GetMapping("/v1/events/{eventId}")
-    @Operation(summary = "특정 이벤트의 세부 데이터 가져오기")
+    @Operation(summary = "특정 이벤트의 세부 데이터 가져오기 ( 21 )")
     public ResponseEntity findEventDetail(@PathVariable long eventId) {
         EventDetailResponse result = eventService.findEventDetail(eventId);
 
@@ -38,7 +38,7 @@ public class EventController {
     }
 
     @PostMapping("/v1/events")
-    @Operation(summary = "이벤트 데이터 추가")
+    @Operation(summary = "이벤트 데이터 추가 ( 22 )")
     public ResponseEntity addEvent(@RequestPart EventCreateRequest request,
                                    @RequestPart MultipartFile image) {
         eventService.addEvent(request, image);
@@ -47,7 +47,7 @@ public class EventController {
     }
 
     @PutMapping("/v1/events/{eventId}")
-    @Operation(summary = "이벤트 데이터 수정")
+    @Operation(summary = "이벤트 데이터 수정 ( 23 )")
     public ResponseEntity updateEvent(@PathVariable long eventId,
                                       @RequestPart EventUpdateRequest request,
                                       @RequestPart(required = false) MultipartFile image) {
@@ -57,7 +57,7 @@ public class EventController {
     }
 
     @DeleteMapping("/v1/events/{eventId}")
-    @Operation(summary = "이벤트 데이터 삭제")
+    @Operation(summary = "이벤트 데이터 삭제 ( 24 )")
     public ResponseEntity deleteEvent(@PathVariable long eventId) {
         eventService.deleteEvent(eventId);
 

@@ -22,7 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/v1/markets/orders")
-    @Operation(summary = "[ 로그인 ] 해당 메뉴 주문하기")
+    @Operation(summary = "[ 로그인 ] 해당 메뉴 주문하기 ( 47 )")
     public ResponseEntity addOrder(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                    @RequestBody OrderCreateRequest request) {
         orderService.addOrder(currentUser , request);
@@ -31,7 +31,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/v1/markets/orders/{orderId}")
-    @Operation(summary = "[ 로그인 ] 주문 정보 제거")
+    @Operation(summary = "[ 로그인 ] 주문 정보 제거 ( 48 )")
     public ResponseEntity deleteOrder(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                       @PathVariable long orderId) {
         orderService.deleteOrder(currentUser, orderId);
@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     @GetMapping("/v1/markets/orders/me")
-    @Operation(summary = "[ 로그인 ] 나의 주문 목록 모두 가져오기")
+    @Operation(summary = "[ 로그인 ] 나의 주문 목록 모두 가져오기 ( 49 )")
     public ResponseEntity findOrderByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                @RequestParam boolean existReview) {
         List<OrderResponse> result = orderService.findOrderByUserEmail(currentUser, existReview);
@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     @GetMapping("/v1/markets/orders/{orderId}")
-    @Operation(summary = "[ 로그인 ] 나의 주문 상세 정보 가져오기")
+    @Operation(summary = "[ 로그인 ] 나의 주문 상세 정보 가져오기 ( 50 )")
     public ResponseEntity getOrderDetailByOrderIdAndEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                           @PathVariable long orderId) {
         OrderDetailResponse result = orderService.getOrderDetailByOrderIdAndEmail(currentUser, orderId);

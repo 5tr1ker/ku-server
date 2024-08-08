@@ -4,6 +4,7 @@ import com.team.saver.attraction.dto.AttractionCreateRequest;
 import com.team.saver.attraction.dto.AttractionResponse;
 import com.team.saver.attraction.dto.SortType;
 import com.team.saver.attraction.service.AttractionService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class AttractionController {
     private final AttractionService attractionService;
 
     @PostMapping("/v1/attractions")
+    @Operation(summary = "관광명소 데이터 추가 ( 16 ) ")
     public ResponseEntity addAttraction(@RequestPart AttractionCreateRequest request,
                                         @RequestPart MultipartFile image) {
         attractionService.addAttraction(request, image);
@@ -28,6 +30,7 @@ public class AttractionController {
     }
 
     @GetMapping("/v1/attractions")
+    @Operation(summary = "모든 관광명소 데이터 가져오기 ( 17 ) ")
     public ResponseEntity getAttraction(Pageable pageable,
                                         @RequestParam SortType sort,
                                         @RequestParam double locationX,
@@ -38,6 +41,7 @@ public class AttractionController {
     }
 
     @GetMapping("/v1/attractions/search")
+    @Operation(summary = "이름으로 관광명소 데이터 탐색 ( 18 ) ")
     public ResponseEntity searchAttraction(Pageable pageable,
                                            @RequestParam SortType sort,
                                            @RequestParam String keyWord,
@@ -49,6 +53,7 @@ public class AttractionController {
     }
 
     @DeleteMapping("/v1/attractions/{attractionId}")
+    @Operation(summary = "관광명소 데이터 제거 ( 19 ) ")
     public ResponseEntity deleteAttraction(@PathVariable long attractionId) {
         attractionService.deleteAttraction(attractionId);
 

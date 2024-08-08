@@ -26,7 +26,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/v1/markets/{marketId}/reviews")
-    @Operation(summary = "마켓에 등록된 리뷰 가져오기")
+    @Operation(summary = "마켓에 등록된 리뷰 가져오기 ( 51 )")
     public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sort) {
         List<ReviewResponse> result = reviewService.findByMarketId(marketId, sort);
 
@@ -34,7 +34,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/{marketId}/statistics")
-    @Operation(summary = "리뷰 전체 갯수, 총 평점 및 점수 별 갯수 통계 가져오기")
+    @Operation(summary = "리뷰 전체 갯수, 총 평점 및 점수 별 갯수 통계 가져오기 ( 52 )")
     public ResponseEntity findReviewStatisticsByMarketId(@PathVariable long marketId) {
         ReviewStatisticsResponse result = reviewService.findReviewStatisticsByMarketId(marketId);
 
@@ -42,7 +42,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/{reviewId}")
-    @Operation(summary = "특정 ID의 리뷰 데이터 가져오기")
+    @Operation(summary = "특정 ID의 리뷰 데이터 가져오기 ( 53 )")
     public ResponseEntity findDetailByReviewId(@PathVariable long reviewId) {
         ReviewResponse result = reviewService.findDetailByReviewId(reviewId);
 
@@ -50,7 +50,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/statistics")
-    @Operation(summary = "[ 로그인 ] 작성한 리뷰, 작성할 수 있는 통계 가져오기")
+    @Operation(summary = "[ 로그인 ] 작성한 리뷰, 작성할 수 있는 통계 가져오기 ( 54 )")
     public ResponseEntity findReviewStatisticsByEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         ReviewStatisticResponse result = reviewService.findReviewStatisticsByEmail(currentUser);
 
@@ -58,7 +58,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/top")
-    @Operation(summary = "BEST 리뷰 가져오기")
+    @Operation(summary = "BEST 리뷰 가져오기 ( 55 )")
     public ResponseEntity findBestReview(Pageable pageable) {
         List<ReviewResponse> result = reviewService.findBestReview(pageable);
 
@@ -66,7 +66,7 @@ public class ReviewController {
     }
 
     @PostMapping("/v1/markets/reviews/{reviewId}/recommendation")
-    @Operation(summary = "[ 로그인 ] 리뷰 추천하기")
+    @Operation(summary = "[ 로그인 ] 리뷰 추천하기 ( 56 )")
     public ResponseEntity recommendReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                           @PathVariable long reviewId) {
         reviewService.recommendReview(currentUser, reviewId);
@@ -75,7 +75,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/me")
-    @Operation(summary = "[ 로그인 ] 내가 등록한 리뷰 가져오기")
+    @Operation(summary = "[ 로그인 ] 내가 등록한 리뷰 가져오기 ( 57 )")
     public ResponseEntity findByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<ReviewResponse> result = reviewService.findByUserEmail(currentUser);
 
@@ -83,7 +83,7 @@ public class ReviewController {
     }
 
     @PostMapping("/v1/markets/{marketId}/reviews")
-    @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가")
+    @Operation(summary = "[ 로그인 ] 해당 마켓에 리뷰 추가 ( 58 )")
     public ResponseEntity addReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @PathVariable long marketId,
                                     @RequestPart ReviewCreateRequest request,
@@ -94,7 +94,7 @@ public class ReviewController {
     }
 
     @PatchMapping("/v1/markets/reviews/{reviewId}")
-    @Operation(summary = "[ 로그인 ] 리뷰 수정")
+    @Operation(summary = "[ 로그인 ] 리뷰 수정 ( 59 )")
     public ResponseEntity updateReview(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                        @PathVariable long reviewId,
                                        @RequestPart ReviewUpdateRequest request,
@@ -106,7 +106,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/{marketId}/reviews/images")
-    @Operation(summary = "포토리뷰 가져오기")
+    @Operation(summary = "포토리뷰 가져오기 ( 60 )")
     public ResponseEntity findAllReviewImageByMarketId(@PathVariable long marketId,
                                                        @RequestParam(required = false) Long size) {
         List<PhotoReviewResponse> result = reviewService.findAllReviewImageByMarketId(marketId, size);
@@ -115,7 +115,7 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/{marketId}/reviews/images/counts")
-    @Operation(summary = "포토리뷰 갯수 가져오기")
+    @Operation(summary = "포토리뷰 갯수 가져오기 ( 61 )")
     public ResponseEntity findPhotoReviewCountByMarketId(@PathVariable long marketId) {
         long result = reviewService.findPhotoReviewCountByMarketId(marketId);
 
@@ -123,7 +123,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/v1/markets/reviews/{reviewId}")
-    @Operation(summary = "[ 로그인 ] 리뷰 삭제")
+    @Operation(summary = "[ 로그인 ] 리뷰 삭제 ( 62 )")
     public ResponseEntity deleteReview(@PathVariable long reviewId,
                                        @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         reviewService.deleteReview(currentUser, reviewId);

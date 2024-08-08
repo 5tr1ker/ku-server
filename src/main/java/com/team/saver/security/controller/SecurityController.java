@@ -15,7 +15,7 @@ public class SecurityController {
     private final SecurityService securityService;
 
     @GetMapping("/v1/security/is-connect")
-    @Operation(summary = "서버와 연결 여부 확인 API [ 서버 점검 여부 ]")
+    @Operation(summary = "서버와 연결 여부 확인 API [ 서버 점검 여부 ] ( 101 )")
     public ResponseEntity checkConnection() {
         ResponseMessage result = securityService.isInspectionTime();
 
@@ -28,7 +28,7 @@ public class SecurityController {
     }
 
     @PostMapping("/v1/security/inspection")
-    @Operation(summary = "새로운 점검 시간 설정")
+    @Operation(summary = "새로운 점검 시간 설정 ( 102 )")
     public ResponseEntity setInspection(@RequestBody InspectionTimeCreateRequest request) {
         securityService.setInspectionTime(request);
 
@@ -36,7 +36,7 @@ public class SecurityController {
     }
 
     @DeleteMapping("/v1/security/inspection")
-    @Operation(summary = "현재 점검 시간 제거")
+    @Operation(summary = "현재 점검 시간 제거 ( 103 )")
     public ResponseEntity deleteInspection() {
         securityService.deleteInspection();
 
@@ -44,7 +44,7 @@ public class SecurityController {
     }
 
     @PatchMapping("/v1/security/inspection")
-    @Operation(summary = "현재 점검 중인 시간 변경")
+    @Operation(summary = "현재 점검 중인 시간 변경 ( 104 )")
     public ResponseEntity updateInspection(@RequestBody InspectionTimeCreateRequest request) {
         securityService.updateInspection(request);
 

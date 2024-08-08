@@ -21,7 +21,7 @@ public class HistoryController {
     private final HistoryService historyService;
 
     @GetMapping("/v1/histories")
-    @Operation(summary = "[ 로그인 ] History 정보 가져오기")
+    @Operation(summary = "[ 로그인 ] History 정보 가져오기 ( 25 )")
     public ResponseEntity findAllByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<HistoryResponse> result = historyService.findAllByAccount(currentUser);
 
@@ -29,7 +29,7 @@ public class HistoryController {
     }
 
     @PostMapping("/v1/histories")
-    @Operation(summary = "[ 로그인 ] History 데이터 추가")
+    @Operation(summary = "[ 로그인 ] History 데이터 추가 ( 26 )")
     public ResponseEntity addHistoryByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                               @RequestBody HistoryCreateRequest historyCreateRequest) {
         historyService.addHistoryByAccount(currentUser, historyCreateRequest);
@@ -38,7 +38,7 @@ public class HistoryController {
     }
 
     @DeleteMapping("/v1/histories/all")
-    @Operation(summary = "[ 로그인 ] 모든 History 제거")
+    @Operation(summary = "[ 로그인 ] 모든 History 제거 ( 27 )")
     public ResponseEntity deleteAllHistoryByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         historyService.deleteAllHistoryByAccount(currentUser);
 
@@ -46,7 +46,7 @@ public class HistoryController {
     }
 
     @DeleteMapping("/v1/histories/{historyId}")
-    @Operation(summary = "[ 로그인 ] 특정 History 제거")
+    @Operation(summary = "[ 로그인 ] 특정 History 제거 ( 28 )")
     public ResponseEntity deleteHistoryByAccountAndHistoryId(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                              @PathVariable long historyId) {
         historyService.deleteHistoryByAccountAndHistoryId(currentUser, historyId);

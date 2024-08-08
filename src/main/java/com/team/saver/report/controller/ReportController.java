@@ -20,7 +20,7 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping("/v1/reports")
-    @Operation(summary = "[ 로그인 ] 컨텐츠 신고 API")
+    @Operation(summary = "[ 로그인 ] 컨텐츠 신고 API ( 94 )")
     public ResponseEntity addReport(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestBody ReportCreateRequest request) {
 

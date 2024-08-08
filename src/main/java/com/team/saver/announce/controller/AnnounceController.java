@@ -22,7 +22,7 @@ public class AnnounceController {
     private final AnnounceService announceService;
 
     @GetMapping("/v1/announces")
-    @Operation(summary = "모든 공지사항 데이터 가져오기")
+    @Operation(summary = "모든 공지사항 데이터 가져오기 ( 11 ) ")
     public ResponseEntity findAllAnnounce(Pageable pageable,
                                           @RequestParam boolean isImportant) {
         List<AnnounceResponse> result = announceService.findAllAnnounce(pageable, isImportant);
@@ -31,7 +31,7 @@ public class AnnounceController {
     }
 
     @GetMapping("/v1/announces/{announceId}")
-    @Operation(summary = "특정 공지사항 데이터 가져오기")
+    @Operation(summary = "특정 공지사항 데이터 가져오기 ( 12 ) ")
     public ResponseEntity findAnnounceDetail(@PathVariable long announceId) {
         AnnounceDetailResponse result = announceService.findAnnounceDetail(announceId);
 
@@ -39,7 +39,7 @@ public class AnnounceController {
     }
 
     @PostMapping("/v1/announces")
-    @Operation(summary = "공지사항 데이터 등록하기")
+    @Operation(summary = "공지사항 데이터 등록하기 ( 13 ) ")
     public ResponseEntity addAnnounce(@RequestBody AnnounceCreateRequest request) {
         announceService.addAnnounce(request);
 
@@ -47,7 +47,7 @@ public class AnnounceController {
     }
 
     @PutMapping("/v1/announces/{announceId}")
-    @Operation(summary = "공지사항 데이터 수정하기")
+    @Operation(summary = "공지사항 데이터 수정하기 ( 14 ) ")
     public ResponseEntity updateAnnounce(@RequestBody AnnounceUpdateRequest request,
                                          @PathVariable long announceId) {
         announceService.updateAnnounce(request, announceId);
@@ -56,7 +56,7 @@ public class AnnounceController {
     }
 
     @DeleteMapping("/v1/announces/{announceId}")
-    @Operation(summary = "공지사항 데이터 삭제하기")
+    @Operation(summary = "공지사항 데이터 삭제하기 ( 15 ) ")
     public ResponseEntity deleteAnnounce(@PathVariable long announceId) {
         announceService.deleteAnnounce(announceId);
 

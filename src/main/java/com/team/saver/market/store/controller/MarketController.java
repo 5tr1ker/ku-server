@@ -25,7 +25,7 @@ public class MarketController {
     private final RecommendAlgorithm recommendAlgorithm;
 
     @PostMapping("/v1/markets")
-    @Operation(summary = "[ 로그인 ] Market 데이터 추가")
+    @Operation(summary = "[ 로그인 ] Market 데이터 추가 ( 63 )")
     public ResponseEntity addMarket(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                     @RequestPart MarketCreateRequest request,
                                     @RequestPart MultipartFile image) {
@@ -35,7 +35,7 @@ public class MarketController {
     }
 
     @PostMapping("/v1/markets/{marketId}/menus")
-    @Operation(summary = "[ 로그인 ] Market Menu 데이터 추가")
+    @Operation(summary = "[ 로그인 ] Market Menu 데이터 추가 ( 64 )")
     public ResponseEntity addMarketMenu(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                         @PathVariable long marketId,
                                         @RequestPart List<MenuCreateRequest> request,
@@ -46,7 +46,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketId}/details")
-    @Operation(summary = "해당 Market의 상세 정보 가져오기")
+    @Operation(summary = "해당 Market의 상세 정보 가져오기 ( 65 )")
     public ResponseEntity findMarketDetailById(@PathVariable long marketId) {
         MarketDetailResponse result = marketService.findMarketDetailById(marketId);
 
@@ -54,7 +54,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketId}/menus")
-    @Operation(summary = "해당 Market의 메뉴 정보 가져오기")
+    @Operation(summary = "해당 Market의 메뉴 정보 가져오기 ( 66 )")
     public ResponseEntity findMarketMenuById(@PathVariable long marketId) {
         List<MenuClassificationResponse> result = marketService.findMarketMenuById(marketId);
 
@@ -62,7 +62,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/menus/{menuId}/options")
-    @Operation(summary = "해당 Market의 메뉴 옵션 정보 가져오기")
+    @Operation(summary = "해당 Market의 메뉴 옵션 정보 가져오기 ( 67 )")
     public ResponseEntity findMarketMenuOptionById(@PathVariable long menuId) {
         List<MenuOptionClassificationResponse> result = marketService.findMarketMenuAndOptionById(menuId);
 
@@ -70,7 +70,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/recommendation")
-    @Operation(summary = "Market 추천 알고리즘으로 추천 받기")
+    @Operation(summary = "Market 추천 알고리즘으로 추천 받기 ( 68 )")
     public ResponseEntity recommendMarket(@RequestParam long marketCount) {
         List<MarketResponse> result = recommendAlgorithm.recommendMarket(marketCount);
 
@@ -78,7 +78,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets")
-    @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ")
+    @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]  ( 69 )")
     public ResponseEntity findAllMarket(MarketSearchRequest request, Pageable pageable) {
         List<MarketResponse> result = marketService.findAllMarket(request, pageable);
 
@@ -86,7 +86,7 @@ public class MarketController {
     }
 
     @PatchMapping("/v1/markets/{marketId}/event-message")
-    @Operation(summary = "[ 로그인 ] Market의 이벤트 메세지 변경")
+    @Operation(summary = "[ 로그인 ] Market의 이벤트 메세지 변경 ( 70 )")
     public ResponseEntity modifyEventMessage(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                              @PathVariable long marketId,
                                              @RequestBody MarketEventUpdateRequest request) {
@@ -96,7 +96,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketName}")
-    @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    @Operation(summary = "Market 이름이 포함되어 있는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ( 71 )")
     public ResponseEntity findMarketBySearch(MarketSearchRequest request,
                                              @PathVariable String marketName,
                                              Pageable pageable) {
@@ -106,7 +106,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketName}/search")
-    @Operation(summary = "Market 이름에 일치하는 Market 정보 가져오기")
+    @Operation(summary = "Market 이름에 일치하는 Market 정보 가져오기 ( 72 )")
     public ResponseEntity findByMarketName(@PathVariable String marketName) {
         MarketResponse result = marketService.findByMarketName(marketName);
 
@@ -114,7 +114,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/categories/{categoryData}")
-    @Operation(summary = "category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    @Operation(summary = "category 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ( 73 )")
     public ResponseEntity findMarketByMainCategory(MarketSearchRequest request,
                                                    @PathVariable MainCategory categoryData,
                                                    Pageable pageable) {
@@ -124,7 +124,7 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketName}/categories/{categoryData}")
-    @Operation(summary = "category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]")
+    @Operation(summary = "category 와 Market 이름 에 해당되는 모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ] ( 74 )")
     public ResponseEntity findMarketByMainCategoryAndMarketName(MarketSearchRequest request,
                                                                 @PathVariable MainCategory categoryData,
                                                                 @PathVariable String marketName,
