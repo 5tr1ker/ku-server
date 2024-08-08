@@ -2,6 +2,7 @@ package com.team.saver.partner.request.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.LogInNotEssential;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.request.dto.PartnerRequestCreateRequest;
 import com.team.saver.partner.request.dto.PartnerRequestDetailResponse;
@@ -45,8 +46,8 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}")
-    @Operation(summary = "[ 로그인 ] 파트너십 상세 데이터 가져오기")
-    public ResponseEntity findDetailById(@Parameter(hidden = true) @LogIn CurrentUser currentUser, @PathVariable long partnerRequestId) {
+    @Operation(summary = "[ 비 - 로그인 ] 파트너십 상세 데이터 가져오기")
+    public ResponseEntity findDetailById(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser, @PathVariable long partnerRequestId) {
         PartnerRequestDetailResponse result = partnerRequestService.findDetailById(currentUser, partnerRequestId);
 
         return ResponseEntity.ok(result);
