@@ -446,16 +446,18 @@ public class InitData implements CommandLineRunner {
         String menuImage_10 = uploadFile(new File("src/main/resources/images/Rectangle 2400.png"));
         String menuImage_11 = uploadFile(new File("src/main/resources/images/Rectangle 2401.png"));
         String menuImage_12 = uploadFile(new File("src/main/resources/images/Rectangle 2402.png"));
+        String menuImage_13 = uploadFile(new File("src/main/resources/images/coke.jpg"));
+        String menuImage_14 = uploadFile(new File("src/main/resources/images/soju.jpg"));
         MenuContainer menuContainer_6 = MenuContainer.builder().classification("소스").priority(6).build();
         menuContainer_6.addMenu(Menu.builder().menuName("마블링소스").imageUrl(menuImage_9).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
         menuContainer_6.addMenu(Menu.builder().menuName("고블링소스").imageUrl(menuImage_10).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
         menuContainer_6.addMenu(Menu.builder().menuName("양념치킨소스").imageUrl(menuImage_11).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
         menuContainer_6.addMenu(Menu.builder().menuName("머쓱타드").imageUrl(menuImage_12).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
         MenuContainer menuContainer_7 = MenuContainer.builder().classification("음료/주류").priority(7).build();
-        menuContainer_7.addMenu(Menu.builder().menuName("콜라").description("콜라").price(1000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("사이다").price(1000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("소주").description("소주").price(5000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("맥주").description("맥주").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().menuName("맥주").price(5000).build());
 
         market_detail.addMenuContainer(menuContainer_1);
         market_detail.addMenuContainer(menuContainer_2);
@@ -580,7 +582,12 @@ public class InitData implements CommandLineRunner {
 
                 market.addMenuContainer(menuContainer_data);
             }
-
+            MenuContainer menuContainer = MenuContainer.builder().classification("음료/주류").priority(7).build();
+            menuContainer.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
+            menuContainer.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
+            menuContainer.addMenu(Menu.builder().menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+            menuContainer.addMenu(Menu.builder().menuName("맥주").price(5000).build());
+            market.addMenuContainer(menuContainer);
 
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             // Coupon
