@@ -129,4 +129,12 @@ public class MarketService {
         return marketRepository.findByMarketName(marketName)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
     }
+
+    public List<MarketCreateDateResponse> findMarketCreateDate(Pageable pageable) {
+        return marketRepository.findMarketCreateDate(pageable);
+    }
+
+    public long findMarketCount() {
+        return marketRepository.findMarketCount();
+    }
 }

@@ -6,6 +6,7 @@ import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.service.MarketService;
 import com.team.saver.market.store.util.RecommendAlgorithm;
+import com.team.saver.market.store.util.SortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,22 @@ public class MarketController {
     @Operation(summary = "모든 Market 정보 가져오기 [ distance 는 sort가 DISTANCE일때만 넣어주세요. ]  ( 69 )")
     public ResponseEntity findAllMarket(MarketSearchRequest request, Pageable pageable) {
         List<MarketResponse> result = marketService.findAllMarket(request, pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/create-date")
+    @Operation(summary = "Market 등록 일자를 가져오기 ( 107 )")
+    public ResponseEntity findMarketCreateDate(Pageable pageable) {
+        List<MarketCreateDateResponse> result = marketService.findMarketCreateDate(pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/counts")
+    @Operation(summary = "등록된 모든 Market 갯수 가져오기 ( 108 )")
+    public ResponseEntity findMarketCount() {
+        long result = marketService.findMarketCount();
 
         return ResponseEntity.ok(result);
     }
