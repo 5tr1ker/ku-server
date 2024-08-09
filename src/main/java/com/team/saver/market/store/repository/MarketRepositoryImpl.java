@@ -79,7 +79,7 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .where(conditional.and(market.isDelete.eq(false)))
+                .where(market.isDelete.eq(false).and(conditional))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
