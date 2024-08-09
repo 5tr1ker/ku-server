@@ -6,7 +6,9 @@ import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.store.dto.MarketCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,10 @@ public class Market {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<MenuContainer> menuContainers = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDate createDate;
 
     @Column(nullable = false)
     private double locationX;

@@ -8,6 +8,7 @@ import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.*;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
+import com.team.saver.market.store.util.SortType;
 import com.team.saver.s3.service.S3Service;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
@@ -32,6 +34,11 @@ public class MarketService {
     private final S3Service s3Service;
 
     public List<MarketResponse> findAllMarket(MarketSearchRequest request, Pageable pageable) {
+        if(request.getSort().equals(SortType.RECENTLY_UPLOAD)) {
+
+            return marketSortTool.sortMarket(request, market.createDate.after(LocalDate.now().minusDays(30)), pageable);
+        }
+
         return marketSortTool.sortMarket(request, null, pageable);
     }
 

@@ -24,8 +24,9 @@ public class Menu {
     @Column(nullable = false)
     private String menuName;
 
+    @Builder.Default
     @Column(nullable = false)
-    private String description;
+    private String description = "null";
 
     private String imageUrl;
 
