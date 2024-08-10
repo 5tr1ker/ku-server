@@ -10,8 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,8 +28,16 @@ public class ChatController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/v1/services/chat-rooms/all")
-    @Operation(summary = "모든 고객센터 문의 데이터방 가져오기 ( 106 )")
+    @PatchMapping("/v1/admin/services/chat-room/{chatRoomId}/read")
+    @Operation(summary = "[ 어드민-전용 ] 해당 채팅방 읽음 처리 ( 110 )")
+    public ResponseEntity readChatRoom(@PathVariable long chatRoomId) {
+        chatService.readChatRoom(chatRoomId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/v1/admin/services/chat-rooms/all")
+    @Operation(summary = "[ 어드민-전용 ] 모든 고객센터 문의 데이터방 가져오기 ( 106 )")
     public ResponseEntity findAllChatRoom(Pageable pageable) {
         List<ChatRoomResponse> result = chatService.findAllChatRoom(pageable);
 

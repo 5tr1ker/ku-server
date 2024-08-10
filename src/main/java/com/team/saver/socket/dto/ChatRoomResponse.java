@@ -18,6 +18,8 @@ public class ChatRoomResponse {
 
     private String profileImage;
 
+    private boolean isRead;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastChatting;
 

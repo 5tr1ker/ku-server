@@ -60,6 +60,7 @@ public class ChatRoomRepositoryImpl implements CustomChatRoomRepository {
                                 account.accountId,
                                 account.email,
                                 account.profileImage,
+                                chatRoom.isRead,
                                 chat.sendTime,
                                 chat.message
                         )
@@ -76,6 +77,14 @@ public class ChatRoomRepositoryImpl implements CustomChatRoomRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    @Override
+    public void updateIsRead(long chatRoomId, boolean isRead) {
+        jpaQueryFactory.update(chatRoom)
+                .set(chatRoom.isRead, false)
+                .where(chatRoom.chatRoomId.eq(chatRoomId))
+                .execute();
     }
 
 }
