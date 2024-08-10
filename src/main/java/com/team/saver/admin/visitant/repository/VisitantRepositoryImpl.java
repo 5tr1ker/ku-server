@@ -19,7 +19,7 @@ public class VisitantRepositoryImpl implements CustomVisitantRepository {
                         , visitant.count(), visitant.visitDate ))
                 .from(visitant)
                 .groupBy(visitant.visitDate)
-                .orderBy(visitant.visitDate.asc())
+                .orderBy(visitant.visitDate.desc())
                 .limit(14)
                 .fetch();
     }
