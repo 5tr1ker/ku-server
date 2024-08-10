@@ -22,11 +22,12 @@ public class ReportRepositoryImpl implements CustomReportRepository {
                                 ReportResponse.class,
                                 report.reportId,
                                 report.title,
-                                report.content,
+                                report.reportContent,
                                 report.createTime,
                                 report.isRead
                         )
                 ).from(report)
+                .orderBy(report.reportId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
