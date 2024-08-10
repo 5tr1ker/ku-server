@@ -43,6 +43,10 @@ import com.team.saver.promotion.entity.PromotionTag;
 import com.team.saver.promotion.entity.PromotionTagRelationShip;
 import com.team.saver.promotion.repository.PromotionRepository;
 import com.team.saver.promotion.repository.PromotionTagRepository;
+import com.team.saver.report.entity.Report;
+import com.team.saver.report.entity.ReportContent;
+import com.team.saver.report.repository.ReportRepository;
+import com.team.saver.report.repository.ReportRepositoryImpl;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
@@ -206,6 +210,7 @@ public class InitData implements CommandLineRunner {
     private final OrderService orderService;
     private final OrderRepository orderRepository;
     private final EventRepository eventRepository;
+    private final ReportRepository reportRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -904,6 +909,18 @@ public class InitData implements CommandLineRunner {
 
             eventRepository.save(eventEntity);
         }
+
+        // report
+        Report report_1 = Report.builder().title("욕설신고합니다.").reporter(account).content("욕설신고합니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_2 = Report.builder().title("비방글 신고").reporter(account).content("비방글 신고").reportContent(ReportContent.PARTNER_REQUEST).build();
+        Report report_3 = Report.builder().title("지속적인 욕설 신고하려구요").reporter(account).content("계정정지 부탁드립니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_4 = Report.builder().title("계정정지 부탁드립니다.").reporter(account).content("욕설신고합니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_5 = Report.builder().title("계속 같은 사람이 시비걸어요").reporter(account).content("계속 같은 사람이 시비걸어요").reportContent(ReportContent.REVIEW).build();
+        reportRepository.save(report_1);
+        reportRepository.save(report_2);
+        reportRepository.save(report_3);
+        reportRepository.save(report_4);
+        reportRepository.save(report_5);
 
         settingInitData();
     }
