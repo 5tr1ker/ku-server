@@ -16,4 +16,5 @@ public interface CustomChatRoomRepository {
 
     List<ChatRoomResponse> findAllChatRoom(Pageable pageable);
 
+
 }
