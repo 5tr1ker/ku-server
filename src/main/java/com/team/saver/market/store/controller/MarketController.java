@@ -94,6 +94,14 @@ public class MarketController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/v1/markets/{marketName}/create-date")
+    @Operation(summary = "Market 이름으로 마켓 등록 일자를 가져오기 ( 109 )")
+    public ResponseEntity findMarketCreateDateByMarketName(@PathVariable String marketName, Pageable pageable) {
+        List<MarketCreateDateResponse> result = marketService.findMarketCreateDateByMarketName(marketName, pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/v1/markets/counts")
     @Operation(summary = "등록된 모든 Market 갯수 가져오기 ( 108 )")
     public ResponseEntity findMarketCount() {

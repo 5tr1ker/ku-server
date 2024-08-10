@@ -137,4 +137,8 @@ public class MarketService {
     public long findMarketCount() {
         return marketRepository.findMarketCount();
     }
+
+    public List<MarketCreateDateResponse> findMarketCreateDateByMarketName(String marketName, Pageable pageable) {
+        return marketRepository.findMarketCreateDateByMarketName(marketName, pageable);
+    }
 }
