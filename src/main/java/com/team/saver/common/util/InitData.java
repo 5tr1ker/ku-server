@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.admin.visitant.domain.Visitant;
+import com.team.saver.admin.visitant.repository.VisitantRepository;
 import com.team.saver.announce.entity.Announce;
 import com.team.saver.announce.entity.AnnounceType;
 import com.team.saver.announce.repository.AnnounceRepository;
@@ -215,6 +217,7 @@ public class InitData implements CommandLineRunner {
     private final EventRepository eventRepository;
     private final ReportRepository reportRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final VisitantRepository visitantRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -984,6 +987,17 @@ public class InitData implements CommandLineRunner {
         chatRoomRepository.save(chatRoom_3);
         chatRoomRepository.save(chatRoom_4);
         chatRoomRepository.save(chatRoom_5);
+
+        // visitor
+        for(int i = 15; i >= 1; i--) {
+            int random_amount = random.nextInt(20);
+
+            for(int j = 0; j < random_amount; j++) {
+                Visitant visitant = Visitant.builder().userIp("0001").userAgent("userAgent").visitDate(LocalDate.now().minusDays(i)).build();
+
+                visitantRepository.save(visitant);
+            }
+        }
 
         settingInitData();
     }
