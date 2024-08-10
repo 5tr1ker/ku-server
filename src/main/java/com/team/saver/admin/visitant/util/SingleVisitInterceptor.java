@@ -22,7 +22,9 @@ public class SingleVisitInterceptor extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String userIp = request.getRemoteAddr();
+        HttpServletRequest req = ( HttpServletRequest ) request;
+        String userIp = getClientIP(req);
+
         String userAgent = ((HttpServletRequest) request).getHeader("User-Agent");
         String today = LocalDate.now().toString();
         String key = userIp + "_" + today;
@@ -35,4 +37,27 @@ public class SingleVisitInterceptor extends GenericFilterBean {
 
         chain.doFilter(request, response);
     }
+
+    public static String getClientIP(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+
+        if (ip == null) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null) {
+            ip = request.getRemoteAddr();
+        }
+
+        return ip;
+    }
+
 }
