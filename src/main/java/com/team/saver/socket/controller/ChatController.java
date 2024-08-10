@@ -29,7 +29,7 @@ public class ChatController {
     }
 
     @PatchMapping("/v1/admin/services/chat-room/{chatRoomId}/read")
-    @Operation(summary = "[ 어드민-전용 ] 해당 채팅방 읽음 처리 ( 110 )")
+    @Operation(summary = "[ 어드민-전용 ] 해당 채팅방 읽음 처리 ( 112 )")
     public ResponseEntity readChatRoom(@PathVariable long chatRoomId) {
         chatService.readChatRoom(chatRoomId);
 
