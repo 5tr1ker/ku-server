@@ -13,9 +13,11 @@ import com.team.saver.socket.entity.Chat;
 import com.team.saver.socket.entity.ChatRoom;
 import com.team.saver.socket.repository.ChatRepository;
 import com.team.saver.socket.repository.ChatRoomRepository;
+import com.team.saver.socket.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -37,7 +39,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatRoomRepository chatRoomRepository;
     private final AccountRepository accountRepository;
-    private final ChatRepository chatRepository;
+    private final ChatService chatService;
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -46,7 +48,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     @Transactional
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         ChatRequest chatMessage = objectMapper.readValue(message.getPayload(), ChatRequest.class);
 
         if(chatMessage.getMessageType() == MessageType.ENTER) {
@@ -89,8 +91,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 .build();
     }
 
-    private Chat sendChat(ChatRequest chatRequest, boolean isAdmin) throws IOException {
-        Chat chat = saveChatData(chatRequest, isAdmin);
+    public Chat sendChat(ChatRequest chatRequest, boolean isAdmin) throws IOException {
+        Chat chat = chatService.saveChatData(chatRequest, isAdmin);
 
         WebSocketSession session = CLIENTS.get(chatRequest.getAccountId());
 
@@ -100,26 +102,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
         return chat;
     }
 
-    private void sendChatToAdmin(Chat chat) throws IOException {
+    public void sendChatToAdmin(Chat chat) throws IOException {
         if(ADMINS != null) {
             sendChatMessage(chat, ADMINS);
         }
     }
 
-    private void sendChatMessage(Chat chat, WebSocketSession session) throws IOException {
+    public void sendChatMessage(Chat chat, WebSocketSession session) throws IOException {
         String body = objectMapper.writeValueAsString(ChatResponse.createEntity(chat));
         session.sendMessage(new TextMessage(body));
-    }
-
-    protected Chat saveChatData(ChatRequest chatRequest, boolean isAdmin) {
-        ChatRoom chatRoom = chatRoomRepository.findByAccountId(chatRequest.getAccountId())
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_CHATROOM));
-
-        Chat chat = Chat.createEntity(chatRequest.getMessage(), isAdmin);
-
-        chat.addFromChatRoom(chatRoom);
-
-        return chatRepository.save(chat);
     }
 
 }

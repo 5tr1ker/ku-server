@@ -4,9 +4,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.team.saver.market.store.entity.QMarket.market;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.review.entity.QReview.review;
+import static com.team.saver.market.store.entity.QMarket.market;
 
 @Getter
 @RequiredArgsConstructor

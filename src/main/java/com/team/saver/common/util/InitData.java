@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
+import com.team.saver.admin.visitant.domain.Visitant;
+import com.team.saver.admin.visitant.repository.VisitantRepository;
 import com.team.saver.announce.entity.Announce;
 import com.team.saver.announce.entity.AnnounceType;
 import com.team.saver.announce.repository.AnnounceRepository;
@@ -43,6 +45,10 @@ import com.team.saver.promotion.entity.PromotionTag;
 import com.team.saver.promotion.entity.PromotionTagRelationShip;
 import com.team.saver.promotion.repository.PromotionRepository;
 import com.team.saver.promotion.repository.PromotionTagRepository;
+import com.team.saver.report.entity.Report;
+import com.team.saver.report.entity.ReportContent;
+import com.team.saver.report.repository.ReportRepository;
+import com.team.saver.report.repository.ReportRepositoryImpl;
 import com.team.saver.search.autocomplete.service.AutoCompleteService;
 import com.team.saver.search.autocomplete.util.Trie;
 import com.team.saver.search.elasticsearch.market.document.MarketDocument;
@@ -50,6 +56,9 @@ import com.team.saver.search.elasticsearch.market.repository.MarketDocumentRepos
 import com.team.saver.search.popular.entity.SearchWord;
 import com.team.saver.search.popular.repository.SearchWordRepository;
 import com.team.saver.search.popular.util.SearchWordScheduler;
+import com.team.saver.socket.entity.Chat;
+import com.team.saver.socket.entity.ChatRoom;
+import com.team.saver.socket.repository.ChatRoomRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -206,6 +215,9 @@ public class InitData implements CommandLineRunner {
     private final OrderService orderService;
     private final OrderRepository orderRepository;
     private final EventRepository eventRepository;
+    private final ReportRepository reportRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final VisitantRepository visitantRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -310,6 +322,36 @@ public class InitData implements CommandLineRunner {
                 .build();
 
         accountRepository.save(account3);
+
+        File fileImage_account_4 = new File("src/main/resources/images/profile-4.png");
+        String image_url_account_4 = uploadFile(fileImage_account_4);
+        Account account4 = Account.builder()
+                .email("email4@naver.com")
+                .age("25")
+                .phone("01032313579")
+                .lastedLoginDate(LocalDate.now().minusDays(5))
+                .loginCount(1)
+                .profileImage(image_url_account_4)
+                .role(UserRole.STUDENT)
+                .oAuthType(OAuthType.NAVER)
+                .build();
+
+        accountRepository.save(account4);
+
+        File fileImage_account_5 = new File("src/main/resources/images/profile-5.png");
+        String image_url_account_5 = uploadFile(fileImage_account_5);
+        Account account5 = Account.builder()
+                .email("email5@naver.com")
+                .age("58")
+                .phone("0135161421")
+                .lastedLoginDate(LocalDate.now().minusDays(5))
+                .loginCount(1)
+                .profileImage(image_url_account_5)
+                .role(UserRole.STUDENT)
+                .oAuthType(OAuthType.NAVER)
+                .build();
+
+        accountRepository.save(account5);
 
         Market market_detail_admin = Market.builder()
                 .marketName("잎사이")
@@ -903,6 +945,58 @@ public class InitData implements CommandLineRunner {
                     .build();
 
             eventRepository.save(eventEntity);
+        }
+
+        // report
+        Report report_1 = Report.builder().title("욕설신고합니다.").reporter(account).content("욕설신고합니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_2 = Report.builder().title("비방글 신고").reporter(account).content("비방글 신고").reportContent(ReportContent.PARTNER_REQUEST).build();
+        Report report_3 = Report.builder().title("지속적인 욕설 신고하려구요").reporter(account).content("계정정지 부탁드립니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_4 = Report.builder().title("계정정지 부탁드립니다.").reporter(account).content("욕설신고합니다.").reportContent(ReportContent.REVIEW).build();
+        Report report_5 = Report.builder().title("계속 같은 사람이 시비걸어요").reporter(account).content("계속 같은 사람이 시비걸어요").reportContent(ReportContent.REVIEW).build();
+        reportRepository.save(report_1);
+        reportRepository.save(report_2);
+        reportRepository.save(report_3);
+        reportRepository.save(report_4);
+        reportRepository.save(report_5);
+
+
+        // Chat
+        ChatRoom chatRoom_1 = ChatRoom.builder().account(account).build();
+        chatRoom_1.addChat(Chat.createEntity("message1", false));
+        chatRoom_1.addChat(Chat.createEntity("message2", false));
+        chatRoom_1.addChat(Chat.createEntity("궁금한게 있어오!ㅡ!", false));
+        ChatRoom chatRoom_2 = ChatRoom.builder().account(account2).build();
+        chatRoom_2.addChat(Chat.createEntity("message1", false));
+        chatRoom_2.addChat(Chat.createEntity("message2", false));
+        chatRoom_2.addChat(Chat.createEntity("이럴 때는 어떻게 해야하나요?", false));
+        ChatRoom chatRoom_3 = ChatRoom.builder().account(account3).build();
+        chatRoom_3.addChat(Chat.createEntity("message1", false));
+        chatRoom_3.addChat(Chat.createEntity("message2", false));
+        chatRoom_3.addChat(Chat.createEntity("이벤트 관련 오류가 있어서 문의드립니다.", false));
+        ChatRoom chatRoom_4 = ChatRoom.builder().account(account4).build();
+        chatRoom_4.addChat(Chat.createEntity("message1", false));
+        chatRoom_4.addChat(Chat.createEntity("message2", false));
+        chatRoom_4.addChat(Chat.createEntity("업체 등록은 언제쯤 반영되나요?", false));
+        ChatRoom chatRoom_5 = ChatRoom.builder().account(account5).build();
+        chatRoom_5.addChat(Chat.createEntity("message1", false));
+        chatRoom_5.addChat(Chat.createEntity("message2", false));
+        chatRoom_5.addChat(Chat.createEntity("포인트는 어떻게 사용할 수 있는 건가요?", false));
+
+        chatRoomRepository.save(chatRoom_1);
+        chatRoomRepository.save(chatRoom_2);
+        chatRoomRepository.save(chatRoom_3);
+        chatRoomRepository.save(chatRoom_4);
+        chatRoomRepository.save(chatRoom_5);
+
+        // visitor
+        for(int i = 15; i >= 1; i--) {
+            int random_amount = random.nextInt(20);
+
+            for(int j = 0; j < random_amount; j++) {
+                Visitant visitant = Visitant.builder().userIp("0001").userAgent("userAgent").visitDate(LocalDate.now().minusDays(i)).build();
+
+                visitantRepository.save(visitant);
+            }
         }
 
         settingInitData();

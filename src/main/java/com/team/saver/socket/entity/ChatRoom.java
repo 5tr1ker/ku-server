@@ -26,7 +26,25 @@ public class ChatRoom {
     private Account account;
 
     @Builder.Default
-    @OneToMany(mappedBy = "chatRoom", cascade = { CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(mappedBy = "chatRoom", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
     private List<Chat> chat = new ArrayList<>();
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isRead = false;
+
+    public void addChat(Chat chat) {
+        this.chat.add(chat);
+
+        chat.setChatRoom(this);
+    }
+
+    public void readChat() {
+        this.isRead = true;
+    }
+
+    public void newChat() {
+        this.isRead = false;
+    }
 
 }

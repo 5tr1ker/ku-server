@@ -16,4 +16,6 @@ public interface CustomChatRoomRepository {
 
     List<ChatRoomResponse> findAllChatRoom(Pageable pageable);
 
+    void updateIsRead(long chatRoomId, boolean isRead);
+
 }

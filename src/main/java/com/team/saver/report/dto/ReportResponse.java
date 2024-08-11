@@ -1,6 +1,7 @@
-package com.team.saver.socket.dto;
+package com.team.saver.report.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.team.saver.report.entity.ReportContent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,21 +9,17 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class ChatRoomResponse {
+public class ReportResponse {
 
-    private long chatRoomId;
+    private long reportId;
 
-    private long accountId;
+    private String title;
 
-    private String email;
-
-    private String profileImage;
-
-    private boolean isRead;
+    private ReportContent reportContent;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime lastChatting;
+    private LocalDateTime createTime;
 
-    private String lastMessage;
+    private boolean isRead;
 
 }

@@ -1,5 +1,6 @@
 package com.team.saver.security.config;
 
+import com.team.saver.admin.visitant.util.SingleVisitInterceptor;
 import com.team.saver.common.exception.FilterExceptionHandler;
 import com.team.saver.security.jwt.support.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final FilterExceptionHandler filterExceptionHandler;
+    private final SingleVisitInterceptor singleVisitInterceptor;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,9 +37,12 @@ public class SecurityConfig {
 //                .requestMatchers("/**").hasRole("NORMAL");
                 .requestMatchers("/**").permitAll();
 
+        http.addFilterBefore(singleVisitInterceptor, UsernamePasswordAuthenticationFilter.class);
+
         http.addFilterBefore(filterExceptionHandler, UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }

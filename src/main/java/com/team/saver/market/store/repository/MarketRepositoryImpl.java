@@ -235,4 +235,46 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
         return Optional.ofNullable(result);
     }
 
+    @Override
+    public List<MarketCreateDateResponse> findMarketCreateDate(Pageable pageable) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(MarketCreateDateResponse.class,
+                                market.marketId,
+                                market.marketName,
+                                market.marketImage,
+                                market.createDate
+                        )
+                ).from(market)
+                .orderBy(market.marketId.desc())
+                .where(market.isDelete.eq(false))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public long findMarketCount() {
+        return jpaQueryFactory.select(market.count())
+                .from(market)
+                .where(market.isDelete.eq(false))
+                .fetchOne();
+    }
+
+    @Override
+    public List<MarketCreateDateResponse> findMarketCreateDateByMarketName(String marketName, Pageable pageable) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(MarketCreateDateResponse.class,
+                                market.marketId,
+                                market.marketName,
+                                market.marketImage,
+                                market.createDate
+                        )
+                ).from(market)
+                .orderBy(market.marketId.desc())
+                .where(market.marketName.contains(marketName).and(market.isDelete.eq(false)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
 }
