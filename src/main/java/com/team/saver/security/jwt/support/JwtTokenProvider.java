@@ -79,6 +79,12 @@ public class JwtTokenProvider {
         return token;
     }
 
+    public Token login(String userPk, UserRole roles) {
+        Token token = createJwtToken(userPk, roles);
+
+        return token;
+    }
+
     public static String getTokenFromCookie(ServletRequest request) {
         Cookie cookies[] = ((HttpServletRequest) request).getCookies();
 

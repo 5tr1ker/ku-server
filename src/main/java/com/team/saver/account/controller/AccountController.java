@@ -39,6 +39,16 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/v1/accounts/sign-in/not-cookie")
+    @Operation(summary = "테스트를 위한 로그인 API ( 쿠키는 안보냄 ) ( -1 ) ")
+    public ResponseEntity signInNotCookie(@RequestParam String email) {
+        Account account = accountRepository.findByEmail(email).get();
+        authService.updateLoginCount(account);
+        Token result = jwtTokenProvider.login(account.getEmail(), account.getRole());
+
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/v1/accounts/logout")
     @Operation(summary = "로그아웃 API ( 1 ) ")
     public ResponseEntity logout(HttpServletResponse response) {

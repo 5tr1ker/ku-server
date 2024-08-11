@@ -48,7 +48,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     @Transactional
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         ChatRequest chatMessage = objectMapper.readValue(message.getPayload(), ChatRequest.class);
 
         if(chatMessage.getMessageType() == MessageType.ENTER) {
