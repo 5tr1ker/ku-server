@@ -23,7 +23,7 @@ public class CouponController {
     private final CouponService couponService;
 
     @GetMapping("/v1/markets/{marketId}/coupons")
-    @Operation(summary = "[ 비-로그인 ] 해당 마켓에 다운로드 가능한 쿠폰 모두 조회")
+    @Operation(summary = "[ 비-로그인 ] 해당 마켓에 다운로드 가능한 쿠폰 모두 조회 ( 115 )")
     public ResponseEntity findCouponByMarketId(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser, @PathVariable long marketId) {
         List<CouponResponse> result = couponService.findCouponByMarketId(currentUser, marketId);
 
@@ -31,7 +31,7 @@ public class CouponController {
     }
 
     @GetMapping("/v1/markets/coupons/downloads")
-    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 조회")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 조회 ( 116 )")
     public ResponseEntity findDownloadCouponByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         List<DownloadCouponResponse> result = couponService.findDownloadCouponByUserEmail(currentUser);
 
@@ -39,7 +39,7 @@ public class CouponController {
     }
 
     @GetMapping("/v1/markets/coupons/downloads/counts")
-    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 갯수 조회")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰 갯수 조회 ( 117 )")
     public ResponseEntity findDownloadCouponCountByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         long result = couponService.findDownloadCouponCountByUserEmail(currentUser);
 
@@ -47,7 +47,7 @@ public class CouponController {
     }
 
     @GetMapping("/v1/markets/{marketId}/coupons/downloads/can-use")
-    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰에서 해당 주문에 사용할 수 있는 쿠폰 조회")
+    @Operation(summary = "[ 로그인 ] 다운로드한 쿠폰에서 해당 주문에 사용할 수 있는 쿠폰 조회 ( 118 )")
     public ResponseEntity findCouponThatCanBeUsedFromDownloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                                     @PathVariable long marketId,
                                                                     @RequestParam long orderPrice) {
@@ -57,7 +57,7 @@ public class CouponController {
     }
 
     @PostMapping("/v1/markets/coupons/{couponId}/downloads")
-    @Operation(summary = "[ 로그인 ] 쿠폰 다운로드")
+    @Operation(summary = "[ 로그인 ] 쿠폰 다운로드 ( 119 )")
     public ResponseEntity downloadCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                          @PathVariable long couponId) {
 
@@ -67,7 +67,7 @@ public class CouponController {
     }
 
     @PostMapping("/v1/markets/{marketId}/coupons/downloads/all")
-    @Operation(summary = "[ 로그인 ] 모든 쿠폰 다운로드")
+    @Operation(summary = "[ 로그인 ] 모든 쿠폰 다운로드 ( 120 )")
     public ResponseEntity downloadAllCoupon(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                             @PathVariable long marketId) {
         couponService.downloadAllCoupon(currentUser, marketId);
