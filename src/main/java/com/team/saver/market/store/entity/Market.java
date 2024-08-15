@@ -40,7 +40,7 @@ public class Market {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "market", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<MenuContainer> menuContainers = new ArrayList<>();
 

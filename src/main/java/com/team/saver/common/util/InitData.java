@@ -270,6 +270,11 @@ public class InitData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        if(accountRepository.findAll().size() != 0) {
+
+            return;
+        }
+
         deleteAllObjectsInBucket();
         marketDocumentRepository.deleteAll();
 
