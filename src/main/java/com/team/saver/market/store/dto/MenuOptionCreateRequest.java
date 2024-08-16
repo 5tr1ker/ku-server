@@ -13,4 +13,6 @@ public class MenuOptionCreateRequest {
 
     private boolean adultMenu;
 
+    private boolean isDefaultOption;
+
 }

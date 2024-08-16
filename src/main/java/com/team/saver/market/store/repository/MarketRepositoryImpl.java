@@ -176,7 +176,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                 menu.price,
                                 menu.description,
                                 menu.imageUrl,
-                                menu.menuName
+                                menu.menuName,
+                                menu.isAdultMenu
                         ))
                 )));
     }
@@ -199,7 +200,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                                 menuOption.menuOptionId,
                                                 menuOption.description,
                                                 menuOption.optionPrice,
-                                                menuOption.isAdultMenu
+                                                menuOption.isAdultMenu,
+                                                menuOption.isDefaultOption
                                         ))
                                 ))
                 );

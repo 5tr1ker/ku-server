@@ -440,7 +440,8 @@ public class InitData implements CommandLineRunner {
         MenuOptionContainer menuOptionContainer1_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션").build();
         MenuOptionContainer menuOptionContainer1_2 = MenuOptionContainer.builder().priority(2).isMultipleSelection(true).classification("소스").build();
         MenuOptionContainer menuOptionContainer1_3 = MenuOptionContainer.builder().priority(3).isMultipleSelection(true).classification("음료").build();
-        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("뼈(기본)").optionPrice(0).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().isDefaultOption(true).description("뼈(기본)").optionPrice(0).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("방사능 함유 닭").optionPrice(-5000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
@@ -503,8 +504,8 @@ public class InitData implements CommandLineRunner {
         MenuContainer menuContainer_7 = MenuContainer.builder().classification("음료/주류").priority(7).build();
         menuContainer_7.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
         menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("맥주").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().isAdultMenu(true).menuName("맥주").price(5000).build());
 
         market_detail.addMenuContainer(menuContainer_1);
         market_detail.addMenuContainer(menuContainer_2);
@@ -627,18 +628,21 @@ public class InitData implements CommandLineRunner {
                     Menu menu = Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build();
 
                     MenuOptionContainer menuOptionContainer_data_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션_1").build();
-                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().isDefaultOption(true).description("옵션 1_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_1_1(-1000원)").optionPrice(-1000).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_1_1(-2000원)").optionPrice(-2000).build());
                     menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_2(+1000원)").optionPrice(1000).build());
                     menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_3(+2000원)").optionPrice(2000).build());
-                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_4(+3000원)").optionPrice(3000).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().isAdultMenu(true).description("옵션 1_4(+3000원)").optionPrice(3000).build());
 
                     MenuOptionContainer menuOptionContainer_data_2 = MenuOptionContainer.builder().priority(1).isMultipleSelection(true).classification("옵션_2").build();
-                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_1").optionPrice(0).build());
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_1_1(-3000원)").optionPrice(-3000).build());
                     menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_2(+4000원)").optionPrice(4000).build());
-                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_3(+5000원)").optionPrice(5000).build());
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().isAdultMenu(true).description("옵션 2_3(+5000원)").optionPrice(5000).build());
 
                     MenuOptionContainer menuOptionContainer_data_3 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션_3").build();
-                    menuOptionContainer_data_3.addMenuOption(MenuOption.builder().description("옵션 3_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_3.addMenuOption(MenuOption.builder().isDefaultOption(true).description("옵션 3_1(기본)").optionPrice(0).build());
                     menuOptionContainer_data_3.addMenuOption(MenuOption.builder().description("옵션 3_2(+6000원)").optionPrice(6000).build());
 
                     menu.addMenuOptionContainer(menuOptionContainer_data_1);
@@ -652,8 +656,8 @@ public class InitData implements CommandLineRunner {
             MenuContainer menuContainer = MenuContainer.builder().classification("음료/주류").priority(7).build();
             menuContainer.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
             menuContainer.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
-            menuContainer.addMenu(Menu.builder().menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
-            menuContainer.addMenu(Menu.builder().menuName("맥주").price(5000).build());
+            menuContainer.addMenu(Menu.builder().isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+            menuContainer.addMenu(Menu.builder().isAdultMenu(true).menuName("맥주").price(5000).build());
             market.addMenuContainer(menuContainer);
 
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);

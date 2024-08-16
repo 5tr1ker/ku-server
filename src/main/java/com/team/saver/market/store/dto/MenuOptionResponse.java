@@ -15,4 +15,6 @@ public class MenuOptionResponse {
 
     private boolean isAdultMenu;
 
+    private boolean isDefaultOption;
+
 }

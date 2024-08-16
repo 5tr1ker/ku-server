@@ -18,4 +18,6 @@ public class MenuResponse {
 
     private String menuName;
 
+    private boolean isAdultMenu;
+
 }
