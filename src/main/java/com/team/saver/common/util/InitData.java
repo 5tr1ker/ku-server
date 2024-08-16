@@ -624,7 +624,27 @@ public class InitData implements CommandLineRunner {
 
                 MenuContainer menuContainer_data = MenuContainer.builder().classification(String.format("%d 메뉴", i + 1)).priority(2).build();
                 for (int j = 0; j < contentRandom; j++) {
-                    menuContainer_data.addMenu(Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build());
+                    Menu menu = Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build();
+
+                    MenuOptionContainer menuOptionContainer_data_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션_1").build();
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_2(+1000원)").optionPrice(1000).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_3(+2000원)").optionPrice(2000).build());
+                    menuOptionContainer_data_1.addMenuOption(MenuOption.builder().description("옵션 1_4(+3000원)").optionPrice(3000).build());
+
+                    MenuOptionContainer menuOptionContainer_data_2 = MenuOptionContainer.builder().priority(1).isMultipleSelection(true).classification("옵션_2").build();
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_2(+4000원)").optionPrice(4000).build());
+                    menuOptionContainer_data_2.addMenuOption(MenuOption.builder().description("옵션 2_3(+5000원)").optionPrice(5000).build());
+
+                    MenuOptionContainer menuOptionContainer_data_3 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션_3").build();
+                    menuOptionContainer_data_3.addMenuOption(MenuOption.builder().description("옵션 3_1(기본)").optionPrice(0).build());
+                    menuOptionContainer_data_3.addMenuOption(MenuOption.builder().description("옵션 3_2(+6000원)").optionPrice(6000).build());
+
+                    menu.addMenuOptionContainer(menuOptionContainer_data_1);
+                    menu.addMenuOptionContainer(menuOptionContainer_data_2);
+                    menu.addMenuOptionContainer(menuOptionContainer_data_3);
+                    menuContainer_data.addMenu(menu);
                 }
 
                 market.addMenuContainer(menuContainer_data);
