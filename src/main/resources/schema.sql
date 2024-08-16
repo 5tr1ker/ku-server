@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS menu_option_container (
 CREATE TABLE IF NOT EXISTS menu_option (
                              menu_option_id BIGINT NOT NULL AUTO_INCREMENT,
                              description VARCHAR(255) NOT NULL,
+                             is_default_option BIT NOT NULL,
                              is_adult_menu BIT NOT NULL,
                              option_price INTEGER NOT NULL,
                              menu_option_container_menu_option_container_id BIGINT NOT NULL,
@@ -78,6 +79,7 @@ CREATE TABLE IF NOT EXISTS menu (
                       image_url VARCHAR(255),
                       menu_name VARCHAR(255) NOT NULL,
                       price INTEGER NOT NULL,
+                      is_adult_menu BIT NOT NULL,
                       menu_container_menu_container_id BIGINT NOT NULL,
                       PRIMARY KEY (menu_id),
                       foreign key (menu_container_menu_container_id) references menu_container (menu_container_id),

@@ -23,6 +23,9 @@ public class MenuOption {
     @Column(nullable = false)
     private boolean isAdultMenu;
 
+    @Column(nullable = false)
+    private boolean isDefaultOption;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -33,6 +36,7 @@ public class MenuOption {
                 .description(request.getDescription())
                 .optionPrice(request.getOptionPrice())
                 .isAdultMenu(request.isAdultMenu())
+                .isDefaultOption(request.isDefaultOption())
                 .build();
     }
 

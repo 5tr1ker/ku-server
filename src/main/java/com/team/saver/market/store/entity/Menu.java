@@ -30,6 +30,9 @@ public class Menu {
 
     private String imageUrl;
 
+    @Column(nullable = false)
+    private boolean isAdultMenu;
+
     @Builder.Default
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, mappedBy = "menu")
     private List<MenuOptionContainer> menuOptionContainers = new ArrayList<>();
@@ -50,6 +53,7 @@ public class Menu {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .menuName(request.getMenuName())
+                .isAdultMenu(request.isAdultMenu())
                 .imageUrl(imageUrl)
                 .build();
     }

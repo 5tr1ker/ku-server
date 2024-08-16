@@ -15,6 +15,8 @@ public class MenuCreateData {
 
     private int price;
 
+    private boolean isAdultMenu;
+
     private List<MenuOptionContainerCreateRequest> optionContainers;
 
 }
