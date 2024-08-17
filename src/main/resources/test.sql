@@ -11,22 +11,23 @@ END WHILE;
 END$$
 
 -- basket, basket_menu, basket_menu_option
-CREATE PROCEDURE createBasketTestData(basket_index int, account_count int, basket_menu_index int, basket_option_index int)
+CREATE PROCEDURE createBasketTestData()
 BEGIN
-    DECLARE i INT DEFAULT 1; -- ⓑ i변수 선언, defalt값으로 1설정
+    DECLARE i INT DEFAULT 1;
     DECLARE y INT DEFAULT 1;
     DECLARE update_index INT DEFAULT 1;
     set @menu_count = (select count(*) from menu) - 1;
     set @market_count = (select count(*) from market) - 1;
     set @menu_option_count = (select count(*) from menu_option) - 1;
+    set @basket_index = (select max(basket_id) from basket);
 
-    WHILE (i <= 40000) DO
-		INSERT INTO `basket`(update_time, account_account_id, market_market_id) VALUES ('2024-08-16 16:18:46.922513', ( i % account_count ) + 1, i % @market_count );
+    WHILE (i <= 100000) DO
+		INSERT INTO `basket`(update_time, account_account_id, market_market_id) VALUES ('2024-08-16 16:18:46.922513', ( i % 5 ) + 1, i % 50 + 1 );
         set y = 0;
 
         while (y <= 10) do
-			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (FLOOR(RAND()*10), i , i % @menu_count);
-INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (i + basket_menu_index , @menu_option_count);
+			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (8 , @basket_index , i % @menu_count + 1);
+INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (i , (i + y) % @menu_option_count + 1);
 
 set y = y + 1;
             set update_index = update_index + 1;
@@ -54,23 +55,95 @@ SET i = i + 1;
 END WHILE;
 END$$
 
+# Partner_request
+CREATE PROCEDURE createPartnerRequestTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE y INT DEFAULT 1;
+
+    WHILE (i <= 60000) DO
+		INSERT INTO `partner_request` (`description`, `detail_address`, `locationx`, `locationy`, `market_address`, `phone_number`, `request_market_name`, `title`, `write_time`, `request_user_account_id`) VALUES ('description', 'addrtess', '10.145351', '36.4131235', 'market_address', 'phone_number', 'market_name', 'title', '2000-03-02 00:00:00', 1);
+        set y = 0;
+        set @partner_request_index = (select max(partner_request_id) from partner_request) - 1;
+
+        while (y <= 20) DO
+			INSERT INTO `partner_comment` (`message`, `write_time`, `partner_request_partner_request_id`, `writer_account_id`) VALUES ('message', '2000-03-02 00:00:00', (i + y) % @partner_request_index + 1 , 2);
+INSERT INTO `partner_recommender` (`account_account_id`, `partner_request_partner_request_id`) VALUES (1, (i + y) % @partner_request_index + 1);
+
+set y = y + 1;
+END while;
+
+        SET i = i + 1;
+END WHILE;
+END$$
+
+# review, review_image , review_recommender
+CREATE PROCEDURE createReviewTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE y INT DEFAULT 1;
+
+    WHILE (i <= 100000) DO
+		INSERT INTO `review` (`content`, `is_delete`, `score`, `write_time`, `market_market_id`, `reviewer_account_id`) VALUES ('content', 0,'5', '2000-03-02 00:00:00', i % 17 + 1, i % 5 + 1);
+        set y = 0;
+
+        while (y <= 5) DO
+			INSERT INTO `review_image` (`image_url`, `is_delete`, `review_review_id`) VALUES ('image_url', 0, i);
+INSERT INTO `review_recommender` (`account_account_id`, `review_review_id`) VALUES (i % 5 + 1, i);
+
+set y = y + 1;
+END while;
+
+        SET i = i + 1;
+END WHILE;
+END$$
+
+# order, order_menu, order_detail, order_option
+CREATE PROCEDURE createOrderTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE y INT DEFAULT 1;
+    set @order_detail_index = (select max(order_detail_id) from order_detail);
+    set @order_index = (select max(order_id) from order_tb);
+
+    WHILE (i <= 100000) DO
+		INSERT INTO `order_detail` (`discount_amount`, `final_price`, `order_date_time`, `order_number`, `order_price`, `payment_type`) VALUES ('0', '90000', '2000-03-02 00:00:00', 'order_number', '90000', 'KAKAO_PAY');
+INSERT INTO `order_tb` (`account_account_id`, `market_market_id`, `order_detail_order_detail_id`) VALUES (i % 5 + 1, i, @order_detail_index + 1);
+set y = 0;
+
+        set @order_menu_index = (select max(order_menu_id) from order_menu);
+        while (y <= 5) DO
+			INSERT INTO `order_menu` (`amount`, `menu_name`, `price`, `order_order_id`) VALUES ('1', 'menu_name', '990000', @order_index + 1);
+INSERT INTO `order_option` (`option_description`, `option_price`, `order_menu_order_menu_id`) VALUES ('option_description', '5000', @order_menu_index + y);
+
+set y = y + 1;
+END while;
+
+        SET i = i + 1;
+END WHILE;
+END$$
+
 DELIMITER ;
 
-drop PROCEDURE createCouponTestData;
+drop PROCEDURE createBasketTestData;
 
 # market 테스트 데이터 생성
 CALL createMarketTestData((select max(market.market_id) from market));
 
 # basket 테스트 데이터 생성
-call createBasketTestData((select max(basket_id) from basket) ,
-	(select count(*) from account),
-    (select max(basket_menu_id) from basket_menu),
-    (select max(basket_menu_option_id) from basket_menu_option));
+call createBasketTestData();
 
 # Coupon 테스트 데이터 생성
 call createCouponTestData();
 
-select count(*) from download_coupon;
+# Partner_request 테스트 데이터 생성
+call createPartnerRequestTestData();
 
-# Review , Partner_request , Order , Coupon , Basket
+# Review 테스트 데이터 생성
+call createReviewTestData();
 
+# Order 테스트 데이터 생성
+call createOrderTestData();
+
+start transaction;
+commit;
