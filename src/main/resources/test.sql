@@ -201,9 +201,97 @@ INSERT INTO word_table_3 (word) VALUES
                                     ('가게'), ('은행'), ('우체국');
 END$$
 
-DELIMITER ;
+CREATE PROCEDURE createAnnounceTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE (i <= 100000) DO
+    INSERT INTO `saver`.`announce` (`announce_type`, `description`, `is_delete`, `is_important`, `title`, `write_time`) VALUES ('1', 'description', 0, 1, 'title', '2000-03-02 00:00:00');
+        SET i = i + 1;
+END WHILE;
+END$$
 
-drop PROCEDURE createWordTestData;
+CREATE PROCEDURE createEventTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE (i <= 50000) DO
+    INSERT INTO `saver`.`event` (`description`, `event_end_date`, `event_start_date`, `image_url`, `is_delete`, `title`) VALUES ('description', '2000-03-02', '2006-03-02', 'image_url', 0, 'title');
+        SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createFavoriteTestData(var1 int, var2 int)
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE (i <= 50000) DO
+    INSERT INTO `saver`.`favorite` (`account_account_id`, `market_market_id`) VALUES (var1, var2 + i);
+        SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createMenuTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE j INT DEFAULT 1;
+    DECLARE y INT DEFAULT 1;
+    DECLARE z INT DEFAULT 1;
+
+    set @menu_option_container_index = (select max(menu_option_container_id) from menu_option_container);
+
+    WHILE (i <= 10000) DO
+		INSERT INTO `saver`.`menu_container` (`classification`, `priority`, `market_market_id`) VALUES ('classification', '1', i + 17);
+
+		set @menu_container_index = (select max(menu_container_id) from menu_container);
+		set j = 1;
+		while (j <= 8) do
+			INSERT INTO `saver`.`menu` (`description`, `image_url`, `menu_name`, `price`, `is_adult_menu`, `menu_container_menu_container_id`) VALUES ('description', 'image_url', 'menu_name', '1000', 0, @menu_container_index);
+
+			set @menu_index = (select max(menu_id) from menu);
+			set y = 1;
+			while (y <= 5) do
+				INSERT INTO `saver`.`menu_option_container` (`classification`, `is_multiple_selection`, `priority`, `menu_menu_id`) VALUES ('classification', 0, 1, @menu_index);
+
+				set @menu_option_container_index = (select max(menu_option_container_id) from menu_option_container);
+				set z = 1;
+				while (z <= 3) do
+					INSERT INTO `saver`.`menu_option` (`description`, `is_default_option`, `is_adult_menu`, `option_price`, `menu_option_container_menu_option_container_id`) VALUES ('description', 0, 0, '1000', @menu_option_container_index);
+
+					set z = z + 1;
+end while;
+
+			set y = y + 1;
+end while;
+
+		set j = j + 1;
+end while;
+
+    SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createPromotionTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE j INT DEFAULT 1;
+
+    WHILE (i <= 50000) DO
+		INSERT INTO `saver`.`promotion` (`image_url`, `introduce`, `promotion_location`) VALUES ('image_url', 'introduce', 'MAIN');
+		set @promotion_index = (select max(promotion_id) from promotion);
+
+        set j = 1;
+        while (j <= 4) do
+
+            INSERT INTO `saver`.`promotion_tag` (`tag_content`) VALUES (concat('tag', i + j));
+            set @tag_index = (select max(promotion_tag_id) from promotion_tag);
+INSERT INTO `saver`.`promotion_tag_relation_ship` (`promotion_promotion_id`, `promotion_tag_promotion_tag_id`) VALUES (@promotion_index , @tag_index);
+
+set j = j + 1;
+end while;
+		SET i = i + 1;
+END WHILE;
+END$$
+
+
+DELIMITER ;
 
 # account 테스트 데이터 생성
 call createAccountTestData();
@@ -229,5 +317,21 @@ call createOrderTestData();
 # Search_word, auto_complete 테스트 데이터
 call createWordTestData();
 
+# 공지사항 테스트 데이터
+call createAnnounceTestData();
+
+# 이벤트 테스트 데이터
+call createEventTestData();
+
+# 찜 테스트 데이터
+call createFavoriteTestData(5 , 0);
+
+# 메뉴 데이터 추가 ( 주의 최소 100만개의 데이터가 생성됩니다. )
+call createMenuTestData();
+
+# 프로모션 테스트 데이터 추가
+call createPromotionTestData();
+
+-- drop PROCEDURE createPromotionTestData;
 start transaction;
 commit;
