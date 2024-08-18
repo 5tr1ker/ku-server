@@ -441,7 +441,7 @@ public class InitData implements CommandLineRunner {
         MenuOptionContainer menuOptionContainer1_2 = MenuOptionContainer.builder().priority(2).isMultipleSelection(true).classification("소스").build();
         MenuOptionContainer menuOptionContainer1_3 = MenuOptionContainer.builder().priority(3).isMultipleSelection(true).classification("음료").build();
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().isDefaultOption(true).description("뼈(기본)").optionPrice(0).build());
-        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("방사능 함유 닭").optionPrice(-5000).build());
+        menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("방사능 함유 닭 (-5000원)").optionPrice(-5000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("순살만(+2000원)").optionPrice(2000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("다리만(+3000원)").optionPrice(3000).build());
         menuOptionContainer1_1.addMenuOption(MenuOption.builder().description("날개만(+2000원)").optionPrice(2000).build());
