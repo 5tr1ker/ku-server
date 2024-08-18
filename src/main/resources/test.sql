@@ -1,6 +1,16 @@
 DELIMITER $$
 
+
 -- market
+CREATE PROCEDURE createAccountTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE (i <= 120000) DO
+    INSERT INTO `saver`.`account` (`age`, `auto_login`, `auto_update`, `email`, `is_delete`, `join_date`, `lasted_login_date`, `login_count`, `o_auth_type`, `phone`, `profile_image`, `push_alert`, `role`, `use_point`) VALUES ('30', 0, 1, concat('email' , i , '@naver.com'), 0, '2000-03-02', '2000-03-02', '1', 'NAVER', '01012341234', 'profile_image', 1, 'STUDENT', '0');
+        SET i = i + 1;
+END WHILE;
+END$$
+
 CREATE PROCEDURE createMarketTestData(var1 int)
 BEGIN
     DECLARE i INT DEFAULT var1 + 1;
@@ -123,9 +133,80 @@ END while;
 END WHILE;
 END$$
 
+# Search_word, auto_complete 테스트 데이터
+CREATE PROCEDURE createWordTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE y INT DEFAULT 1;
+    DECLARE z INT DEFAULT 1;
+    set @first_word_index = (select count(*) from word_table_1);
+    set @second_word_index = (select count(*) from word_table_2);
+    set @third_word_index = (select count(*) from word_table_3);
+
+    WHILE (i <= @first_word_index) DO
+		set y = 1;
+		WHILE (y <= @second_word_index) DO
+			set z = 1;
+			WHILE (z <= @third_word_index) DO
+				set @word_1 = (select word from word_table_1 where id = i);
+                set @word_2 = (select word from word_table_2 where id = y);
+                set @word_3 = (select word from word_table_3 where id = z);
+
+INSERT INTO `search_word` (`day_search`, `previous_ranking`, `recently_search`, `search_word`, `total_search`, `week_search`) VALUES ('1', '999', '1', concat(@word_1, @word_2, @word_3), '1', '1');
+INSERT INTO `auto_complete` (`frequency`, `word`) VALUES ('1', concat(@word_1, @word_2, @word_3));
+set z = z + 1;
+END WHILE;
+            set y = y + 1;
+END WHILE;
+        SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createWord()
+BEGIN
+CREATE TABLE if not exists word_table_1 (
+                                            id INT AUTO_INCREMENT PRIMARY KEY,
+                                            word VARCHAR(255)
+    );
+INSERT INTO word_table_1 (word) VALUES
+                                    ('책상'), ('건전지'), ('마스크'), ('온도계'), ('습도계'), ('이어폰'),
+                                    ('컴퓨터'), ('모니터'), ('키보드'), ('마우스'), ('부채'), ('가위'),
+                                    ('펜'), ('볼펜'), ('휴지'), ('책'), ('리모컨'), ('손톱깎이'),
+                                    ('집게'), ('담배'), ('전자담배'), ('연초'), ('액상'),
+                                    ('리틀보이'), ('폭탄'), ('A1'), ('A2'), ('A3'), ('선'),
+                                    ('거치대');
+
+
+CREATE TABLE if not exists word_table_2 (
+                                            id INT AUTO_INCREMENT PRIMARY KEY,
+                                            word VARCHAR(255)
+    );
+INSERT INTO word_table_2 (word) VALUES
+                                    ('바람'), ('호수'), ('도시'), ('별빛'), ('우산'), ('나비'), ('손목시계'), ('모자'), ('도서관'), ('초콜릿'),
+                                    ('고양이'), ('나무'), ('바다'), ('책'), ('꽃'), ('구름'), ('산'), ('강아지'), ('별'), ('하늘'),
+                                    ('강'), ('나무'), ('꽃'), ('비'), ('시계'), ('안경'), ('바다'), ('하늘'), ('구름'), ('별'),
+                                    ('고양이'), ('강아지'), ('책'), ('커피'), ('의자'), ('책상'), ('창문'), ('문'), ('자동차'), ('버스'),
+                                    ('기차'), ('자전거'), ('산'), ('바위'), ('물'), ('모래'), ('길'), ('나침반'), ('지도'), ('휴대폰');
+
+CREATE TABLE if not exists word_table_3 (
+                                            id INT AUTO_INCREMENT PRIMARY KEY,
+                                            word VARCHAR(255)
+    );
+INSERT INTO word_table_3 (word) VALUES
+                                    ('강'), ('나무'), ('꽃'), ('비'), ('시계'), ('안경'), ('바다'), ('하늘'), ('구름'), ('별'),
+                                    ('고양이'), ('강아지'), ('책'), ('커피'), ('의자'), ('책상'), ('창문'), ('문'), ('자동차'), ('버스'),
+                                    ('기차'), ('자전거'), ('산'), ('바위'), ('물'), ('모래'), ('길'), ('나침반'), ('지도'), ('휴대폰'),
+                                    ('노트북'), ('마우스'), ('키보드'), ('그림'), ('사진'), ('영화'), ('음악'), ('피아노'), ('기타'), ('바이올린'),
+                                    ('풍경'), ('꽃병'), ('거울'), ('시계탑'), ('공원'), ('정원'), ('집'), ('학교'), ('병원'), ('식당'),
+                                    ('가게'), ('은행'), ('우체국');
+END$$
+
 DELIMITER ;
 
-drop PROCEDURE createBasketTestData;
+drop PROCEDURE createWordTestData;
+
+# account 테스트 데이터 생성
+call createAccountTestData();
 
 # market 테스트 데이터 생성
 CALL createMarketTestData((select max(market.market_id) from market));
@@ -144,6 +225,9 @@ call createReviewTestData();
 
 # Order 테스트 데이터 생성
 call createOrderTestData();
+
+# Search_word, auto_complete 테스트 데이터
+call createWordTestData();
 
 start transaction;
 commit;
