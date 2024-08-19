@@ -36,7 +36,7 @@ public class ReviewService {
     private final S3Service s3Service;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
-        return reviewRepository.findByMarketId(marketId, sortType.getFirstOrderSpecifier(), sortType.getSecondOrderSpecifier());
+        return reviewRepository.findByMarketId(marketId, sortType);
     }
 
     public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {

@@ -1,8 +1,10 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.entity.QOrder;
 import com.team.saver.market.review.dto.*;
@@ -34,18 +36,44 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier... orderSpecifier) {
+    public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
         QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
+        QReview qReview = new QReview("qReview2");
 
-        return jpaQueryFactory
+        JPAQuery query = jpaQueryFactory
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
-                .leftJoin(review.recommender, reviewRecommender)
-                .orderBy(orderSpecifier)
-                .groupBy(review.reviewId)
-                .where(review.isDelete.eq(false))
+                .where(review.isDelete.eq(false));
+
+        if(sortType == sortType.RECENTLY_UPLOAD) {
+            query.orderBy(review.writeTime.desc(), review.reviewId.desc());
+        }
+        else if(sortType == sortType.MOST_RECOMMEND) {
+            query.orderBy(new OrderSpecifier<>(Order.DESC,
+                    select(reviewRecommender.count())
+                            .from(qReview)
+                            .leftJoin(qReview.recommender, reviewRecommender)
+                            .where(qReview.eq(review))),
+                    review.score.desc());
+        } else if(sortType == sortType.HIGHEST_SCORE) {
+            query.orderBy(review.score.desc(),
+                    new OrderSpecifier<>(Order.DESC,
+                            select(reviewRecommender.count())
+                                    .from(qReview)
+                                    .leftJoin(qReview.recommender, reviewRecommender)
+                                    .where(qReview.eq(review))));
+        } else if(sortType == sortType.LOWEST_SCORE) {
+            query.orderBy(review.score.asc(),
+                    new OrderSpecifier<>(Order.DESC,
+                            select(reviewRecommender.count())
+                                    .from(qReview)
+                                    .leftJoin(qReview.recommender, reviewRecommender)
+                                    .where(qReview.eq(review))));
+        }
+
+        return (List<ReviewResponse>) query
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
                                 ReviewResponse.class,

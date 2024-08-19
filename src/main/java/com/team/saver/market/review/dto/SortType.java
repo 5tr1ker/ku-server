@@ -16,7 +16,6 @@ public enum SortType {
     HIGHEST_SCORE("highestScore" , review.score.desc(), reviewRecommender.count().desc()),
     LOWEST_SCORE("lowestScore" , review.score.asc(), reviewRecommender.count().desc());
 
-
     private final String type;
 
     private final OrderSpecifier firstOrderSpecifier;
