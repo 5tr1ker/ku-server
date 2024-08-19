@@ -36,7 +36,7 @@ public class ReviewService {
     private final S3Service s3Service;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
-        return reviewRepository.findByMarketId(marketId, sortType.getFirstOrderSpecifier(), sortType.getSecondOrderSpecifier());
+        return reviewRepository.findByMarketId(marketId, sortType);
     }
 
     public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {
@@ -109,7 +109,7 @@ public class ReviewService {
 
     @Transactional
     public void recommendReview(CurrentUser currentUser, long reviewId) {
-        if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId).isPresent()) {
+        if(reviewRepository.findRecommenderCountByEmailAndReviewId(currentUser.getEmail(), reviewId) != 0) {
             throw new CustomRuntimeException(EXIST_RECOMMENDER);
         };
 

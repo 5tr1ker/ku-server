@@ -1,12 +1,15 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.entity.QOrder;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.QReview;
+import com.team.saver.market.review.entity.QReviewRecommender;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -33,29 +36,60 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier... orderSpecifier) {
-        return jpaQueryFactory
+    public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
+        QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
+        QReview qReview = new QReview("qReview2");
+
+        JPAQuery query = jpaQueryFactory
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
-                .orderBy(orderSpecifier)
-                .where(review.isDelete.eq(false))
+                .where(review.isDelete.eq(false));
+
+        if(sortType == sortType.RECENTLY_UPLOAD) {
+            query.orderBy(review.writeTime.desc(), review.reviewId.desc());
+        }
+        else if(sortType == sortType.MOST_RECOMMEND) {
+            query.orderBy(new OrderSpecifier<>(Order.DESC,
+                    select(reviewRecommender.count())
+                            .from(qReview)
+                            .leftJoin(qReview.recommender, reviewRecommender)
+                            .where(qReview.eq(review))),
+                    review.score.desc());
+        } else if(sortType == sortType.HIGHEST_SCORE) {
+            query.orderBy(review.score.desc(),
+                    new OrderSpecifier<>(Order.DESC,
+                            select(reviewRecommender.count())
+                                    .from(qReview)
+                                    .leftJoin(qReview.recommender, reviewRecommender)
+                                    .where(qReview.eq(review))));
+        } else if(sortType == sortType.LOWEST_SCORE) {
+            query.orderBy(review.score.asc(),
+                    new OrderSpecifier<>(Order.DESC,
+                            select(reviewRecommender.count())
+                                    .from(qReview)
+                                    .leftJoin(qReview.recommender, reviewRecommender)
+                                    .where(qReview.eq(review))));
+        }
+
+        return (List<ReviewResponse>) query
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
                                 ReviewResponse.class,
                                 review.reviewId,
                                 account.accountId,
                                 account.email,
+                                account.profileImage,
                                 review.content,
                                 review.writeTime,
                                 market.marketId,
                                 market.marketName,
                                 review.score,
-                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
@@ -85,6 +119,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 review.reviewId,
                                 account.accountId,
                                 account.email,
+                                account.profileImage,
                                 review.content,
                                 review.writeTime,
                                 market.marketId,
@@ -93,20 +128,20 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
 
     @Override
-    public Optional<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId) {
-        ReviewRecommender result = jpaQueryFactory.select(reviewRecommender)
+    public Long findRecommenderCountByEmailAndReviewId(String email, long reviewId) {
+        long result = jpaQueryFactory.select(reviewRecommender.count())
                 .from(reviewRecommender)
                 .innerJoin(reviewRecommender.account, account).on(account.email.eq(email))
                 .innerJoin(reviewRecommender.review, review).on(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
                 .fetchOne();
 
-        return Optional.ofNullable(result);
+        return result;
     }
 
     @Override
@@ -128,6 +163,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 review.reviewId,
                                 account.accountId,
                                 account.email,
+                                account.profileImage,
                                 review.content,
                                 review.writeTime,
                                 market.marketId,
@@ -136,7 +172,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
@@ -224,6 +260,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 review.reviewId,
                                 account.accountId,
                                 account.email,
+                                account.profileImage,
                                 review.content,
                                 review.writeTime,
                                 market.marketId,
@@ -232,7 +269,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
 

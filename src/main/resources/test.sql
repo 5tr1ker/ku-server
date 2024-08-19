@@ -290,6 +290,48 @@ end while;
 END WHILE;
 END$$
 
+CREATE PROCEDURE createAttractionTestData()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE (i <= 100000) DO
+    INSERT INTO `saver`.`attraction` (`attraction_description`, `attraction_name`, `close_time`, `event_message`, `image_url`, `locationx`, `locationy`, `open_time`) VALUES ('테스트1.테스트2', 'attraction_name', '00:00:00', 'event_message', 'image_url', '33.21651987651', '126.21651864894', '00:00:00');
+        SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createHistoryTestData(user_count int)
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    declare j int default 1;
+    WHILE (i <= user_count) DO
+
+		set j = 1;
+		while (j <= 100000) do
+			INSERT INTO `saver`.`history` (`content`, `local_date_time`, `account_account_id`) VALUES (concat('content', j), '00:00:00', i);
+
+            set j = j + 1;
+end while;
+
+        SET i = i + 1;
+END WHILE;
+END$$
+
+CREATE PROCEDURE createChatTestData(user_count int)
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    declare j int default 1;
+    WHILE (i <= user_count) DO
+
+		set j = 1;
+		while (j <= 100000) do
+			INSERT INTO `saver`.`chat` (`is_admin`, `message`, `send_time`, `chat_room_chat_room_id`) VALUES (0, 'message', '2000-03-02 00:00:00', i);
+
+            set j = j + 1;
+end while;
+
+        SET i = i + 1;
+END WHILE;
+END$$
 
 DELIMITER ;
 
@@ -331,6 +373,15 @@ call createMenuTestData();
 
 # 프로모션 테스트 데이터 추가
 call createPromotionTestData();
+
+# 어트랙션 테스트 데이터 추가
+call createAttractionTestData();
+
+# 히스토리 테스트 데이터 추가
+call createHistoryTestData(5);
+
+# 채팅 테스트 데이터 추가
+call createChatTestData(5);
 
 -- drop PROCEDURE createPromotionTestData;
 start transaction;
