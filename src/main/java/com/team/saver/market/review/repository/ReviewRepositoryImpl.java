@@ -106,14 +106,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public Optional<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId) {
-        ReviewRecommender result = jpaQueryFactory.select(reviewRecommender)
+    public Long findRecommenderCountByEmailAndReviewId(String email, long reviewId) {
+        long result = jpaQueryFactory.select(reviewRecommender.count())
                 .from(reviewRecommender)
                 .innerJoin(reviewRecommender.account, account).on(account.email.eq(email))
                 .innerJoin(reviewRecommender.review, review).on(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
                 .fetchOne();
 
-        return Optional.ofNullable(result);
+        return result;
     }
 
     @Override

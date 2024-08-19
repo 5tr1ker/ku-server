@@ -109,7 +109,7 @@ public class ReviewService {
 
     @Transactional
     public void recommendReview(CurrentUser currentUser, long reviewId) {
-        if(reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId).isPresent()) {
+        if(reviewRepository.findRecommenderCountByEmailAndReviewId(currentUser.getEmail(), reviewId) != 0) {
             throw new CustomRuntimeException(EXIST_RECOMMENDER);
         };
 
