@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.order.entity.QOrder;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.QReview;
+import com.team.saver.market.review.entity.QReviewRecommender;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,16 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
 
     @Override
     public List<ReviewResponse> findByMarketId(long marketId, OrderSpecifier... orderSpecifier) {
+        QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
+
         return jpaQueryFactory
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .leftJoin(review.recommender, reviewRecommender)
                 .orderBy(orderSpecifier)
+                .groupBy(review.reviewId)
                 .where(review.isDelete.eq(false))
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
@@ -52,7 +57,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 market.marketId,
                                 market.marketName,
                                 review.score,
-                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl))
