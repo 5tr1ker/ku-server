@@ -17,6 +17,8 @@ public class ReviewResponse {
 
     private String reviewerEmail;
 
+    private String reviewerImage;
+
     private String reviewContent;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
