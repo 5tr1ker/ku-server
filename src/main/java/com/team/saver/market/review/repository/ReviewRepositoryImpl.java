@@ -60,7 +60,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
@@ -98,7 +98,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
@@ -141,7 +141,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
     }
@@ -237,7 +237,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
-                                        reviewImage.imageUrl))
+                                        reviewImage.imageUrl).skipNulls())
                         ))
                 );
 
