@@ -28,6 +28,8 @@ public class ReviewResponse {
 
     private String marketName;
 
+    private String orderMenu;
+
     private int score;
 
     private long recommendCount;
