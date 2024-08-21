@@ -60,6 +60,7 @@ import com.team.saver.socket.entity.Chat;
 import com.team.saver.socket.entity.ChatRoom;
 import com.team.saver.socket.repository.ChatRoomRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -409,7 +410,6 @@ public class InitData implements CommandLineRunner {
 
         marketRepository.save(market_detail_admin);
 
-
         CurrentUser currentUser1 = new CurrentUser(account.getEmail());
         CurrentUser currentUser2 = new CurrentUser(account2.getEmail());
         CurrentUser currentUser3 = new CurrentUser(account3.getEmail());
@@ -427,7 +427,7 @@ public class InitData implements CommandLineRunner {
         ReviewData review2_1 = new ReviewData("비주얼은 좋은데 맛아…", "pizza1.png", 4);
         ReviewData review2_2 = new ReviewData("피자 - 도우가 정말 쫄깃하다, 가래떡 먹는 느낌 치즈 포함 토핑들이 신선하고 좋은 재료들로 만들었다는 느낌이 확실하게 듦 맛있게 담백해서 더부룩하지 않고 기분좋은 포만감이 든다", "pizza2.png", 5);
         ReviewData review2_3 = new ReviewData("웨이팅없이 바로들어가서 좋았습니다. 피자 파스타 둘다 그럭저럭 맛있습니다. 피자 데우는 초가 금방꺼져서 마지막엔 식어서 아쉽습니다", "pizza3.png", 3);
-        ReviewData review2_4 = new ReviewData("예약하고 방문하세요! 나오는데 오래걸립니다아 맛있고 맥주랑 잘어울림다", "chicken5.png", 3);
+        ReviewData review2_4 = new ReviewData("예약   하고 방문하세요! 나오는데 오래걸립니다아 맛있고 맥주랑 잘어울림다", "chicken5.png", 3);
         ReviewData review2_5 = new ReviewData("너무 맛있게 잘 먹었어요! 비빔국수랑 누룽지통닭이랑 조합이 짱입니다! 비빔국수 안 시켰으면 후회 할 뻔 했어요", "chicken6.png", 5);
         storeData.add(new StoreData("피자나라 치킨공주", "치킨.피자.안주.주류", "Rectangle 2269.png", "리뷰 작성 시 음료 1개 무료 증정 이벤트 진행 중!", Arrays.asList(review2_1, review2_2, review2_3, review2_4, review2_5)));
 
@@ -614,6 +614,13 @@ public class InitData implements CommandLineRunner {
         storeData.add(new StoreData("왕돈까쓰", "돈까스", "Rectangle 2426.png", "선착순 100명 10% 할인 쿠폰 증정 이벤트 진행 중! 대충 메세지 임을 알려줍니다. 이건 말도 안된다고 아잇 정말 맛업ㅈㅅ어 죽겠네 어그로 끌지마라 임니니니니 라항항항항항항하", Arrays.asList(review16_1, review16_2, review16_3)));
 
         int menuIndex = 1;
+        BasketCreateRequest basketCreateRequest1_1 = BasketCreateRequest.builder()
+                .menuId(3)
+                .amount(2)
+                .menuOptionIds(Arrays.asList(4L,5L))
+                .build();
+        basketService.addBasket(currentUser1, 2, basketCreateRequest1_1);
+
         for (StoreData data : storeData) {
             // locationX = 33 ~ 38 , LocationY = 125 ~ 130
             double randomX = random.nextDouble(5);
@@ -907,48 +914,57 @@ public class InitData implements CommandLineRunner {
                 .amount(1)
                 .menuOptionIds(Arrays.asList(1L,2L,3L))
                 .build();
-        basketService.addBasket(currentUser1, 1, basketCreateRequest1);
+        basketService.addBasket(currentUser1, 2, basketCreateRequest1);
         BasketCreateRequest basketCreateRequest2 = BasketCreateRequest.builder()
                 .menuId(2)
                 .amount(2)
                 .menuOptionIds(Arrays.asList(1L))
                 .build();
-        basketService.addBasket(currentUser1, 1, basketCreateRequest2);
+        basketService.addBasket(currentUser1, 2, basketCreateRequest2);
         BasketCreateRequest basketCreateRequest3 = BasketCreateRequest.builder()
                 .menuId(3)
                 .amount(1)
                 .menuOptionIds(Arrays.asList(4L,5L))
                 .build();
-        basketService.addBasket(currentUser1, 1, basketCreateRequest3);
+        basketService.addBasket(currentUser1, 2, basketCreateRequest3);
         BasketCreateRequest basketCreateRequest4 = BasketCreateRequest.builder()
                 .menuId(4)
                 .amount(3)
                 .menuOptionIds(Arrays.asList(1L))
                 .build();
-        basketService.addBasket(currentUser1, 2, basketCreateRequest4);
+        basketService.addBasket(currentUser1, 3, basketCreateRequest4);
         BasketCreateRequest basketCreateRequest5 = BasketCreateRequest.builder()
                 .menuId(3)
                 .amount(2)
                 .menuOptionIds(Arrays.asList(4L,5L))
                 .build();
-        basketService.addBasket(currentUser1, 2, basketCreateRequest5);
+        basketService.addBasket(currentUser1, 3, basketCreateRequest5);
         BasketCreateRequest basketCreateRequest6 = BasketCreateRequest.builder()
                 .menuId(5)
                 .amount(8)
                 .menuOptionIds(Arrays.asList(4L,5L))
                 .build();
-        basketService.addBasket(currentUser1, 2, basketCreateRequest6);
+        basketService.addBasket(currentUser1, 3, basketCreateRequest6);
 
-        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L), PaymentType.KAKAO_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L), PaymentType.KAKAO_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(1L,2L,3L), PaymentType.NAVER_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(1L,2L,3L), PaymentType.KAKAO_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(1,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,1, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L), PaymentType.KG_INICIS));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
-        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+        entityManager.flush();
+
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(1L,2L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(1L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(1L,2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(1L,2L,3L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,2, Arrays.asList(2L,3L), PaymentType.NAVER_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,3, Arrays.asList(4L), PaymentType.KG_INICIS));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,3, Arrays.asList(4L), PaymentType.KG_INICIS));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,3, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+        orderService.addOrder(currentUser1, new OrderCreateRequest(0,3, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+        Query query = entityManager.createQuery("select r from Review r left join r.order o on o is null");
+        List<Review> reviewList = query.getResultList();
+        for(Review reviewEntity : reviewList) {
+            Order order = orderService.addOrder(currentUser1, new OrderCreateRequest(0,3, Arrays.asList(4L,5L), PaymentType.KAKAO_PAY));
+
+            order.setReview(reviewEntity);
+        }
 
         List<ReviewData> reviewDataList = new ArrayList<>();
         reviewDataList.add(new ReviewData("예약하고 방문하세요! 나오는데 오래걸립니다아 맛있고 맥주랑 잘어울림다", "chicken8.png", 4));

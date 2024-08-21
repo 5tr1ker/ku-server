@@ -46,6 +46,12 @@ public class Order {
                 .build();
     }
 
+    public void setReview(Review review) {
+        this.review = review;
+
+        review.setOrder(this);
+    }
+
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenus.add(orderMenu);
 
