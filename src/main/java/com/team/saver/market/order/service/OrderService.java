@@ -47,7 +47,7 @@ public class OrderService {
     private final AccountService accountService;
 
     @Transactional
-    public void addOrder(CurrentUser currentUser, OrderCreateRequest request) {
+    public Order addOrder(CurrentUser currentUser, OrderCreateRequest request) {
         List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), request.getBasketMenuId());
         Market market = marketRepository.findById(request.getMarketId())
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
@@ -75,7 +75,7 @@ public class OrderService {
 
         OrderDetail orderDetail = createOrderDetail(request, market, amountOfPayment);
         order.setOrderDetail(orderDetail);
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     private OrderDetail createOrderDetail(OrderCreateRequest request, Market market , long amountOfPayment) {

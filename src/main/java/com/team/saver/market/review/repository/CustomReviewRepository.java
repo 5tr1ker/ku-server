@@ -1,12 +1,10 @@
 package com.team.saver.market.review.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import org.springframework.data.domain.Pageable;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +17,8 @@ public interface CustomReviewRepository {
     List<ReviewResponse> findByUserEmail(String email);
 
     Long findRecommenderCountByEmailAndReviewId(String email, long reviewId);
+
+    List<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId);
 
     List<ReviewResponse> findBestReview(Pageable pageable);
 

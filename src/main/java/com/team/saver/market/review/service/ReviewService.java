@@ -10,6 +10,7 @@ import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.review.repository.ReviewImageRepository;
+import com.team.saver.market.review.repository.ReviewRecommenderRepository;
 import com.team.saver.market.review.repository.ReviewRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
@@ -34,6 +35,7 @@ public class ReviewService {
     private final OrderRepository orderRepository;
     private final ReviewImageRepository reviewImageRepository;
     private final S3Service s3Service;
+    private final ReviewRecommenderRepository reviewRecommenderRepository;
 
     public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
         return reviewRepository.findByMarketId(marketId, sortType);
@@ -107,11 +109,14 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_USER));
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = CustomRuntimeException.class)
     public void recommendReview(CurrentUser currentUser, long reviewId) {
-        if(reviewRepository.findRecommenderCountByEmailAndReviewId(currentUser.getEmail(), reviewId) != 0) {
-            throw new CustomRuntimeException(EXIST_RECOMMENDER);
-        };
+        List<ReviewRecommender> result = reviewRepository.findRecommenderByEmailAndReviewId(currentUser.getEmail(), reviewId);
+        if(result.size() != 0) {
+            reviewRecommenderRepository.deleteAll(result);
+
+            throw new CustomRuntimeException(CANCEL_RECOMMENDER);
+        }
 
         Account account = accountService.getProfile(currentUser);
         Review review = reviewRepository.findById(reviewId)

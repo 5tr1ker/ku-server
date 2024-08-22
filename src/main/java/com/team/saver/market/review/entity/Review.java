@@ -35,6 +35,7 @@ public class Review {
     @Column(nullable = false)
     private String content;
 
+    @Setter
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "review")
     @JoinColumn(nullable = false)
     private Order order;
