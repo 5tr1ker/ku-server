@@ -113,20 +113,29 @@ CREATE PROCEDURE createOrderTestData()
 BEGIN
     DECLARE i INT DEFAULT 1;
     DECLARE y INT DEFAULT 1;
+    declare x int default 1;
     set @order_detail_index = (select max(order_detail_id) from order_detail);
     set @order_index = (select max(order_id) from order_tb);
 
     WHILE (i <= 100000) DO
 		INSERT INTO `order_detail` (`discount_amount`, `final_price`, `order_date_time`, `order_number`, `order_price`, `payment_type`) VALUES ('0', '90000', '2000-03-02 00:00:00', 'order_number', '90000', 'KAKAO_PAY');
-INSERT INTO `order_tb` (`account_account_id`, `market_market_id`, `order_detail_order_detail_id`) VALUES (i % 5 + 1, i, @order_detail_index + 1);
+		set @order_detail_index = (select max(order_detail_id) from order_detail);
+INSERT INTO `order_tb` (`account_account_id`, `market_market_id`, `order_detail_order_detail_id`) VALUES (i % 5 + 1, i, @order_detail_index);
 set y = 0;
 
-        set @order_menu_index = (select max(order_menu_id) from order_menu);
+        set @order_index = (select max(order_id) from order_tb);
         while (y <= 5) DO
-			INSERT INTO `order_menu` (`amount`, `menu_name`, `price`, `order_order_id`) VALUES ('1', 'menu_name', '990000', @order_index + 1);
-INSERT INTO `order_option` (`option_description`, `option_price`, `order_menu_order_menu_id`) VALUES ('option_description', '5000', @order_menu_index + y);
+			INSERT INTO `order_menu` (`amount`, `menu_name`, `price`, `order_order_id`) VALUES ('1', 'menu_name', '990000', @order_index);
+            set @order_menu_index = (select max(order_menu_id) from order_menu);
 
-set y = y + 1;
+            set x = 0;
+            while (x <= y) do
+				INSERT INTO `order_option` (`option_description`, `option_price`, `order_menu_order_menu_id`) VALUES (concat('option_description', x , '_' , y), '5000' , @order_menu_index);
+
+                set x = x + 1;
+end while;
+
+			set y = y + 1;
 END while;
 
         SET i = i + 1;
@@ -383,6 +392,6 @@ call createHistoryTestData(5);
 # 채팅 테스트 데이터 추가
 call createChatTestData(5);
 
--- drop PROCEDURE createPromotionTestData;
+-- drop PROCEDURE createOrderTestData;
 start transaction;
 commit;
