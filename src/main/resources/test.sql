@@ -29,15 +29,19 @@ BEGIN
     set @menu_count = (select count(*) from menu) - 1;
     set @market_count = (select count(*) from market) - 1;
     set @menu_option_count = (select count(*) from menu_option) - 1;
-    set @basket_index = (select max(basket_id) from basket);
 
-    WHILE (i <= 100000) DO
-		INSERT INTO `basket`(update_time, account_account_id, market_market_id) VALUES ('2024-08-16 16:18:46.922513', ( i % 5 ) + 1, i % 50 + 1 );
+
+    WHILE (i <= 10000) DO
+		INSERT INTO `basket`(update_time, account_account_id, market_market_id) VALUES ('2024-08-16 16:18:46.922513', ( i % 5 ) + 1, i % market_count + 1 );
         set y = 0;
 
-        while (y <= 10) do
-			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (8 , @basket_index , i % @menu_count + 1);
-INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (i , (i + y) % @menu_option_count + 1);
+		set @basket_index = (select max(basket_id) from basket);
+        while (y <= 20) do
+			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (FLOOR(RAND() * 8) , @basket_index , (i + y) % @menu_count + 1);
+            set @basket_menu_count = (select max(basket_menu_id) from basket_menu);
+
+INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (@basket_menu_count , (i + y) % @menu_option_count + 1);
+INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (@basket_menu_count , (i + y) % @menu_option_count + 2);
 
 set y = y + 1;
             set update_index = update_index + 1;
@@ -52,15 +56,17 @@ CREATE PROCEDURE createCouponTestData()
 BEGIN
     DECLARE i INT DEFAULT 1;
     set @download_coupon_index = (select max(download_coupon_id) from download_coupon);
-    set @coupon_index = (select max(coupon_id) from coupon);
     set @market_index = (select max(market.market_id) from market);
 
     WHILE (i <= 100000) DO
-		INSERT INTO `coupon` VALUES (i + @coupon_index ,0,10000,"description","name",0,0,2000, (i % @market_index));
-INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',1,i + @coupon_index, (i % @market_index));
-INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',3,i + @coupon_index, (i % @market_index));
-INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',4,i + @coupon_index, (i % @market_index));
-INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',5,i + @coupon_index, (i % @market_index));
+		INSERT INTO `coupon` (`condition_to_use`, `condition_to_use_amount`, `coupon_description`, `coupon_name`, `is_delete`, `priority`, `sale_rate`, `market_market_id`)
+        VALUES (0,FLOOR(RAND()*100000),"description","name",0,0,FLOOR(RAND()*2000), (i % @market_index));
+
+        set @coupon_index = (select max(coupon_id) from coupon);
+INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',1,@coupon_index, i % @market_index + 1);
+INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',3,@coupon_index, i % @market_index + 1);
+INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',4,@coupon_index, i % @market_index + 1);
+INSERT INTO `download_coupon`(is_usage, use_date, account_account_id, coupon_coupon_id, market_market_id) VALUES (0,'2000-03-02',5,@coupon_index, i % @market_index + 1);
 SET i = i + 1;
 END WHILE;
 END$$
@@ -72,13 +78,13 @@ BEGIN
     DECLARE y INT DEFAULT 1;
 
     WHILE (i <= 60000) DO
-		INSERT INTO `partner_request` (`description`, `detail_address`, `locationx`, `locationy`, `market_address`, `phone_number`, `request_market_name`, `title`, `write_time`, `request_user_account_id`) VALUES ('description', 'addrtess', '10.145351', '36.4131235', 'market_address', 'phone_number', 'market_name', 'title', '2000-03-02 00:00:00', 1);
+		INSERT INTO `partner_request` (`description`, `detail_address`, `locationx`, `locationy`, `market_address`, `phone_number`, `request_market_name`, `title`, `write_time`, `request_user_account_id`) VALUES ('description', 'addrtess', '10.145351', '36.4131235', 'market_address', 'phone_number', 'market_name', 'title', '2000-03-02 00:00:00', (i % 5) + 1);
         set y = 0;
         set @partner_request_index = (select max(partner_request_id) from partner_request) - 1;
 
         while (y <= 20) DO
-			INSERT INTO `partner_comment` (`message`, `write_time`, `partner_request_partner_request_id`, `writer_account_id`) VALUES ('message', '2000-03-02 00:00:00', (i + y) % @partner_request_index + 1 , 2);
-INSERT INTO `partner_recommender` (`account_account_id`, `partner_request_partner_request_id`) VALUES (1, (i + y) % @partner_request_index + 1);
+			INSERT INTO `partner_comment` (`message`, `write_time`, `partner_request_partner_request_id`, `writer_account_id`) VALUES ('message', '2000-03-02 00:00:00', (i + y) % @partner_request_index + 1 , ((i + y) % 5) + 1);
+INSERT INTO `partner_recommender` (`account_account_id`, `partner_request_partner_request_id`) VALUES ((y % 5) + 1 , (i + y) % @partner_request_index + 1);
 
 set y = y + 1;
 END while;
@@ -113,20 +119,29 @@ CREATE PROCEDURE createOrderTestData()
 BEGIN
     DECLARE i INT DEFAULT 1;
     DECLARE y INT DEFAULT 1;
+    declare x int default 1;
     set @order_detail_index = (select max(order_detail_id) from order_detail);
     set @order_index = (select max(order_id) from order_tb);
 
     WHILE (i <= 100000) DO
 		INSERT INTO `order_detail` (`discount_amount`, `final_price`, `order_date_time`, `order_number`, `order_price`, `payment_type`) VALUES ('0', '90000', '2000-03-02 00:00:00', 'order_number', '90000', 'KAKAO_PAY');
-INSERT INTO `order_tb` (`account_account_id`, `market_market_id`, `order_detail_order_detail_id`) VALUES (i % 5 + 1, i, @order_detail_index + 1);
+		set @order_detail_index = (select max(order_detail_id) from order_detail);
+INSERT INTO `order_tb` (`account_account_id`, `market_market_id`, `order_detail_order_detail_id`) VALUES (i % 5 + 1, i, @order_detail_index);
 set y = 0;
 
-        set @order_menu_index = (select max(order_menu_id) from order_menu);
+        set @order_index = (select max(order_id) from order_tb);
         while (y <= 5) DO
-			INSERT INTO `order_menu` (`amount`, `menu_name`, `price`, `order_order_id`) VALUES ('1', 'menu_name', '990000', @order_index + 1);
-INSERT INTO `order_option` (`option_description`, `option_price`, `order_menu_order_menu_id`) VALUES ('option_description', '5000', @order_menu_index + y);
+			INSERT INTO `order_menu` (`amount`, `menu_name`, `price`, `order_order_id`) VALUES ('1', 'menu_name', '990000', @order_index);
+            set @order_menu_index = (select max(order_menu_id) from order_menu);
 
-set y = y + 1;
+            set x = 0;
+            while (x <= y) do
+				INSERT INTO `order_option` (`option_description`, `option_price`, `order_menu_order_menu_id`) VALUES (concat('option_description', x , '_' , y), '5000' , @order_menu_index);
+
+                set x = x + 1;
+end while;
+
+			set y = y + 1;
 END while;
 
         SET i = i + 1;
@@ -152,8 +167,8 @@ BEGIN
                 set @word_2 = (select word from word_table_2 where id = y);
                 set @word_3 = (select word from word_table_3 where id = z);
 
-INSERT INTO `search_word` (`day_search`, `previous_ranking`, `recently_search`, `search_word`, `total_search`, `week_search`) VALUES ('1', '999', '1', concat(@word_1, @word_2, @word_3), '1', '1');
-INSERT INTO `auto_complete` (`frequency`, `word`) VALUES ('1', concat(@word_1, @word_2, @word_3));
+INSERT INTO `search_word` (`day_search`, `previous_ranking`, `recently_search`, `search_word`, `total_search`, `week_search`) VALUES (FLOOR(RAND()*1000), FLOOR(RAND()*1000), FLOOR(RAND()*1000), concat(@word_1, @word_2, @word_3), FLOOR(RAND()*1000), FLOOR(RAND()*1000));
+INSERT INTO `auto_complete` (`frequency`, `word`) VALUES (FLOOR(RAND()*1000), concat(@word_1, @word_2, @word_3));
 set z = z + 1;
 END WHILE;
             set y = y + 1;
@@ -219,43 +234,57 @@ BEGIN
 END WHILE;
 END$$
 
-CREATE PROCEDURE createFavoriteTestData(var1 int, var2 int)
+CREATE PROCEDURE createFavoriteTestData()
 BEGIN
-    DECLARE i INT DEFAULT 1;
-    WHILE (i <= 50000) DO
-    INSERT INTO `saver`.`favorite` (`account_account_id`, `market_market_id`) VALUES (var1, var2 + i);
-        SET i = i + 1;
+    DECLARE i INT DEFAULT 2;
+    declare j int default 1;
+
+    while (j <= 5) do
+
+		set i = 2;
+		WHILE (i <= 50000) DO
+			INSERT INTO `saver`.`favorite` (`account_account_id`, `market_market_id`) VALUES (j, i);
+			SET i = i + 1;
 END WHILE;
+
+	set j = j + 1;
+end while;
 END$$
 
 CREATE PROCEDURE createMenuTestData()
 BEGIN
     DECLARE i INT DEFAULT 1;
+    declare i_2 int default 1;
     DECLARE j INT DEFAULT 1;
     DECLARE y INT DEFAULT 1;
     DECLARE z INT DEFAULT 1;
 
     set @menu_option_container_index = (select max(menu_option_container_id) from menu_option_container);
 
-    WHILE (i <= 10000) DO
-		INSERT INTO `saver`.`menu_container` (`classification`, `priority`, `market_market_id`) VALUES ('classification', '1', i + 17);
+    WHILE (i <= 100) DO
 
+		set i_2 = 1;
+
+		while(i_2 <= 6) do
+		INSERT INTO `saver`.`menu_container` (`classification`, `priority`, `market_market_id`) VALUES ('classification', i_2, i + 17);
 		set @menu_container_index = (select max(menu_container_id) from menu_container);
+
 		set j = 1;
 		while (j <= 8) do
 			INSERT INTO `saver`.`menu` (`description`, `image_url`, `menu_name`, `price`, `is_adult_menu`, `menu_container_menu_container_id`) VALUES ('description', 'image_url', 'menu_name', '1000', 0, @menu_container_index);
-
 			set @menu_index = (select max(menu_id) from menu);
+
 			set y = 1;
 			while (y <= 5) do
-				INSERT INTO `saver`.`menu_option_container` (`classification`, `is_multiple_selection`, `priority`, `menu_menu_id`) VALUES ('classification', 0, 1, @menu_index);
+				INSERT INTO `saver`.`menu_option_container` (`classification`, `is_multiple_selection`, `priority`, `menu_menu_id`) VALUES ('classification', 0, y, @menu_index);
+                set @menu_option_container_index = (select max(menu_option_container_id) from menu_option_container);
 
-				set @menu_option_container_index = (select max(menu_option_container_id) from menu_option_container);
 				set z = 1;
 				while (z <= 3) do
 					INSERT INTO `saver`.`menu_option` (`description`, `is_default_option`, `is_adult_menu`, `option_price`, `menu_option_container_menu_option_container_id`) VALUES ('description', 0, 0, '1000', @menu_option_container_index);
 
 					set z = z + 1;
+
 end while;
 
 			set y = y + 1;
@@ -264,8 +293,11 @@ end while;
 		set j = j + 1;
 end while;
 
-    SET i = i + 1;
+		set i_2 = i_2 + 1;
 END WHILE;
+SET i = i + 1;
+end while;
+
 END$$
 
 CREATE PROCEDURE createPromotionTestData()
@@ -356,7 +388,7 @@ call createReviewTestData();
 # Order 테스트 데이터 생성
 call createOrderTestData();
 
-# Search_word, auto_complete 테스트 데이터
+# search_word, auto_complete 테스트 데이터
 call createWordTestData();
 
 # 공지사항 테스트 데이터
@@ -366,7 +398,7 @@ call createAnnounceTestData();
 call createEventTestData();
 
 # 찜 테스트 데이터
-call createFavoriteTestData(5 , 0);
+call createFavoriteTestData();
 
 # 메뉴 데이터 추가 ( 주의 최소 100만개의 데이터가 생성됩니다. )
 call createMenuTestData();
@@ -383,6 +415,6 @@ call createHistoryTestData(5);
 # 채팅 테스트 데이터 추가
 call createChatTestData(5);
 
--- drop PROCEDURE createPromotionTestData;
+# drop PROCEDURE createBasketTestData;
 start transaction;
 commit;
