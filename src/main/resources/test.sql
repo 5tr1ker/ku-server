@@ -31,13 +31,16 @@ BEGIN
     set @menu_option_count = (select count(*) from menu_option) - 1;
     set @basket_index = (select max(basket_id) from basket);
 
-    WHILE (i <= 100000) DO
+    WHILE (i <= 10) DO
 		INSERT INTO `basket`(update_time, account_account_id, market_market_id) VALUES ('2024-08-16 16:18:46.922513', ( i % 5 ) + 1, i % 50 + 1 );
         set y = 0;
 
-        while (y <= 10) do
-			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (8 , @basket_index , i % @menu_count + 1);
-INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (i , (i + y) % @menu_option_count + 1);
+        while (y <= 100000) do
+			INSERT INTO `basket_menu`(amount, basket_basket_id, menu_menu_id) VALUES (4 , @basket_index , i % @menu_count + 1);
+            set @basket_menu_count = (select max(basket_menu_id) from basket_menu);
+
+INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (@basket_menu_count , (i + y) % @menu_option_count + 1);
+INSERT INTO `basket_menu_option`(basket_menu_basket_menu_id, menu_option_menu_option_id) VALUES (@basket_menu_count , (i + y) % @menu_option_count + 2);
 
 set y = y + 1;
             set update_index = update_index + 1;
@@ -161,8 +164,8 @@ BEGIN
                 set @word_2 = (select word from word_table_2 where id = y);
                 set @word_3 = (select word from word_table_3 where id = z);
 
-INSERT INTO `search_word` (`day_search`, `previous_ranking`, `recently_search`, `search_word`, `total_search`, `week_search`) VALUES ('1', '999', '1', concat(@word_1, @word_2, @word_3), '1', '1');
-INSERT INTO `auto_complete` (`frequency`, `word`) VALUES ('1', concat(@word_1, @word_2, @word_3));
+INSERT INTO `search_word` (`day_search`, `previous_ranking`, `recently_search`, `search_word`, `total_search`, `week_search`) VALUES (FLOOR(RAND()*1000), FLOOR(RAND()*1000), FLOOR(RAND()*1000), concat(@word_1, @word_2, @word_3), FLOOR(RAND()*1000), FLOOR(RAND()*1000));
+INSERT INTO `auto_complete` (`frequency`, `word`) VALUES (FLOOR(RAND()*1000), concat(@word_1, @word_2, @word_3));
 set z = z + 1;
 END WHILE;
             set y = y + 1;
@@ -365,7 +368,7 @@ call createReviewTestData();
 # Order 테스트 데이터 생성
 call createOrderTestData();
 
-# Search_word, auto_complete 테스트 데이터
+# search_word, auto_complete 테스트 데이터
 call createWordTestData();
 
 # 공지사항 테스트 데이터
@@ -392,6 +395,6 @@ call createHistoryTestData(5);
 # 채팅 테스트 데이터 추가
 call createChatTestData(5);
 
--- drop PROCEDURE createOrderTestData;
+-- drop PROCEDURE createWordTestData;
 start transaction;
 commit;
