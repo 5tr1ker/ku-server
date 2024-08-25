@@ -100,12 +100,13 @@ BEGIN
     DECLARE y INT DEFAULT 1;
 
     WHILE (i <= 100000) DO
-		INSERT INTO `review` (`content`, `is_delete`, `score`, `write_time`, `market_market_id`, `reviewer_account_id`) VALUES ('content', 0,'5', '2000-03-02 00:00:00', i % 17 + 1, i % 5 + 1);
+		INSERT INTO `review` (`content`, `is_delete`, `score`, `write_time`, `market_market_id`, `reviewer_account_id`) VALUES ('content', 0,FLOOR(RAND()*5) + 1, '2000-03-02 00:00:00', i % 1000 + 1, i % 5 + 1);
         set y = 0;
 
+		set @review_index = (select max(review_id) from review);
         while (y <= 5) DO
-			INSERT INTO `review_image` (`image_url`, `is_delete`, `review_review_id`) VALUES ('image_url', 0, i);
-INSERT INTO `review_recommender` (`account_account_id`, `review_review_id`) VALUES (i % 5 + 1, i);
+			INSERT INTO `review_image` (`image_url`, `is_delete`, `review_review_id`) VALUES ('image_url', 0, @review_index);
+INSERT INTO `review_recommender` (`account_account_id`, `review_review_id`) VALUES (i % 5 + 1, @review_index);
 
 set y = y + 1;
 END while;
@@ -415,6 +416,6 @@ call createHistoryTestData(5);
 # 채팅 테스트 데이터 추가
 call createChatTestData(5);
 
-# drop PROCEDURE createBasketTestData;
+# drop PROCEDURE createReviewTestData;
 start transaction;
 commit;
