@@ -272,25 +272,6 @@ public class InitData implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         if(accountRepository.findAll().size() != 0) {
-            Account account = accountRepository.findByEmail("email@naver.com").get();
-            Market m = marketRepository.findById(2L).get();
-            String image_com_1 = uploadFile(new File("src/main/resources/images/Rectangle 2389.png"));
-            String image_com_2 = uploadFile(new File("src/main/resources/images/Rectangle 2390.png"));
-            String image_com_3 = uploadFile(new File("src/main/resources/images/Rectangle 2391.png"));
-            String image_com_4 = uploadFile(new File("src/main/resources/images/Rectangle 2392.png"));
-
-            for(int z = 0; z < 200; z++) {
-                Order order_con = orderRepository.save(Order.builder().build());
-                Review review_con = Review.builder().reviewer(account).isDelete(false).score(4).content("content").order(order_con).build();
-
-                review_con.addReviewImage(image_com_1);
-                review_con.addReviewImage(image_com_2);
-                review_con.addReviewImage(image_com_3);
-                review_con.addReviewImage(image_com_4);
-                m.addReview(
-                        review_con
-                );
-            }
 
             return;
         }

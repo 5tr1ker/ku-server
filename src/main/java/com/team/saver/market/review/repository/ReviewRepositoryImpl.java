@@ -6,6 +6,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.market.order.entity.QOrder;
 
 import com.team.saver.market.review.dto.*;
@@ -38,13 +39,14 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
+    public List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType) {
         QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
 
         JPAQuery query = jpaQueryFactory
                 .selectFrom(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
                 .innerJoin(review.reviewer, account)
+                .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
@@ -67,6 +69,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 orderMenu.menuName,
                                 review.score,
                                 jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
+                                reviewRecommender.isNotNull(),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())
@@ -121,6 +124,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .orderBy(review.reviewId.desc())
@@ -139,6 +143,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 orderMenu.menuName,
                                 review.score,
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                reviewRecommender.isNotNull(),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())
@@ -169,11 +174,12 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewResponse> findBestReview(Pageable pageable) {
+    public List<ReviewResponse> findBestReview(String email, Pageable pageable) {
         return jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .orderBy(new OrderSpecifier<>(Order.DESC, jpaQueryFactory.select(reviewRecommender.count())
@@ -197,6 +203,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 orderMenu.menuName,
                                 review.score,
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                reviewRecommender.isNotNull(),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())
@@ -275,11 +282,12 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public Optional<ReviewResponse> findDetailByReviewId(long reviewId) {
+    public Optional<ReviewResponse> findDetailByReviewId(String email, long reviewId) {
         List<ReviewResponse> result = jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .where(review.reviewId.eq(reviewId).and(review.isDelete.eq(false)))
@@ -297,6 +305,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 orderMenu.menuName,
                                 review.score,
                                 jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                                reviewRecommender.isNotNull(),
                                 list(Projections.constructor(ReviewImageResponse.class,
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())

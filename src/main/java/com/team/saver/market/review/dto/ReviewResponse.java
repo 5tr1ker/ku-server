@@ -34,6 +34,8 @@ public class ReviewResponse {
 
     private long recommendCount;
 
+    private boolean isRecommendation;
+
     private List<ReviewImageResponse> images;
 
 }

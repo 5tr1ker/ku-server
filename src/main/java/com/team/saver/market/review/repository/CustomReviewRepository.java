@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CustomReviewRepository {
 
-    List<ReviewResponse> findByMarketId(long marketId, SortType sortType);
+    List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType);
 
     Optional<Review> findByReviewerAndReviewId(String reviewerEmail, long reviewId);
 
@@ -20,7 +20,7 @@ public interface CustomReviewRepository {
 
     List<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId);
 
-    List<ReviewResponse> findBestReview(Pageable pageable);
+    List<ReviewResponse> findBestReview(String email, Pageable pageable);
 
     long countReviewByEmail(String email);
 
@@ -30,7 +30,7 @@ public interface CustomReviewRepository {
 
     List<PhotoReviewResponse> findAllReviewImageByMarketId(long marketId, long size);
 
-    Optional<ReviewResponse> findDetailByReviewId(long reviewId);
+    Optional<ReviewResponse> findDetailByReviewId(String email, long reviewId);
 
     Optional<ReviewStatisticResponse> findReviewStatisticsByEmail(String email);
 
