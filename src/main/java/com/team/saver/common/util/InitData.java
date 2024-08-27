@@ -273,6 +273,9 @@ public class InitData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if(accountRepository.findAll().size() != 0) {
 
+            recommendAlgorithm.updateMarketRecommend();
+            searchWordScheduler.updateSearchWordScore();
+            trie.initTrie();
             return;
         }
 
