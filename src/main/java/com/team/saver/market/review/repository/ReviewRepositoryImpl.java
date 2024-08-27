@@ -186,8 +186,6 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 .from(reviewRecommender)
                                 .where(reviewRecommender.review.eq(review))),
                         review.content.length().desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .where(review.isDelete.eq(false))
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(

@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@AllArgsConstructor
 @Getter
 public class ReviewResponse {
 
@@ -36,6 +37,21 @@ public class ReviewResponse {
 
     private boolean isRecommendation;
 
-    private List<ReviewImageResponse> images;
+    private Set<ReviewImageResponse> images;
 
+    public ReviewResponse(long reviewId, long reviewerId, String reviewerEmail, String reviewerImage, String reviewContent, LocalDateTime writeDate, long marketId, String marketName, String orderMenu, int score, long recommendCount, boolean isRecommendation, List<ReviewImageResponse> images) {
+        this.reviewId = reviewId;
+        this.reviewerId = reviewerId;
+        this.reviewerEmail = reviewerEmail;
+        this.reviewerImage = reviewerImage;
+        this.reviewContent = reviewContent;
+        this.writeDate = writeDate;
+        this.marketId = marketId;
+        this.marketName = marketName;
+        this.orderMenu = orderMenu;
+        this.score = score;
+        this.recommendCount = recommendCount;
+        this.isRecommendation = isRecommendation;
+        this.images = new HashSet<>(images);
+    }
 }
