@@ -11,4 +11,17 @@ public class ReviewImageResponse {
 
     private String image;
 
+    public int hashCode() {
+        return (imageId + image).hashCode();
+    }
+
+    public boolean equals(Object o) {
+        if(o instanceof ReviewImageResponse) {
+            ReviewImageResponse tmp = ( ReviewImageResponse )o;
+            return tmp.imageId == this.imageId;
+        }
+
+        return false;
+    }
+
 }

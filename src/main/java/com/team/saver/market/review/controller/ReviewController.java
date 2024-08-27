@@ -2,6 +2,7 @@ package com.team.saver.market.review.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.LogInNotEssential;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.review.dto.*;
 import com.team.saver.market.review.service.ReviewService;
@@ -26,9 +27,11 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/v1/markets/{marketId}/reviews")
-    @Operation(summary = "마켓에 등록된 리뷰 가져오기 ( 51 )")
-    public ResponseEntity findReviewByMarketId(@PathVariable long marketId, @RequestParam SortType sort) {
-        List<ReviewResponse> result = reviewService.findByMarketId(marketId, sort);
+    @Operation(summary = "[ 비 - 로그인 ]마켓에 등록된 리뷰 가져오기 ( 51 )")
+    public ResponseEntity findReviewByMarketId(@LogInNotEssential CurrentUser currentUser,
+                                               @PathVariable long marketId,
+                                               @RequestParam SortType sort) {
+        List<ReviewResponse> result = reviewService.findByMarketId(currentUser, marketId, sort);
 
         return ResponseEntity.ok(result);
     }
@@ -42,9 +45,10 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/{reviewId}")
-    @Operation(summary = "특정 ID의 리뷰 데이터 가져오기 ( 53 )")
-    public ResponseEntity findDetailByReviewId(@PathVariable long reviewId) {
-        ReviewResponse result = reviewService.findDetailByReviewId(reviewId);
+    @Operation(summary = "[ 비 - 로그인 ] 특정 ID의 리뷰 데이터 가져오기 ( 53 )")
+    public ResponseEntity findDetailByReviewId(@LogInNotEssential CurrentUser currentUser,
+                                               @PathVariable long reviewId) {
+        ReviewResponse result = reviewService.findDetailByReviewId(currentUser, reviewId);
 
         return ResponseEntity.ok(result);
     }
@@ -58,9 +62,10 @@ public class ReviewController {
     }
 
     @GetMapping("/v1/markets/reviews/top")
-    @Operation(summary = "BEST 리뷰 가져오기 ( 55 )")
-    public ResponseEntity findBestReview(Pageable pageable) {
-        List<ReviewResponse> result = reviewService.findBestReview(pageable);
+    @Operation(summary = "[ 비 - 로그인 ] BEST 리뷰 가져오기 ( 55 )")
+    public ResponseEntity findBestReview(@LogInNotEssential CurrentUser currentUser,
+                                         Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findBestReview(currentUser, pageable);
 
         return ResponseEntity.ok(result);
     }

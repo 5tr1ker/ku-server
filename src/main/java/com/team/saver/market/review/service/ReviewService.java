@@ -37,16 +37,16 @@ public class ReviewService {
     private final S3Service s3Service;
     private final ReviewRecommenderRepository reviewRecommenderRepository;
 
-    public List<ReviewResponse> findByMarketId(long marketId, SortType sortType) {
-        return reviewRepository.findByMarketId(marketId, sortType);
+    public List<ReviewResponse> findByMarketId(CurrentUser currentUser, long marketId, SortType sortType) {
+        return reviewRepository.findByMarketId(currentUser.getEmail() , marketId, sortType);
     }
 
     public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {
         return reviewRepository.findByUserEmail(currentUser.getEmail());
     }
 
-    public ReviewResponse findDetailByReviewId(long reviewId) {
-        return reviewRepository.findDetailByReviewId(reviewId)
+    public ReviewResponse findDetailByReviewId(CurrentUser currentUser, long reviewId) {
+        return reviewRepository.findDetailByReviewId(currentUser.getEmail(), reviewId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_REVIEW));
     }
 
@@ -125,8 +125,8 @@ public class ReviewService {
         review.addRecommender(ReviewRecommender.createEntity(account, review));
     }
 
-    public List<ReviewResponse> findBestReview(Pageable pageable) {
-        return reviewRepository.findBestReview(pageable);
+    public List<ReviewResponse> findBestReview(CurrentUser currentUser, Pageable pageable) {
+        return reviewRepository.findBestReview(currentUser.getEmail(), pageable);
     }
 
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
