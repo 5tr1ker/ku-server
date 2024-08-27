@@ -206,7 +206,9 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())
                         ))
-                );
+                ).stream()
+                .limit(pageable.getPageSize())
+                .collect(Collectors.toList());
     }
 
     @Override
