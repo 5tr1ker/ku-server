@@ -6,7 +6,6 @@ import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.service.MarketService;
 import com.team.saver.market.store.util.RecommendAlgorithm;
-import com.team.saver.market.store.util.SortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -158,5 +157,5 @@ public class MarketController {
 
         return ResponseEntity.ok(result);
     }
-
+    
 }
