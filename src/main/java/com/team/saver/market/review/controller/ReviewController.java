@@ -28,7 +28,7 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/{marketId}/reviews")
     @Operation(summary = "[ 비 - 로그인 ]마켓에 등록된 리뷰 가져오기 ( 51 )")
-    public ResponseEntity findReviewByMarketId(@LogInNotEssential CurrentUser currentUser,
+    public ResponseEntity findReviewByMarketId(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
                                                @PathVariable long marketId,
                                                @RequestParam SortType sort) {
         List<ReviewResponse> result = reviewService.findByMarketId(currentUser, marketId, sort);
@@ -46,7 +46,7 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/reviews/{reviewId}")
     @Operation(summary = "[ 비 - 로그인 ] 특정 ID의 리뷰 데이터 가져오기 ( 53 )")
-    public ResponseEntity findDetailByReviewId(@LogInNotEssential CurrentUser currentUser,
+    public ResponseEntity findDetailByReviewId(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
                                                @PathVariable long reviewId) {
         ReviewResponse result = reviewService.findDetailByReviewId(currentUser, reviewId);
 
@@ -63,9 +63,13 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/reviews/top")
     @Operation(summary = "[ 비 - 로그인 ] BEST 리뷰 가져오기 ( 55 )")
-    public ResponseEntity findBestReview(@LogInNotEssential CurrentUser currentUser,
+    public ResponseEntity findBestReview(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
+                                         @RequestParam(required = false) Long marketId,
                                          Pageable pageable) {
-        List<ReviewResponse> result = reviewService.findBestReview(currentUser, pageable);
+        if(marketId == null) {
+            marketId = 0L;
+        }
+        List<ReviewResponse> result = reviewService.findBestReview(currentUser, marketId, pageable);
 
         return ResponseEntity.ok(result);
     }

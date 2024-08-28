@@ -4,6 +4,7 @@ import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.common.dto.CurrentUser;
@@ -174,9 +175,8 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewResponse> findBestReview(String email, Pageable pageable) {
-        return jpaQueryFactory.selectFrom(review)
-                .innerJoin(review.market, market)
+    public List<ReviewResponse> findBestReview(String email, long marketId, Pageable pageable) {
+        JPAQueryBase query = jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
                 .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
@@ -186,8 +186,15 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                 .from(reviewRecommender)
                                 .where(reviewRecommender.review.eq(review))),
                         review.content.length().desc())
-                .where(review.isDelete.eq(false))
-                .transform(groupBy(review.reviewId)
+                .where(review.isDelete.eq(false));
+
+        if(marketId == 0) {
+            query.innerJoin(review.market, market);
+        } else {
+            query.innerJoin(review.market, market).on(market.marketId.eq(marketId));
+        }
+
+        return ((List<ReviewResponse>) query.transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
                                 ReviewResponse.class,
                                 review.reviewId,
@@ -206,7 +213,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                                         reviewImage.reviewImageId,
                                         reviewImage.imageUrl).skipNulls())
                         ))
-                ).stream()
+                )).stream()
                 .limit(pageable.getPageSize())
                 .collect(Collectors.toList());
     }

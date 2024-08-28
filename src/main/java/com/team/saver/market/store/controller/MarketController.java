@@ -157,5 +157,5 @@ public class MarketController {
 
         return ResponseEntity.ok(result);
     }
-    
+
 }
