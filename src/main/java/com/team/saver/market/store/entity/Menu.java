@@ -46,9 +46,8 @@ public class Menu {
     @Column(nullable = false)
     private boolean isBestMenu = false;
 
-    @Builder.Default
     @Column(nullable = false)
-    private long orderCount = 0;
+    private long orderCount;
 
     public void addMenuOptionContainer(MenuOptionContainer menuOptionContainer) {
         this.menuOptionContainers.add(menuOptionContainer);
@@ -69,6 +68,7 @@ public class Menu {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .menuName(request.getMenuName())
+                .orderCount(0)
                 .isAdultMenu(request.isAdultMenu())
                 .imageUrl(imageUrl)
                 .build();

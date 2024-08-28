@@ -21,22 +21,21 @@ public class BestMenuScheduler {
     @Value("${best.menu-count}")
     private long bestMenuCount;
 
-    @Scheduled(cron = "0 0 0 1/1 * ?")
+    @Scheduled(cron = "0 0 0 ? * MON")
     @Transactional
     public void updateBestMenu() {
         long marketNumber = marketRepository.findMarketCount();
 
         for(int i = 1; i <= marketNumber; i++) {
-            menuRepository.resetMenuOrderCountByMarketId(i);
-            menuRepository.resetBestMenuByMarketId(i);
+            menuRepository.resetIsBestMenuByMarketId(i);
 
             List<Menu> menuList = marketRepository.findManyMenuOrderCountByMarketId(i, bestMenuCount);
             int j = 0;
             for(Menu menu : menuList) {
-                if(j <= bestMenuCount) {
+                if(j >= bestMenuCount) {
                     break;
                 }
-                menu.isBestMenu();
+                menu.setBestMenu();
 
                 j += 1;
             }

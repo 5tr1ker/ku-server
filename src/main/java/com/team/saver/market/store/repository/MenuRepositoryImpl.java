@@ -16,20 +16,7 @@ public class MenuRepositoryImpl implements CustomMenuRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public long resetMenuOrderCountByMarketId(long marketId) {
-        List<Menu> result = jpaQueryFactory.select(menu)
-                .from(menuContainer)
-                .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))
-                .innerJoin(menuContainer.menus, menu)
-                .fetch();
-
-        return jpaQueryFactory.update(menu).set(menu.orderCount, 0L)
-                .where(menu.in(result))
-                .execute();
-    }
-
-    @Override
-    public long resetBestMenuByMarketId(long marketId) {
+    public long resetIsBestMenuByMarketId(long marketId) {
         List<Menu> result = jpaQueryFactory.select(menu)
                 .from(menuContainer)
                 .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))

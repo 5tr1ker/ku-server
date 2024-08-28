@@ -33,6 +33,7 @@ import com.team.saver.market.review.entity.Review;
 import com.team.saver.market.review.entity.ReviewRecommender;
 import com.team.saver.market.store.entity.*;
 import com.team.saver.market.store.repository.MarketRepository;
+import com.team.saver.market.store.util.BestMenuScheduler;
 import com.team.saver.market.store.util.RecommendAlgorithm;
 import com.team.saver.oauth.util.OAuthType;
 import com.team.saver.partner.comment.entity.PartnerComment;
@@ -219,6 +220,7 @@ public class InitData implements CommandLineRunner {
     private final ReportRepository reportRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final VisitantRepository visitantRepository;
+    private final BestMenuScheduler bestMenuScheduler;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -231,6 +233,7 @@ public class InitData implements CommandLineRunner {
         recommendAlgorithm.updateMarketRecommend();
         searchWordScheduler.updateSearchWordScore();
         searchWordScheduler.calculateRankingChangeValue();
+        bestMenuScheduler.updateBestMenu();
         trie.initTrie();
         // init Data-End
     }
@@ -275,6 +278,7 @@ public class InitData implements CommandLineRunner {
 
             recommendAlgorithm.updateMarketRecommend();
             searchWordScheduler.updateSearchWordScore();
+            bestMenuScheduler.updateBestMenu();
             trie.initTrie();
             return;
         }
@@ -462,36 +466,35 @@ public class InitData implements CommandLineRunner {
         menu1_1.addMenuOptionContainer(menuOptionContainer1_1);
         menu1_1.addMenuOptionContainer(menuOptionContainer1_2);
         menu1_1.addMenuOptionContainer(menuOptionContainer1_3);
-
         menuContainer_1.addMenu(menu1_1);
-        menuContainer_1.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_1.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_1.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().orderCount(9999).menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().orderCount(9999).menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_1.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         MenuContainer menuContainer_2 = MenuContainer.builder().classification("대표메뉴").priority(2).build();
-        menuContainer_2.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_2.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_2.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_2.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().orderCount(9999).menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_2.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         MenuContainer menuContainer_3 = MenuContainer.builder().classification("세트메뉴").priority(3).build();
-        menuContainer_3.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_3.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_3.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_3.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_3.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
         MenuContainer menuContainer_4 = MenuContainer.builder().classification("단품메뉴").priority(4).build();
-        menuContainer_4.addMenu(Menu.builder().menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_4.addMenu(Menu.builder().menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_4.addMenu(Menu.builder().menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
-        menuContainer_4.addMenu(Menu.builder().menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("고추바사삭").imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("심장바사삭").imageUrl(menuImage_2).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("다리바사삭").imageUrl(menuImage_3).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
+        menuContainer_4.addMenu(Menu.builder().orderCount(random.nextInt(30)).menuName("날개바사삭").imageUrl(menuImage_4).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(19_900).build());
 
         String menuImage_5 = uploadFile(new File("src/main/resources/images/Rectangle 2394.png"));
         String menuImage_6 = uploadFile(new File("src/main/resources/images/Rectangle 2395.png"));
         String menuImage_7 = uploadFile(new File("src/main/resources/images/Rectangle 2396.png"));
         String menuImage_8 = uploadFile(new File("src/main/resources/images/Rectangle 2397.png"));
         MenuContainer menuContainer_5 = MenuContainer.builder().classification("사이드메뉴").priority(5).build();
-        menuContainer_5.addMenu(Menu.builder().menuName("치즈볼(5개)").imageUrl(menuImage_5).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
-        menuContainer_5.addMenu(Menu.builder().menuName("치즈스틱(3개)").imageUrl(menuImage_6).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(3000).build());
-        menuContainer_5.addMenu(Menu.builder().menuName("감자튀김").imageUrl(menuImage_7).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
-        menuContainer_5.addMenu(Menu.builder().menuName("어니언링").imageUrl(menuImage_8).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(8000).build());
+        menuContainer_5.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("치즈볼(5개)").imageUrl(menuImage_5).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("치즈스틱(3개)").imageUrl(menuImage_6).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(3000).build());
+        menuContainer_5.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("감자튀김").imageUrl(menuImage_7).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(5000).build());
+        menuContainer_5.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("어니언링").imageUrl(menuImage_8).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(8000).build());
 
         String menuImage_9 = uploadFile(new File("src/main/resources/images/Rectangle 2399.png"));
         String menuImage_10 = uploadFile(new File("src/main/resources/images/Rectangle 2400.png"));
@@ -500,15 +503,15 @@ public class InitData implements CommandLineRunner {
         String menuImage_13 = uploadFile(new File("src/main/resources/images/coke.jpg"));
         String menuImage_14 = uploadFile(new File("src/main/resources/images/soju.jpg"));
         MenuContainer menuContainer_6 = MenuContainer.builder().classification("소스").priority(6).build();
-        menuContainer_6.addMenu(Menu.builder().menuName("마블링소스").imageUrl(menuImage_9).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
-        menuContainer_6.addMenu(Menu.builder().menuName("고블링소스").imageUrl(menuImage_10).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
-        menuContainer_6.addMenu(Menu.builder().menuName("양념치킨소스").imageUrl(menuImage_11).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
-        menuContainer_6.addMenu(Menu.builder().menuName("머쓱타드").imageUrl(menuImage_12).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("마블링소스").imageUrl(menuImage_9).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("고블링소스").imageUrl(menuImage_10).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("양념치킨소스").imageUrl(menuImage_11).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
+        menuContainer_6.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("머쓱타드").imageUrl(menuImage_12).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(1000).build());
         MenuContainer menuContainer_7 = MenuContainer.builder().classification("음료/주류").priority(7).build();
-        menuContainer_7.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
-        menuContainer_7.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
-        menuContainer_7.addMenu(Menu.builder().isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
-        menuContainer_7.addMenu(Menu.builder().isAdultMenu(true).menuName("맥주").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("콜라").imageUrl(menuImage_13).price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
+        menuContainer_7.addMenu(Menu.builder().orderCount(random.nextInt(50)).isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+        menuContainer_7.addMenu(Menu.builder().orderCount(random.nextInt(50)).isAdultMenu(true).menuName("맥주").price(5000).build());
 
         market_detail.addMenuContainer(menuContainer_1);
         market_detail.addMenuContainer(menuContainer_2);
@@ -635,7 +638,7 @@ public class InitData implements CommandLineRunner {
 
                 MenuContainer menuContainer_data = MenuContainer.builder().classification(String.format("%d 메뉴", i + 1)).priority(2).build();
                 for (int j = 0; j < contentRandom; j++) {
-                    Menu menu = Menu.builder().menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build();
+                    Menu menu = Menu.builder().orderCount(random.nextInt(50)).menuName(String.format("%d 상세메뉴", menuIndex++)).imageUrl(menuImage_1).description("청양고추의 은은한 알싸함과 최강조합 마블링 고블링 소스. 1초에 1마리씩 팔리네요.").price(9900).build();
 
                     MenuOptionContainer menuOptionContainer_data_1 = MenuOptionContainer.builder().priority(1).isMultipleSelection(false).classification("옵션_1").build();
                     menuOptionContainer_data_1.addMenuOption(MenuOption.builder().isDefaultOption(true).description("옵션 1_1(기본)").optionPrice(0).build());
@@ -664,10 +667,10 @@ public class InitData implements CommandLineRunner {
                 market.addMenuContainer(menuContainer_data);
             }
             MenuContainer menuContainer = MenuContainer.builder().classification("음료/주류").priority(7).build();
-            menuContainer.addMenu(Menu.builder().menuName("콜라").imageUrl(menuImage_13).price(1000).build());
-            menuContainer.addMenu(Menu.builder().menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
-            menuContainer.addMenu(Menu.builder().isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
-            menuContainer.addMenu(Menu.builder().isAdultMenu(true).menuName("맥주").price(5000).build());
+            menuContainer.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("콜라").imageUrl(menuImage_13).price(1000).build());
+            menuContainer.addMenu(Menu.builder().orderCount(random.nextInt(50)).menuName("사이다").description("시원한 사이다입니다. 마시면 기분이 좋아집니다.").price(1000).build());
+            menuContainer.addMenu(Menu.builder().orderCount(random.nextInt(50)).isAdultMenu(true).menuName("소주").imageUrl(menuImage_14).description("시원한 소주입니다. 마시면 기분이 좋아집니다.").price(5000).build());
+            menuContainer.addMenu(Menu.builder().orderCount(random.nextInt(50)).isAdultMenu(true).menuName("맥주").price(5000).build());
             market.addMenuContainer(menuContainer);
 
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
