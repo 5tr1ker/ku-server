@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Market;
+import com.team.saver.market.store.entity.Menu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -177,7 +178,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                 menu.description,
                                 menu.imageUrl,
                                 menu.menuName,
-                                menu.isAdultMenu
+                                menu.isAdultMenu,
+                                menu.isBestMenu
                         ))
                 )));
     }
@@ -276,6 +278,17 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .where(market.marketName.contains(marketName).and(market.isDelete.eq(false)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size) {
+        return jpaQueryFactory.select(menu)
+                .from(menuContainer)
+                .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))
+                .innerJoin(menuContainer.menus, menu)
+                .orderBy(menu.orderCount.desc())
+                .limit(size)
                 .fetch();
     }
 

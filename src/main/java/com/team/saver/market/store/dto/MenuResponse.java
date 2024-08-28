@@ -20,4 +20,6 @@ public class MenuResponse {
 
     private boolean isAdultMenu;
 
+    private boolean isBestMenu;
+
 }
