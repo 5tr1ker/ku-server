@@ -125,8 +125,8 @@ public class ReviewService {
         review.addRecommender(ReviewRecommender.createEntity(account, review));
     }
 
-    public List<ReviewResponse> findBestReview(CurrentUser currentUser, Pageable pageable) {
-        return reviewRepository.findBestReview(currentUser.getEmail(), pageable);
+    public List<ReviewResponse> findBestReview(CurrentUser currentUser, long marketId, Pageable pageable) {
+        return reviewRepository.findBestReview(currentUser.getEmail(), marketId, pageable);
     }
 
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {

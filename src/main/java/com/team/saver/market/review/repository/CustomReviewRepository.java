@@ -20,7 +20,7 @@ public interface CustomReviewRepository {
 
     List<ReviewRecommender> findRecommenderByEmailAndReviewId(String email, long reviewId);
 
-    List<ReviewResponse> findBestReview(String email, Pageable pageable);
+    List<ReviewResponse> findBestReview(String email, long marketId, Pageable pageable);
 
     long countReviewByEmail(String email);
 
