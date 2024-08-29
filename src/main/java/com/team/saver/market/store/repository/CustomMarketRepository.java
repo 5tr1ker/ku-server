@@ -34,6 +34,4 @@ public interface CustomMarketRepository {
 
     List<MarketCreateDateResponse> findMarketCreateDateByMarketName(String marketName, Pageable pageable);
 
-    List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size);
-
 }

@@ -281,15 +281,4 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                 .fetch();
     }
 
-    @Override
-    public List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size) {
-        return jpaQueryFactory.select(menu)
-                .from(menuContainer)
-                .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))
-                .innerJoin(menuContainer.menus, menu)
-                .orderBy(menu.orderCount.desc())
-                .limit(size)
-                .fetch();
-    }
-
 }

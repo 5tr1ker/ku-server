@@ -29,16 +29,8 @@ public class BestMenuScheduler {
         for(int i = 1; i <= marketNumber; i++) {
             menuRepository.resetIsBestMenuByMarketId(i);
 
-            List<Menu> menuList = marketRepository.findManyMenuOrderCountByMarketId(i, bestMenuCount);
-            int j = 0;
-            for(Menu menu : menuList) {
-                if(j >= bestMenuCount) {
-                    break;
-                }
-                menu.setBestMenu();
-
-                j += 1;
-            }
+            List<Menu> menuList = menuRepository.findManyMenuOrderCountByMarketId(i, bestMenuCount);
+            menuRepository.setIsBestMenuByMenu(menuList);
         }
     }
 
