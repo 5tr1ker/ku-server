@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Market;
+import com.team.saver.market.store.entity.Menu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -177,7 +178,8 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                                 menu.description,
                                 menu.imageUrl,
                                 menu.menuName,
-                                menu.isAdultMenu
+                                menu.isAdultMenu,
+                                menu.isBestMenu
                         ))
                 )));
     }

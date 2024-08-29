@@ -42,10 +42,25 @@ public class Menu {
     @JoinColumn(nullable = false)
     private MenuContainer menuContainer;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean isBestMenu = false;
+
+    @Column(nullable = false)
+    private long orderCount;
+
     public void addMenuOptionContainer(MenuOptionContainer menuOptionContainer) {
         this.menuOptionContainers.add(menuOptionContainer);
 
         menuOptionContainer.setMenu(this);
+    }
+
+    public void addOrderCount() {
+        this.orderCount += 1;
+    }
+
+    public void setBestMenu() {
+        this.isBestMenu = true;
     }
 
     public static Menu createEntity(MenuCreateData request, String imageUrl) {
@@ -53,6 +68,7 @@ public class Menu {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .menuName(request.getMenuName())
+                .orderCount(0)
                 .isAdultMenu(request.isAdultMenu())
                 .imageUrl(imageUrl)
                 .build();
