@@ -66,10 +66,20 @@ public class ReviewController {
     public ResponseEntity findBestReview(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
                                          @RequestParam(required = false) Long marketId,
                                          Pageable pageable) {
-        if(marketId == null) {
+        if (marketId == null) {
             marketId = 0L;
         }
         List<ReviewResponse> result = reviewService.findBestReview(currentUser, marketId, pageable);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/v1/markets/reviews/top/random")
+    @Operation(summary = "[ 비 - 로그인 ] Best 리뷰 랜덤으로 가져오기 ( 121 )")
+    public ResponseEntity findRandomBestReview(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
+                                               @RequestParam long minimum,
+                                               Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findRandomBestReview(currentUser, minimum, pageable);
 
         return ResponseEntity.ok(result);
     }
@@ -97,7 +107,7 @@ public class ReviewController {
                                     @PathVariable long marketId,
                                     @RequestPart ReviewCreateRequest request,
                                     @RequestPart List<MultipartFile> images) {
-        reviewService.addReview(currentUser , marketId , request , images);
+        reviewService.addReview(currentUser, marketId, request, images);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

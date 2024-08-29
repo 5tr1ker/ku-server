@@ -129,6 +129,10 @@ public class ReviewService {
         return reviewRepository.findBestReview(currentUser.getEmail(), marketId, pageable);
     }
 
+    public List<ReviewResponse> findRandomBestReview(CurrentUser currentUser, long minimum, Pageable pageable) {
+        return reviewRepository.findRandomBestReview(currentUser.getEmail(), minimum, pageable);
+    }
+
     public ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId) {
         return reviewRepository.findReviewStatisticsByMarketId(marketId);
     }
