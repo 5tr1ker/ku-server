@@ -22,6 +22,8 @@ public interface CustomReviewRepository {
 
     List<ReviewResponse> findBestReview(String email, long marketId, Pageable pageable);
 
+    List<ReviewResponse> findRandomBestReview(String email, long minimum, Pageable pageable);
+
     long countReviewByEmail(String email);
 
     ReviewStatisticsResponse findReviewStatisticsByMarketId(long marketId);

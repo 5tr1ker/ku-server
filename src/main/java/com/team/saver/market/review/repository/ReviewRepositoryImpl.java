@@ -4,6 +4,7 @@ import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -81,24 +82,23 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private void setSortQuery(JPAQuery query, SortType sortType) {
         QReview qReview = new QReview("qReview2");
 
-        if(sortType == sortType.RECENTLY_UPLOAD) {
+        if (sortType == sortType.RECENTLY_UPLOAD) {
             query.orderBy(review.writeTime.desc(), review.reviewId.desc());
-        }
-        else if(sortType == sortType.MOST_RECOMMEND) {
+        } else if (sortType == sortType.MOST_RECOMMEND) {
             query.orderBy(new OrderSpecifier<>(Order.DESC,
                             select(reviewRecommender.count())
                                     .from(qReview)
                                     .leftJoin(qReview.recommender, reviewRecommender)
                                     .where(qReview.eq(review))),
                     review.score.desc());
-        } else if(sortType == sortType.HIGHEST_SCORE) {
+        } else if (sortType == sortType.HIGHEST_SCORE) {
             query.orderBy(review.score.desc(),
                     new OrderSpecifier<>(Order.DESC,
                             select(reviewRecommender.count())
                                     .from(qReview)
                                     .leftJoin(qReview.recommender, reviewRecommender)
                                     .where(qReview.eq(review))));
-        } else if(sortType == sortType.LOWEST_SCORE) {
+        } else if (sortType == sortType.LOWEST_SCORE) {
             query.orderBy(review.score.asc(),
                     new OrderSpecifier<>(Order.DESC,
                             select(reviewRecommender.count())
@@ -188,32 +188,78 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                         review.content.length().desc())
                 .where(review.isDelete.eq(false));
 
-        if(marketId == 0) {
+        if (marketId == 0) {
             query.innerJoin(review.market, market);
         } else {
             query.innerJoin(review.market, market).on(market.marketId.eq(marketId));
         }
 
         return ((List<ReviewResponse>) query.transform(groupBy(review.reviewId)
-                        .list(Projections.constructor(
-                                ReviewResponse.class,
-                                review.reviewId,
-                                account.accountId,
-                                account.email,
-                                account.profileImage,
-                                review.content,
-                                review.writeTime,
-                                market.marketId,
-                                market.marketName,
-                                orderMenu.menuName,
-                                review.score,
-                                jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
-                                reviewRecommender.isNotNull(),
-                                list(Projections.constructor(ReviewImageResponse.class,
-                                        reviewImage.reviewImageId,
-                                        reviewImage.imageUrl).skipNulls())
+                .list(Projections.constructor(
+                        ReviewResponse.class,
+                        review.reviewId,
+                        account.accountId,
+                        account.email,
+                        account.profileImage,
+                        review.content,
+                        review.writeTime,
+                        market.marketId,
+                        market.marketName,
+                        orderMenu.menuName,
+                        review.score,
+                        jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                        reviewRecommender.isNotNull(),
+                        list(Projections.constructor(ReviewImageResponse.class,
+                                reviewImage.reviewImageId,
+                                reviewImage.imageUrl).skipNulls())
+                ))
+        )).stream()
+                .limit(pageable.getPageSize())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReviewResponse> findRandomBestReview(String email, long minimum , Pageable pageable) {
+        QReview qReview2 = new QReview("qReview2");
+
+        JPAQueryBase query = jpaQueryFactory.selectFrom(review)
+                .innerJoin(review.reviewer, account)
+                .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
+                .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
+                .innerJoin(review.order, order)
+                .innerJoin(review.market, market)
+                .leftJoin(order.orderMenus, orderMenu)
+                .groupBy(market.marketId)
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .where(review.isDelete.eq(false).and(
+                        review.in(select(qReview2)
+                                .from(qReview2)
+                                .leftJoin(qReview2.recommender, reviewRecommender)
+                                .groupBy(qReview2.reviewId)
+                                .having(reviewRecommender.count().goe(minimum))
                         ))
-                )).stream()
+                );
+
+        return ((List<ReviewResponse>) query.transform(groupBy(review.reviewId)
+                .list(Projections.constructor(
+                        ReviewResponse.class,
+                        review.reviewId,
+                        account.accountId,
+                        account.email,
+                        account.profileImage,
+                        review.content,
+                        review.writeTime,
+                        market.marketId,
+                        market.marketName,
+                        orderMenu.menuName,
+                        review.score,
+                        jpaQueryFactory.select(reviewRecommender.count()).from(reviewRecommender).where(reviewRecommender.review.eq(review)),
+                        reviewRecommender.isNotNull(),
+                        list(Projections.constructor(ReviewImageResponse.class,
+                                reviewImage.reviewImageId,
+                                reviewImage.imageUrl).skipNulls())
+                ))
+        )).stream()
                 .limit(pageable.getPageSize())
                 .collect(Collectors.toList());
     }
