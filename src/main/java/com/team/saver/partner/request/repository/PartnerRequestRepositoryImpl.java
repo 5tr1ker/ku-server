@@ -28,7 +28,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PartnerRequestResponse> findAllEntity(Pageable pageable) {
+    public List<PartnerRequestResponse> findAllEntity(String email, Pageable pageable) {
         return jpaQueryFactory
                 .select(Projections.constructor(
                         PartnerRequestResponse.class,
@@ -37,11 +37,13 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                         partnerRequest.description,
                         partnerRequest.writeTime,
                         select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
-                        partnerComment.count()
+                        partnerComment.count(),
+                        partnerRecommender.isNotNull()
                 ))
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
                 .leftJoin(partnerRequest.partnerComment, partnerComment)
+                .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender).on(partnerRecommender.account.email.eq(email))
                 .groupBy(partnerRequest.partnerRequestId)
                 .orderBy(partnerRequest.writeTime.desc())
                 .offset(pageable.getOffset())
@@ -102,7 +104,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
     }
 
     @Override
-    public List<PartnerRequestResponse> findMostRecommend(long size) {
+    public List<PartnerRequestResponse> findMostRecommend(String email, long size) {
         return jpaQueryFactory
                 .select(Projections.constructor(
                         PartnerRequestResponse.class,
@@ -111,11 +113,13 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                         partnerRequest.description,
                         partnerRequest.writeTime,
                         partnerRecommender.count(),
-                        select(partnerComment.count()).from(partnerComment).where(partnerComment.partnerRequest.eq(partnerRequest))
+                        select(partnerComment.count()).from(partnerComment).where(partnerComment.partnerRequest.eq(partnerRequest)),
+                        partnerRecommender.isNotNull()
                 ))
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
                 .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender)
+                .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender).on(partnerRecommender.account.email.eq(email))
                 .groupBy(partnerRequest.partnerRequestId)
                 .orderBy(partnerRecommender.count().desc())
                 .limit(size)

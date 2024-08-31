@@ -38,25 +38,28 @@ public class PartnerRequestController {
     }
 
     @GetMapping("/v1/partners/requests")
-    @Operation(summary = "요청된 모든 파트너십 데이터 가져오기 ( 81 )")
-    public ResponseEntity findAllEntity(Pageable pageable) {
-        List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(pageable);
+    @Operation(summary = "[ 비 - 로그인 ] 요청된 모든 파트너십 데이터 가져오기 ( 81 )")
+    public ResponseEntity findAllEntity(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
+                                        Pageable pageable) {
+        List<PartnerRequestResponse> result = partnerRequestService.findAllEntity(currentUser, pageable);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}")
     @Operation(summary = "[ 비 - 로그인 ] 파트너십 상세 데이터 가져오기 ( 82 )")
-    public ResponseEntity findDetailById(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser, @PathVariable long partnerRequestId) {
+    public ResponseEntity findDetailById(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
+                                         @PathVariable long partnerRequestId) {
         PartnerRequestDetailResponse result = partnerRequestService.findDetailById(currentUser, partnerRequestId);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/v1/partners/requests/bests")
-    @Operation(summary = "가장 인기있는 파트너십 데이터 가져오기 ( 83 )")
-    public ResponseEntity findMostRecommend(@RequestParam long size) {
-        List<PartnerRequestResponse> result = partnerRequestService.findMostRecommend(size);
+    @Operation(summary = "[ 비 - 로그인 ] 가장 인기있는 파트너십 데이터 가져오기 ( 83 )")
+    public ResponseEntity findMostRecommend(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
+                                            @RequestParam long size) {
+        List<PartnerRequestResponse> result = partnerRequestService.findMostRecommend(currentUser, size);
 
         return ResponseEntity.ok(result);
     }

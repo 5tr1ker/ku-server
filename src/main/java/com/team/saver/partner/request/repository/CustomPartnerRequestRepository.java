@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CustomPartnerRequestRepository {
 
-    List<PartnerRequestResponse> findAllEntity(Pageable pageable);
+    List<PartnerRequestResponse> findAllEntity(String email, Pageable pageable);
 
     Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId, String email);
 
@@ -19,7 +19,7 @@ public interface CustomPartnerRequestRepository {
 
     long findTotalPartnerRequestCount();
 
-    List<PartnerRequestResponse> findMostRecommend(long size);
+    List<PartnerRequestResponse> findMostRecommend(String email, long size);
 
     Optional<PartnerRequest> findByIdAndAccountEmail(String email, long partnerRequestId);
 
