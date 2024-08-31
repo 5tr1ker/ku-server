@@ -37,8 +37,8 @@ public class PartnerRequestService {
         partnerRequestRepository.save(partnerRequest);
     }
 
-    public List<PartnerRequestResponse> findAllEntity(Pageable pageable) {
-        return partnerRequestRepository.findAllEntity(pageable);
+    public List<PartnerRequestResponse> findAllEntity(CurrentUser currentUser, Pageable pageable) {
+        return partnerRequestRepository.findAllEntity(currentUser.getEmail(), pageable);
     }
 
     @Transactional
@@ -60,8 +60,8 @@ public class PartnerRequestService {
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_PARTNER_REQUEST));
     }
 
-    public List<PartnerRequestResponse> findMostRecommend(long size) {
-        return partnerRequestRepository.findMostRecommend(size);
+    public List<PartnerRequestResponse> findMostRecommend(CurrentUser currentUser, long size) {
+        return partnerRequestRepository.findMostRecommend(currentUser.getEmail(), size);
     }
 
     public long findTotalPartnerRequestCount() {

@@ -29,5 +29,6 @@ public class PartnerRequestResponse {
 
     private long commentCount;
 
+    private boolean isRecommendation;
 
 }

@@ -272,7 +272,7 @@ BEGIN
 
 		set j = 1;
 		while (j <= 8) do
-			INSERT INTO `saver`.`menu` (`description`, `image_url`, `menu_name`, `price`, `is_adult_menu`, `menu_container_menu_container_id`) VALUES ('description', 'image_url', 'menu_name', '1000', 0, @menu_container_index);
+			INSERT INTO `saver`.`menu` (`description`, `image_url`, `menu_name`, `price`, `is_adult_menu`, `menu_container_menu_container_id`, `order_count`, `is_best_menu`) VALUES ('description', 'image_url', 'menu_name', '1000', 0, @menu_container_index, FLOOR(RAND()*1000), 0);
 			set @menu_index = (select max(menu_id) from menu);
 
 			set y = 1;
