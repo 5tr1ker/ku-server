@@ -37,6 +37,8 @@ public class PartnerRequestDetailResponse {
 
     private double locationY;
 
+    private long recommendationCount;
+
     private boolean isRecommendation;
 
 }

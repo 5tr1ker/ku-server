@@ -53,10 +53,6 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public Optional<PartnerRequestDetailResponse> findDetailById(long partnerRequestId, String email) {
-        QAccount qAccount = new QAccount("qAccount2");
-        QPartnerRequest qPartnerRequest = new QPartnerRequest("qPartnerRequest2");
-        StringTemplate castExpression = Expressions.stringTemplate("CONVERT({0}, CHAR(255))", email);
-
         PartnerRequestDetailResponse result = jpaQueryFactory.select(
                         Projections.constructor(PartnerRequestDetailResponse.class,
                                 partnerRequest.partnerRequestId,
@@ -72,13 +68,12 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                                 partnerRequest.writeTime,
                                 partnerRequest.locationX,
                                 partnerRequest.locationY,
-                                select(partnerRecommender.isNotNull())
-                                        .from(partnerRecommender)
-                                        .innerJoin(partnerRecommender.partnerRequest, qPartnerRequest).on(qPartnerRequest.partnerRequestId.eq(partnerRequestId))
-                                        .innerJoin(partnerRecommender.account, qAccount).on(castExpression.eq(qAccount.email))
+                                select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
+                                partnerRecommender.isNotNull()
                         )
                 ).from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
+                .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender).on(partnerRecommender.account.email.eq(email))
                 .where(partnerRequest.partnerRequestId.eq(partnerRequestId))
                 .fetchOne();
 
@@ -105,6 +100,10 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public List<PartnerRequestResponse> findMostRecommend(String email, long size) {
+        QAccount qAccount = new QAccount("qAccount2");
+        QPartnerRequest qPartnerRequest = new QPartnerRequest("qPartnerRequest2");
+        StringTemplate castExpression = Expressions.stringTemplate("CONVERT({0}, CHAR(255))", email);
+
         return jpaQueryFactory
                 .select(Projections.constructor(
                         PartnerRequestResponse.class,
@@ -114,12 +113,14 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                         partnerRequest.writeTime,
                         partnerRecommender.count(),
                         select(partnerComment.count()).from(partnerComment).where(partnerComment.partnerRequest.eq(partnerRequest)),
-                        partnerRecommender.isNotNull()
+                        select(partnerRecommender.isNotNull())
+                                .from(partnerRecommender)
+                                .innerJoin(partnerRecommender.partnerRequest, qPartnerRequest).on(qPartnerRequest.eq(partnerRequest))
+                                .innerJoin(partnerRecommender.account, qAccount).on(castExpression.eq(qAccount.email))
                 ))
                 .from(partnerRequest)
                 .innerJoin(partnerRequest.requestUser, account)
                 .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender)
-                .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender).on(partnerRecommender.account.email.eq(email))
                 .groupBy(partnerRequest.partnerRequestId)
                 .orderBy(partnerRecommender.count().desc())
                 .limit(size)
