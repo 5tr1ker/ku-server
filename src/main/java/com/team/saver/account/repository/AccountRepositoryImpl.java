@@ -33,6 +33,7 @@ public class AccountRepositoryImpl implements CustomAccountRepository {
                                 account.accountId,
                                 account.email,
                                 account.profileImage,
+                                account.school,
                                 userLevelPath,
                                 userExpPath,
                                 userExpPath.subtract(account.usePoint),

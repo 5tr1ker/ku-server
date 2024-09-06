@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.team.saver.account.entity.Account;
+import com.team.saver.account.entity.School;
 import com.team.saver.account.entity.UserRole;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.admin.visitant.domain.Visitant;
@@ -296,6 +297,7 @@ public class InitData implements CommandLineRunner {
                 .email("email@naver.com")
                 .age("20")
                 .phone("01012341234")
+                .school(School.KONKUK_GLOCAL)
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
                 .usePoint(120)
@@ -312,6 +314,7 @@ public class InitData implements CommandLineRunner {
                 .email("email2@naver.com")
                 .age("24")
                 .phone("01046544654")
+                .school(School.KONKUK_GLOCAL)
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
                 .profileImage(image_url_account_2)
@@ -327,6 +330,7 @@ public class InitData implements CommandLineRunner {
                 .email("email3@naver.com")
                 .age("38")
                 .phone("01046544654")
+                .school(School.KONKUK_GLOCAL)
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
                 .profileImage(image_url_account_3)
@@ -342,6 +346,7 @@ public class InitData implements CommandLineRunner {
                 .email("email4@naver.com")
                 .age("25")
                 .phone("01032313579")
+                .school(School.KONKUK_GLOCAL)
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
                 .profileImage(image_url_account_4)
@@ -357,6 +362,7 @@ public class InitData implements CommandLineRunner {
                 .email("email5@naver.com")
                 .age("58")
                 .phone("0135161421")
+                .school(School.KONKUK_GLOCAL)
                 .lastedLoginDate(LocalDate.now().minusDays(5))
                 .loginCount(1)
                 .profileImage(image_url_account_5)

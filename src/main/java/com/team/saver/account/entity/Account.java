@@ -34,6 +34,10 @@ public class Account implements UserDetails {
 
     private String schoolEmail;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private School school;
+
     private String phone;
 
     private String age;
@@ -95,6 +99,7 @@ public class Account implements UserDetails {
                 .phone(accountInfo.getPhone())
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
+                .profileImage("src/main/resources/images/default.png")
                 .loginCount(1)
                 .lastedLoginDate(LocalDate.now())
                 .oAuthType(type)

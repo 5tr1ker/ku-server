@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS account (
                          auto_update BIT NOT NULL,
                          email VARCHAR(255) NOT NULL,
                          is_delete BIT NOT NULL,
+                         school VARCHAR(255) NOT NULL,
                          join_date DATE NOT NULL,
                          lasted_login_date DATE NOT NULL,
                          login_count BIGINT NOT NULL,
