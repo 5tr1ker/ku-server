@@ -38,7 +38,7 @@ public class Event {
     @Column(nullable = false)
     private LocalDate eventEndDate;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(cascade = { CascadeType.PERSIST } , mappedBy = "event")
     private List<EventParticipation> eventParticipants = new ArrayList<>();
 
     @Column(nullable = false)
@@ -47,6 +47,12 @@ public class Event {
 
     public void delete() {
         isDelete = true;
+    }
+
+    public void addParticipant(EventParticipation participation) {
+        this.eventParticipants.add(participation);
+
+        participation.setEvent(this);
     }
 
     public static Event createEntity(EventCreateRequest request, String imageUrl) {
