@@ -12,6 +12,8 @@ public interface CustomEventRepository {
 
     List<EventResponse> findEvent(String email, boolean isParticipant, Pageable pageable);
 
+    List<EventResponse> findEvent(Pageable pageable);
+
     Optional<EventDetailResponse> findEventDetail(long eventId);
 
     Optional<EventParticipation> findParticipationByEmailAndId(String email, long eventId);

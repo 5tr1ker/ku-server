@@ -32,6 +32,10 @@ public class EventService {
     private final AccountService accountService;
 
     public List<EventResponse> findEvent(CurrentUser currentUser, boolean isParticipant , Pageable pageable) {
+        if(currentUser.getEmail().equals("empty")) {
+            return eventRepository.findEvent(pageable);
+        }
+
         return eventRepository.findEvent(currentUser.getEmail(), isParticipant, pageable);
     }
 

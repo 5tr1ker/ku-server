@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.event.entity.QEventParticipation.eventParticipation;
 import static com.team.saver.event.entity.QEvent.event;
@@ -41,11 +42,32 @@ public class EventRepositoryImpl implements CustomEventRepository {
             query.leftJoin(event.eventParticipants, eventParticipation)
                     .innerJoin(eventParticipation.account, account).on(account.email.eq(email));
         } else {
-            query.leftJoin(event.eventParticipants, eventParticipation)
-                    .innerJoin(eventParticipation.account, account).on(account.isNull());
+            query.where(event.notIn(
+                    select(event)
+                            .from(eventParticipation)
+                            .innerJoin(eventParticipation.account, account).on(account.email.eq(email))
+                            .innerJoin(eventParticipation.event, event)
+            ));
         }
 
         return query.fetch();
+    }
+
+    @Override
+    public List<EventResponse> findEvent(Pageable pageable) {
+        return jpaQueryFactory.select(
+                        Projections.constructor(EventResponse.class,
+                                event.eventId,
+                                event.title,
+                                event.imageUrl,
+                                event.eventStartDate,
+                                event.eventEndDate
+                        )
+                ).from(event)
+                .where(event.isDelete.eq(false))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
     }
 
     @Override
