@@ -99,7 +99,7 @@ public class Account implements UserDetails {
                 .phone(accountInfo.getPhone())
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
-                .profileImage("src/main/resources/images/default.png")
+                .profileImage("http://localhost:8080/images/default.png")
                 .loginCount(1)
                 .lastedLoginDate(LocalDate.now())
                 .oAuthType(type)
