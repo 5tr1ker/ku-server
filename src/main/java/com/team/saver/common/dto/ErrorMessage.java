@@ -55,7 +55,8 @@ public enum ErrorMessage {
     NOT_FOUND_CHATROOM(-46, "채팅방 정보를 찾을 수 없습니다."),
     NOT_FOUND_RECOMMENDATION(-47, "추천 데이터를 찾을 수 없습니다."),
     NOT_FOUND_REPORT(-48, "신고 데이터를 찾을 수 없습니다."),
-    CANCEL_RECOMMENDER(-49, "추천이 취소되었습니다.");
+    CANCEL_RECOMMENDER(-49, "추천이 취소되었습니다."),
+    ALREADY_PARTICIPANT_EVENT(-50, "이미 참여한 이벤트입니다.");
 
     private final int errorCode;
     private final String message;

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,12 +38,21 @@ public class Event {
     @Column(nullable = false)
     private LocalDate eventEndDate;
 
+    @OneToMany(cascade = { CascadeType.PERSIST } , mappedBy = "event")
+    private List<EventParticipation> eventParticipants = new ArrayList<>();
+
     @Column(nullable = false)
     @Builder.Default
     private boolean isDelete = false;
 
     public void delete() {
         isDelete = true;
+    }
+
+    public void addParticipant(EventParticipation participation) {
+        this.eventParticipants.add(participation);
+
+        participation.setEvent(this);
     }
 
     public static Event createEntity(EventCreateRequest request, String imageUrl) {
