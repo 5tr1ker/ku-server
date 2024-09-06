@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum School {
 
-    KONKUK_GLOCAL("kku.ac.kr" , "건국대학교 충주캠퍼스");
+    KONKUK_GLOCAL("kku.ac.kr" , "건국대학교 글로컬캠퍼스");
 
     private final String emailDomain;
 
