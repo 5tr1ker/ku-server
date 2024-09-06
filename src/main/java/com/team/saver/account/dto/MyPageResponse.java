@@ -1,5 +1,6 @@
 package com.team.saver.account.dto;
 
+import com.team.saver.account.entity.School;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ public class MyPageResponse {
     private String email;
 
     private String imageUrl;
+
+    private School school;
 
     private int level;
 

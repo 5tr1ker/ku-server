@@ -1,6 +1,7 @@
 package com.team.saver.account.dto;
 
 import com.team.saver.account.entity.Account;
+import com.team.saver.account.entity.School;
 import com.team.saver.oauth.util.OAuthType;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class AccountResponse {
     private String email;
 
     private String schoolEmail;
+
+    private School school;
 
     private String phone;
 
@@ -45,6 +48,7 @@ public class AccountResponse {
         return AccountResponse.builder()
                 .accountId(account.getAccountId())
                 .email(account.getEmail())
+                .school(account.getSchool())
                 .schoolEmail(account.getSchoolEmail())
                 .phone(account.getPhone())
                 .age(account.getAge())
