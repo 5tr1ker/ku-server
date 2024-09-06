@@ -217,6 +217,15 @@ CREATE TABLE IF NOT EXISTS event (
                        PRIMARY KEY (event_id)
 );
 
+create table if not exists event_participation (
+    event_participation_id BIGINT NOT NULL AUTO_INCREMENT,
+    account_account_id BIGINT NOT NULL,
+    event_event_id BIGINT NOT NULL,
+    primary key (event_participation_id),
+    foreign key (account_account_id) references account (account_id),
+    foreign key (event_event_id) references event (event_id)
+);
+
 CREATE TABLE IF NOT EXISTS favorite (
                           favorite_id BIGINT NOT NULL AUTO_INCREMENT,
                           account_account_id BIGINT NOT NULL,
