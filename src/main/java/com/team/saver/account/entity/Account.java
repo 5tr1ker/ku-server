@@ -118,7 +118,7 @@ public class Account implements UserDetails {
     }
 
     public void updateRoleToStudent() {
-        role = UserRole.STUDENT;
+        this.role = UserRole.STUDENT;
     }
 
     public void updateRoleToPartner() {
@@ -136,6 +136,10 @@ public class Account implements UserDetails {
 
     public void updateSchoolEmail(String schoolEmail) {
         this.schoolEmail = schoolEmail;
+    }
+
+    public void updateSchool(School school) {
+        this.school = school;
     }
 
     public void transferAccountInfo(Account account) {

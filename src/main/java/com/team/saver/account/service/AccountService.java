@@ -2,6 +2,7 @@ package com.team.saver.account.service;
 
 import com.team.saver.account.dto.*;
 import com.team.saver.account.entity.Account;
+import com.team.saver.account.entity.School;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
@@ -73,10 +74,18 @@ public class AccountService {
             account.updateSchoolEmail(schoolEmail);
 
             account.updateRoleToStudent();
+            updateSchool(account, schoolEmail);
+
             return;
         }
 
         throw new CustomRuntimeException(NOT_STUDENT_EMAIL);
+    }
+
+    private void updateSchool(Account account, String schoolEmail) {
+        if(schoolEmail.endsWith("@kku.ac.kr")) {
+            account.updateSchool(School.KONKUK_GLOCAL);
+        }
     }
 
     private void isExistsSchoolEmail(String email) {
