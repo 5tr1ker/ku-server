@@ -353,6 +353,7 @@ CREATE TABLE IF NOT EXISTS partner_request (
                                  phone_number VARCHAR(255) NOT NULL,
                                  request_market_name VARCHAR(255) NOT NULL,
                                  title VARCHAR(255) NOT NULL,
+                                image_url varchar(255),
                                  write_time DATETIME(6),
                                  request_user_account_id BIGINT NOT NULL,
                                  PRIMARY KEY (partner_request_id),

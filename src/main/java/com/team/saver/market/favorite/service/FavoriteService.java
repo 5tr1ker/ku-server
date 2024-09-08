@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
 
@@ -27,10 +28,14 @@ public class FavoriteService {
     private final AccountRepository accountRepository;
     private final FavoriteRepository favoriteRepository;
 
-    @Transactional
+    @Transactional(noRollbackFor = CustomRuntimeException.class)
     public void addFavorite(CurrentUser currentUser, long marketId) {
-        if(favoriteRepository.findByUserEmailAndMarketId(currentUser.getEmail(), marketId).isPresent()) {
-            throw new CustomRuntimeException(ALREADY_FAVORITE_MARKET);
+        Optional<Favorite> favoriteOptional = favoriteRepository.findByUserEmailAndMarketId(currentUser.getEmail(), marketId);
+
+        if(favoriteOptional.isPresent()) {
+            favoriteRepository.delete(favoriteOptional.get());
+
+            throw new CustomRuntimeException(DELETE_FAVORITE_MARKET);
         }
 
         Account account = accountRepository.findByEmail(currentUser.getEmail())
@@ -51,7 +56,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavoriteIds(CurrentUser currentUser, List<Long> ids) {
-        List<Favorite> favorite = favoriteRepository.findByUserEmailAndIds(currentUser.getEmail(), ids);
+        List<Favorite> favorite = favoriteRepository.findByUserEmailAndMarketIds(currentUser.getEmail(), ids);
 
         favoriteRepository.deleteAll(favorite);
     }

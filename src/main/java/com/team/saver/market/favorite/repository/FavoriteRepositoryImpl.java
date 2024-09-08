@@ -61,11 +61,11 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
     }
 
     @Override
-    public List<Favorite> findByUserEmailAndIds(String email, List<Long> ids) {
+    public List<Favorite> findByUserEmailAndMarketIds(String email, List<Long> ids) {
         return jpaQueryFactory.select(favorite)
                 .from(favorite)
                 .innerJoin(favorite.account, account).on(account.email.eq(email))
-                .where(favorite.favoriteId.in(ids))
+                .innerJoin(favorite.market, market).on(market.marketId.in(ids))
                 .fetch();
     }
 

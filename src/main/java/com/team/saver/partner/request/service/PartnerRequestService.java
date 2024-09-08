@@ -12,10 +12,12 @@ import com.team.saver.partner.request.entity.PartnerRecommender;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRecommenderRepository;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
+import com.team.saver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,12 +30,18 @@ public class PartnerRequestService {
     private final PartnerRequestRepository partnerRequestRepository;
     private final AccountService accountService;
     private final PartnerRecommenderRepository partnerRecommenderRepository;
+    private final S3Service s3Service;
 
     @Transactional
-    public void requestNewPartner(PartnerRequestCreateRequest request, CurrentUser currentUser) {
+    public void requestNewPartner(PartnerRequestCreateRequest request, MultipartFile image, CurrentUser currentUser) {
         Account account = accountService.getProfile(currentUser);
+        String imageUrl = "";
 
-        PartnerRequest partnerRequest = PartnerRequest.createEntity(account, request);
+        if(image != null) {
+            imageUrl = s3Service.uploadImage(image);
+        }
+
+        PartnerRequest partnerRequest = PartnerRequest.createEntity(account, imageUrl, request);
         partnerRequestRepository.save(partnerRequest);
     }
 

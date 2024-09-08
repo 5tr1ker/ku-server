@@ -49,8 +49,8 @@ public class FavoriteController {
     @DeleteMapping("/v1/markets/favorites")
     @Operation(summary = "[ 로그인 ] 내가 추가한 관심 가게 제거 ( 46 )")
     public ResponseEntity deleteFavoriteIds(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                                   @RequestParam List<Long> id) {
-        favoriteService.deleteFavoriteIds(currentUser, id);
+                                                   @RequestParam List<Long> marketId) {
+        favoriteService.deleteFavoriteIds(currentUser, marketId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

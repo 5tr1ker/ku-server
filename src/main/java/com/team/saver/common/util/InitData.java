@@ -160,6 +160,7 @@ class PartnerRequestData {
     String description;
 
     String phoneNumber;
+
 }
 
 @AllArgsConstructor
@@ -437,11 +438,12 @@ public class InitData implements CommandLineRunner {
                 .mainCategory(MainCategory.RESTAURANT)
                 .locationX(35.121658)
                 .locationY(127.2165987)
+                .closedDays("월요일, 수요일")
                 .eventMessage(storeData_detail.eventMessage)
                 .marketImage(uploadFile(new File("src/main/resources/images/" + storeData_detail.imageName)))
                 .partner(account)
-                .closeTime(LocalTime.now())
-                .openTime(LocalTime.now())
+                .openTime(LocalTime.of(8,0,0))
+                .closeTime(LocalTime.of(21,0,0))
                 .marketPhone("010-1234-1234")
                 .build();
 
@@ -634,8 +636,9 @@ public class InitData implements CommandLineRunner {
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
-                    .closeTime(LocalTime.now())
-                    .openTime(LocalTime.now())
+                    .closedDays("토요일, 일요일")
+                    .openTime(LocalTime.of(10,0,0))
+                    .closeTime(LocalTime.of(22,0,0))
                     .marketPhone("010-1234-1234")
                     .build();
 
@@ -798,6 +801,9 @@ public class InitData implements CommandLineRunner {
         }
 
         // 파트너 요청
+        File partnerRequestFileImage = new File("src/main/resources/images/Rectangle 2327.png");
+        String partnerRequestImageUrl = uploadFile(partnerRequestFileImage);
+
         List<PartnerRequestData> partnerRequestData = new ArrayList<>();
         partnerRequestData.add(new PartnerRequestData("잎사이", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "잎사이 치킨집", "잎사이 치킨집 제발 등록해주시면 안될까요...? 여기 너무 맛있고 맨날 시켜먹는데 할인쿠폰까지 있으면 진짜 너무 좋을 것 같아서 남겨봅니다.. 잎사이 항상 잘 애용하고 있어요! 잎사이 최고!! 역시 최고의 앱!", "010 - 1234 - 5678"));
         partnerRequestData.add(new PartnerRequestData("화로상회 건대점", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "화로상회 건대점", "화로상회는 언제쯤 들어올까요? 전에 다른 지역에서 가봤는데 너무 맛있었어서 또 먹고 싶은데....", "010 - 1234 - 5678"));
@@ -816,16 +822,33 @@ public class InitData implements CommandLineRunner {
         partnerCommentData.add(new PartnerCommentData("헉 너무 공감이라 추천을 안 누를 수가 없네용"));
         partnerCommentData.add(new PartnerCommentData("그니까요 잎사이 치킨집 대체 언제 들어오는지,,,"));
 
+        int index_partner = 0;
         for (PartnerRequestData data : partnerRequestData) {
-            PartnerRequest request = PartnerRequest.builder()
-                    .requestMarketName(data.requestMarketName)
-                    .marketAddress(data.marketAddress)
-                    .detailAddress(data.detailAddress)
-                    .title(data.title)
-                    .description(data.description)
-                    .phoneNumber(data.phoneNumber)
-                    .requestUser(account)
-                    .build();
+            index_partner ++;
+            PartnerRequest request;
+
+            if(index_partner % 2 == 0) {
+                request = PartnerRequest.builder()
+                        .requestMarketName(data.requestMarketName)
+                        .marketAddress(data.marketAddress)
+                        .detailAddress(data.detailAddress)
+                        .title(data.title)
+                        .imageUrl(partnerRequestImageUrl)
+                        .description(data.description)
+                        .phoneNumber(data.phoneNumber)
+                        .requestUser(account)
+                        .build();
+            } else {
+                request = PartnerRequest.builder()
+                        .requestMarketName(data.requestMarketName)
+                        .marketAddress(data.marketAddress)
+                        .detailAddress(data.detailAddress)
+                        .title(data.title)
+                        .description(data.description)
+                        .phoneNumber(data.phoneNumber)
+                        .requestUser(account)
+                        .build();
+            }
 
             int recommend = random.nextInt(20);
             for (int i = 0; i < recommend; i++) {
@@ -868,13 +891,14 @@ public class InitData implements CommandLineRunner {
                     .isImportant(data.isImportant)
                     .title(data.title)
                     .announceType(data.announceType)
-                    .description("잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                    .description("안녕하세요, 고객 여러분.\n" +
+                            "항상 저희 서비스를 이용해 주셔서 감사드립니다.\n" +
+                            "저희 시스템이 2024년 9월 15일(금) 오전 2시부터 6시까지 정기 점검을 실시할 예정입니다. 점검 시간 동안 일부 서비스 이용이 제한될 수 있으니 양해 부탁드립니다.\n" +
                             "\n" +
-                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
+                            image_url_account_5 +
                             "\n" +
-                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. \n" +
-                            "\n" +
-                            "잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. 잎사이 사용 관련 공지사항 내용글입니다. ")
+                            "서비스 이용에 불편을 끼쳐드려 죄송하며, 더욱 나은 서비스를 제공하기 위해 노력하겠습니다.\n" +
+                            "감사합니다.")
                     .build();
 
             announceRepository.save(announce);

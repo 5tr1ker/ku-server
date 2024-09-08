@@ -50,6 +50,9 @@ public class PartnerRequest {
     @Column(nullable = false)
     private double locationY;
 
+    @Column
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Account requestUser;
@@ -65,7 +68,7 @@ public class PartnerRequest {
     @Builder.Default
     private List<PartnerRecommender> partnerRecommenders = new ArrayList<>();
 
-    public static PartnerRequest createEntity(Account account, PartnerRequestCreateRequest request) {
+    public static PartnerRequest createEntity(Account account, String imageUrl, PartnerRequestCreateRequest request) {
         return PartnerRequest.builder()
                 .requestMarketName(request.getRequestMarketName())
                 .marketAddress(request.getMarketAddress())
@@ -76,6 +79,7 @@ public class PartnerRequest {
                 .phoneNumber(request.getPhoneNumber())
                 .locationX(request.getLocationX())
                 .locationY(request.getLocationY())
+                .imageUrl(imageUrl)
                 .build();
     }
 
