@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,9 +31,10 @@ public class PartnerRequestController {
 
     @PostMapping("/v1/partners/requests")
     @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API ( 80 )")
-    public ResponseEntity requestNewPartner(@RequestBody PartnerRequestCreateRequest request
-            , @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        partnerRequestService.requestNewPartner(request, currentUser);
+    public ResponseEntity requestNewPartner(@RequestPart PartnerRequestCreateRequest request,
+                                            @RequestPart MultipartFile image,
+                                            @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
+        partnerRequestService.requestNewPartner(request, image, currentUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -84,7 +86,7 @@ public class PartnerRequestController {
     @DeleteMapping("/v1/partners/requests/{partnerRequestId}/recommendation")
     @Operation(summary = "[ 로그인 ] 파트너쉽 추천 취소 API ( 86 )")
     public ResponseEntity deleteRecommendation(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                                       @PathVariable long partnerRequestId) {
+                                               @PathVariable long partnerRequestId) {
         partnerRequestService.deleteRecommendation(currentUser, partnerRequestId);
 
         return ResponseEntity.ok().build();
@@ -93,8 +95,8 @@ public class PartnerRequestController {
     @PutMapping("/v1/partners/requests/{partnerRequestId}")
     @Operation(summary = "[ 로그인 ] 파트너쉽 수정 API ( 87 )")
     public ResponseEntity updatePartnerRequest(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                     @RequestBody PartnerRequestUpdateRequest request ,
-                                     @PathVariable long partnerRequestId) {
+                                               @RequestBody PartnerRequestUpdateRequest request,
+                                               @PathVariable long partnerRequestId) {
         partnerRequestService.updatePartnerRequest(currentUser, request, partnerRequestId);
 
         return ResponseEntity.ok().build();

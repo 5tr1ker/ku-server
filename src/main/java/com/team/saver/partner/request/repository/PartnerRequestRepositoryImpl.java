@@ -68,6 +68,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                                 partnerRequest.writeTime,
                                 partnerRequest.locationX,
                                 partnerRequest.locationY,
+                                partnerRequest.imageUrl,
                                 select(partnerRecommender.count()).from(partnerRecommender).where(partnerRecommender.partnerRequest.eq(partnerRequest)),
                                 partnerRecommender.isNotNull()
                         )
