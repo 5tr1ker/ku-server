@@ -19,6 +19,7 @@ import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.coupon.entity.QCoupon.coupon;
 import static com.team.saver.market.store.entity.QMarket.market;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 ))
                 .from(coupon)
                 .innerJoin(coupon.market).on(market.marketId.eq(marketId))
-                .where(coupon.isDelete.eq(false))
+                .where(coupon.isDelete.eq(false).and(coupon.expireDate.gt(LocalDateTime.now())))
                 .fetch();
     }
 
@@ -144,7 +145,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
         Coupon result = jpaQueryFactory.select(coupon)
                 .from(coupon)
                 .innerJoin(coupon.market, market).on(market.marketId.eq(marketId))
-                .where(coupon.couponId.eq(couponId))
+                .where(coupon.couponId.eq(couponId).and(coupon.expireDate.gt(LocalDateTime.now())))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -166,7 +167,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 ))
                 .from(downloadCoupon)
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
-                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice))
+                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice).and(coupon.expireDate.gt(LocalDateTime.now())))
                 .innerJoin(coupon.market, market).on(market.marketId.eq(marketId).or(market.eventCouponMarket.eq(true)))
                 .orderBy(coupon.priority.desc())
                 .where(downloadCoupon.isUsage.eq(false))
@@ -178,6 +179,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
         return jpaQueryFactory.select(downloadCoupon.count())
                 .from(downloadCoupon)
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.expireDate.gt(LocalDateTime.now()))
                 .fetchOne();
     }
 }

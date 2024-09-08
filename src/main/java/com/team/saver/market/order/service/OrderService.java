@@ -1,15 +1,11 @@
 package com.team.saver.market.order.service;
 
 import com.team.saver.account.entity.Account;
-import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
-import com.team.saver.market.basket.entity.Basket;
 import com.team.saver.market.basket.entity.BasketMenu;
-import com.team.saver.market.basket.entity.BasketMenuOption;
 import com.team.saver.market.basket.repository.BasketMenuRepository;
-import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.market.coupon.entity.Coupon;
 import com.team.saver.market.coupon.repository.CouponRepository;
 import com.team.saver.market.order.dto.OrderCreateRequest;
@@ -21,18 +17,14 @@ import com.team.saver.market.order.entity.OrderMenu;
 import com.team.saver.market.order.entity.OrderOption;
 import com.team.saver.market.order.repository.OrderRepository;
 import com.team.saver.market.store.entity.Market;
-import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.entity.MenuOption;
 import com.team.saver.market.store.repository.MarketRepository;
-import com.team.saver.market.store.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.team.saver.common.dto.ErrorMessage.*;
 
