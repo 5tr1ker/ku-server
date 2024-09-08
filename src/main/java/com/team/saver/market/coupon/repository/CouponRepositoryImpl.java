@@ -40,6 +40,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
+                        coupon.expireDate,
                         coupon.conditionToUseAmount,
                         coupon.saleRate,
                         select(downloadCoupon.isNotNull())
@@ -115,6 +116,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         downloadCoupon.isUsage,
                         coupon.couponName,
                         coupon.couponDescription,
+                        coupon.expireDate,
                         coupon.conditionToUseAmount,
                         coupon.saleRate,
                         market.marketId,
@@ -157,6 +159,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                         coupon.couponName,
                         coupon.conditionToUse,
                         coupon.couponDescription,
+                        coupon.expireDate,
                         coupon.conditionToUseAmount,
                         coupon.saleRate,
                         Expressions.booleanPath("true")

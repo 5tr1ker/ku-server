@@ -4,6 +4,8 @@ import com.team.saver.market.coupon.entity.ConditionToUse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 public class CouponCreateRequest {
@@ -15,5 +17,7 @@ public class CouponCreateRequest {
     private ConditionToUse conditionToUse;
 
     private int saleRate;
+
+    private LocalDateTime expireDate;
 
 }

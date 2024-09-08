@@ -75,6 +75,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -396,6 +397,7 @@ public class InitData implements CommandLineRunner {
                 .market(market_detail_admin)
                 .couponDescription("첫 구매시 사용 가능")
                 .couponName("잎사이 쿠폰")
+                .expireDate(LocalDateTime.now().plusWeeks(2))
                 .conditionToUse(ConditionToUse.FIRST_PURCHASE)
                 .saleRate(2000)
                 .build();
@@ -527,10 +529,10 @@ public class InitData implements CommandLineRunner {
         market_detail.addMenuContainer(menuContainer_6);
         market_detail.addMenuContainer(menuContainer_7);
 
-        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("10,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(10000).build();
-        Coupon coupon_2 = Coupon.builder().saleRate(3000).couponName("3,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(20000).build();
-        Coupon coupon_3 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(50000).build();
-        Coupon coupon_4 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).conditionToUseAmount(50000).build();
+        Coupon coupon_1 = Coupon.builder().saleRate(1000).couponName("1,000원 할인 쿠폰").couponDescription("10,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).expireDate(LocalDateTime.now().plusWeeks(1)).conditionToUseAmount(10000).build();
+        Coupon coupon_2 = Coupon.builder().saleRate(3000).couponName("3,000원 할인 쿠폰").couponDescription("20,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).expireDate(LocalDateTime.now().plusWeeks(1)).conditionToUseAmount(20000).build();
+        Coupon coupon_3 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).expireDate(LocalDateTime.now().plusWeeks(1)).conditionToUseAmount(50000).build();
+        Coupon coupon_4 = Coupon.builder().saleRate(5000).couponName("5,000원 할인 쿠폰").couponDescription("50,000원 이상 구매 시 사용가능").conditionToUse(ConditionToUse.MINIMUM_AMOUNT).expireDate(LocalDateTime.now().plusWeeks(1)).conditionToUseAmount(50000).build();
 
         market_detail.addCoupon(coupon_1);
         market_detail.addCoupon(coupon_2);
@@ -685,7 +687,7 @@ public class InitData implements CommandLineRunner {
                 int randomData = random.nextInt(10) * 10000;
                 int randomData_2 = random.nextInt(10) * 500;
 
-                CouponCreateRequest couponCreateRequest = new CouponCreateRequest(String.format("%s원 할인 쿠폰", numberFormat.format(randomData_2)), randomData, ConditionToUse.MINIMUM_AMOUNT, randomData_2);
+                CouponCreateRequest couponCreateRequest = new CouponCreateRequest(String.format("%s원 할인 쿠폰", numberFormat.format(randomData_2)), randomData, ConditionToUse.MINIMUM_AMOUNT, randomData_2 , LocalDateTime.now().plusMonths(1));
                 Coupon coupon = Coupon.createEntity(couponCreateRequest);
 
                 market.addCoupon(coupon);
