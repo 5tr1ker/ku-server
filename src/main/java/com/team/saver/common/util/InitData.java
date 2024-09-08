@@ -160,6 +160,7 @@ class PartnerRequestData {
     String description;
 
     String phoneNumber;
+
 }
 
 @AllArgsConstructor
@@ -800,6 +801,9 @@ public class InitData implements CommandLineRunner {
         }
 
         // 파트너 요청
+        File partnerRequestFileImage = new File("src/main/resources/images/Rectangle 2327.png");
+        String partnerRequestImageUrl = uploadFile(partnerRequestFileImage);
+
         List<PartnerRequestData> partnerRequestData = new ArrayList<>();
         partnerRequestData.add(new PartnerRequestData("잎사이", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "잎사이 치킨집", "잎사이 치킨집 제발 등록해주시면 안될까요...? 여기 너무 맛있고 맨날 시켜먹는데 할인쿠폰까지 있으면 진짜 너무 좋을 것 같아서 남겨봅니다.. 잎사이 항상 잘 애용하고 있어요! 잎사이 최고!! 역시 최고의 앱!", "010 - 1234 - 5678"));
         partnerRequestData.add(new PartnerRequestData("화로상회 건대점", "서울특별시 ㅇㅇ구 ㅇㅇ로 12길 3-45", "애옹빌라 302호", "화로상회 건대점", "화로상회는 언제쯤 들어올까요? 전에 다른 지역에서 가봤는데 너무 맛있었어서 또 먹고 싶은데....", "010 - 1234 - 5678"));
@@ -818,16 +822,33 @@ public class InitData implements CommandLineRunner {
         partnerCommentData.add(new PartnerCommentData("헉 너무 공감이라 추천을 안 누를 수가 없네용"));
         partnerCommentData.add(new PartnerCommentData("그니까요 잎사이 치킨집 대체 언제 들어오는지,,,"));
 
+        int index_partner = 0;
         for (PartnerRequestData data : partnerRequestData) {
-            PartnerRequest request = PartnerRequest.builder()
-                    .requestMarketName(data.requestMarketName)
-                    .marketAddress(data.marketAddress)
-                    .detailAddress(data.detailAddress)
-                    .title(data.title)
-                    .description(data.description)
-                    .phoneNumber(data.phoneNumber)
-                    .requestUser(account)
-                    .build();
+            index_partner ++;
+            PartnerRequest request;
+
+            if(index_partner % 2 == 0) {
+                request = PartnerRequest.builder()
+                        .requestMarketName(data.requestMarketName)
+                        .marketAddress(data.marketAddress)
+                        .detailAddress(data.detailAddress)
+                        .title(data.title)
+                        .imageUrl(partnerRequestImageUrl)
+                        .description(data.description)
+                        .phoneNumber(data.phoneNumber)
+                        .requestUser(account)
+                        .build();
+            } else {
+                request = PartnerRequest.builder()
+                        .requestMarketName(data.requestMarketName)
+                        .marketAddress(data.marketAddress)
+                        .detailAddress(data.detailAddress)
+                        .title(data.title)
+                        .description(data.description)
+                        .phoneNumber(data.phoneNumber)
+                        .requestUser(account)
+                        .build();
+            }
 
             int recommend = random.nextInt(20);
             for (int i = 0; i < recommend; i++) {

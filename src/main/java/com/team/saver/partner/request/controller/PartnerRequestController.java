@@ -32,7 +32,7 @@ public class PartnerRequestController {
     @PostMapping("/v1/partners/requests")
     @Operation(summary = "[ 로그인 ] 새로운 파트너십 요청 API ( 80 )")
     public ResponseEntity requestNewPartner(@RequestPart PartnerRequestCreateRequest request,
-                                            @RequestPart MultipartFile image,
+                                            @RequestPart(required = false) MultipartFile image,
                                             @Parameter(hidden = true) @LogIn CurrentUser currentUser) {
         partnerRequestService.requestNewPartner(request, image, currentUser);
 
