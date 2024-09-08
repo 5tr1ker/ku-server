@@ -51,7 +51,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavoriteIds(CurrentUser currentUser, List<Long> ids) {
-        List<Favorite> favorite = favoriteRepository.findByUserEmailAndIds(currentUser.getEmail(), ids);
+        List<Favorite> favorite = favoriteRepository.findByUserEmailAndMarketIds(currentUser.getEmail(), ids);
 
         favoriteRepository.deleteAll(favorite);
     }
