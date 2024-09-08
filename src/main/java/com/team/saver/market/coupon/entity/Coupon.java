@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,9 @@ public class Coupon {
     @Column(nullable = false)
     private int saleRate = 0;
 
+    @Column(nullable = false)
+    private LocalDateTime expireDate;
+
     @Builder.Default
     @Column(nullable = false)
     private boolean isDelete = false;
@@ -64,6 +68,7 @@ public class Coupon {
                 .couponDescription(String.format(ConditionToUse.MINIMUM_AMOUNT.getDescription(), formattedNumber))
                 .conditionToUse(request.getConditionToUse())
                 .conditionToUseAmount(request.getConditionToUseAmount())
+                .expireDate(request.getExpireDate())
                 .saleRate(request.getSaleRate())
                 .build();
     }

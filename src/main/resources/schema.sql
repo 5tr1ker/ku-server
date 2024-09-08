@@ -177,6 +177,7 @@ CREATE TABLE IF NOT EXISTS coupon (
                         priority BIGINT NOT NULL,
                         sale_rate INTEGER NOT NULL,
                         market_market_id BIGINT NOT NULL,
+                        expire_date DATETIME(6) NOT NULL,
                         PRIMARY KEY (coupon_id),
                         foreign key (market_market_id) references market (market_id)
 );

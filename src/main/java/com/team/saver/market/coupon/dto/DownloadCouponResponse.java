@@ -1,7 +1,10 @@
 package com.team.saver.market.coupon.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -14,6 +17,9 @@ public class DownloadCouponResponse {
     private String couponName;
 
     private String couponDescription;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime expireDate;
 
     private int conditionToUseAmount;
 
