@@ -81,7 +81,7 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
     public Optional<Coupon> findById(long couponId) {
         Coupon result = jpaQueryFactory.select(coupon)
                 .from(coupon)
-                .where(coupon.couponId.eq(couponId).and(coupon.isDelete.eq(false)))
+                .where(coupon.couponId.eq(couponId).and(coupon.isDelete.eq(false)).and(coupon.expireDate.gt(LocalDateTime.now())))
                 .fetchOne();
 
         return Optional.ofNullable(result);

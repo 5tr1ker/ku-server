@@ -437,11 +437,12 @@ public class InitData implements CommandLineRunner {
                 .mainCategory(MainCategory.RESTAURANT)
                 .locationX(35.121658)
                 .locationY(127.2165987)
+                .closedDays("월요일, 수요일")
                 .eventMessage(storeData_detail.eventMessage)
                 .marketImage(uploadFile(new File("src/main/resources/images/" + storeData_detail.imageName)))
                 .partner(account)
-                .closeTime(LocalTime.now())
-                .openTime(LocalTime.now())
+                .openTime(LocalTime.of(8,0,0))
+                .closeTime(LocalTime.of(21,0,0))
                 .marketPhone("010-1234-1234")
                 .build();
 
@@ -634,8 +635,9 @@ public class InitData implements CommandLineRunner {
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
-                    .closeTime(LocalTime.now())
-                    .openTime(LocalTime.now())
+                    .closedDays("토요일, 일요일")
+                    .openTime(LocalTime.of(10,0,0))
+                    .closeTime(LocalTime.of(22,0,0))
                     .marketPhone("010-1234-1234")
                     .build();
 

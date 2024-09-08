@@ -1,5 +1,6 @@
 package com.team.saver.market.store.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team.saver.market.store.entity.MainCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +29,10 @@ public class MarketDetailResponse {
 
     private String eventMessage;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime openTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime closeTime;
 
     private String closeDays;
