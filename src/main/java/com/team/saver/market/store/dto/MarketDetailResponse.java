@@ -43,4 +43,6 @@ public class MarketDetailResponse {
 
     private long reviewCount;
 
+    private boolean isFavorite;
+
 }

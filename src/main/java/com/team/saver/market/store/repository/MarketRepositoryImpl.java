@@ -3,17 +3,22 @@ package com.team.saver.market.store.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
+import com.team.saver.market.store.entity.QMarket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.saver.market.favorite.entity.QFavorite.favorite;
 import static com.team.saver.market.store.entity.QMenuOptionContainer.menuOptionContainer;
 import static com.team.saver.market.store.entity.QMenuContainer.menuContainer;
 import static com.querydsl.core.group.GroupBy.groupBy;
@@ -122,7 +127,10 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
-    public Optional<MarketDetailResponse> findMarketDetailById(long marketId) {
+    public Optional<MarketDetailResponse> findMarketDetailById(String email, long marketId) {
+        QMarket qMarket = new QMarket("qMarket");
+        StringTemplate castExpression = Expressions.stringTemplate("CONVERT({0}, CHAR(255))", email);
+
         MarketDetailResponse result = jpaQueryFactory.select(Projections.constructor(
                         MarketDetailResponse.class,
                         market.marketId,
@@ -139,7 +147,10 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
                         market.closedDays,
                         market.marketPhone,
                         review.score.avg(),
-                        review.countDistinct()
+                        review.countDistinct(),
+                        select(favorite.isNotNull()).from(favorite)
+                                .innerJoin(favorite.market, qMarket).on(qMarket.eq(market))
+                                .innerJoin(favorite.account, account).on(castExpression.eq(account.email))
                 ))
                 .from(market)
                 .leftJoin(market.reviews, review)

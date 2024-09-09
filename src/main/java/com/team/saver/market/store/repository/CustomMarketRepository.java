@@ -18,7 +18,7 @@ public interface CustomMarketRepository {
 
     List<MarketResponse> findMarketsAndSort(OrderSpecifier orderSpecifier, BooleanExpression conditional, Pageable pageable);
 
-    Optional<MarketDetailResponse> findMarketDetailById(long marketId);
+    Optional<MarketDetailResponse> findMarketDetailById(String email, long marketId);
 
     Optional<Market> findMarketByMarketIdAndPartnerEmail(String partnerEmail, long marketId);
 
