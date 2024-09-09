@@ -56,8 +56,8 @@ public class MarketService {
         return marketSortTool.sortMarket(request, market.mainCategory.eq(categoryData).and(market.marketName.contains(marketName)), pageable);
     }
 
-    public MarketDetailResponse findMarketDetailById(long marketId) {
-        return marketRepository.findMarketDetailById(marketId)
+    public MarketDetailResponse findMarketDetailById(CurrentUser currentUser, long marketId) {
+        return marketRepository.findMarketDetailById(currentUser.getEmail(), marketId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_MARKET));
     }
 

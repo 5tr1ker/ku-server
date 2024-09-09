@@ -2,6 +2,7 @@ package com.team.saver.market.store.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.LogInNotEssential;
 import com.team.saver.market.store.dto.*;
 import com.team.saver.market.store.entity.MainCategory;
 import com.team.saver.market.store.service.MarketService;
@@ -46,9 +47,10 @@ public class MarketController {
     }
 
     @GetMapping("/v1/markets/{marketId}/details")
-    @Operation(summary = "해당 Market의 상세 정보 가져오기 ( 65 )")
-    public ResponseEntity findMarketDetailById(@PathVariable long marketId) {
-        MarketDetailResponse result = marketService.findMarketDetailById(marketId);
+    @Operation(summary = "[ 비-로그인 ] 해당 Market의 상세 정보 가져오기 ( 65 )")
+    public ResponseEntity findMarketDetailById(@LogInNotEssential CurrentUser currentUser,
+                                               @PathVariable long marketId) {
+        MarketDetailResponse result = marketService.findMarketDetailById(currentUser, marketId);
 
         return ResponseEntity.ok(result);
     }
