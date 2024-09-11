@@ -1,5 +1,6 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -41,22 +42,28 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType) {
+    public List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType, Pageable pageable) {
         QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
 
-        JPAQuery query = jpaQueryFactory
-                .selectFrom(review)
+        JPAQuery<Long> query = jpaQueryFactory.select(review.reviewId)
+                .from(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .where(review.isDelete.eq(false));
+
+        setSortQuery(query, sortType);
+        List<Long> pageableId = query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        return jpaQueryFactory.selectFrom(review)
+                .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
-                .where(review.isDelete.eq(false));
-
-        setSortQuery(query, sortType);
-
-        return (List<ReviewResponse>) query
+                .where(review.reviewId.in(pageableId))
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
                                 ReviewResponse.class,
@@ -219,7 +226,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewResponse> findRandomBestReview(String email, long minimum , Pageable pageable) {
+    public List<ReviewResponse> findRandomBestReview(String email, long minimum, Pageable pageable) {
         QReview qReview2 = new QReview("qReview2");
 
         JPAQueryBase query = jpaQueryFactory.selectFrom(review)

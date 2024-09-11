@@ -30,8 +30,9 @@ public class ReviewController {
     @Operation(summary = "[ 비 - 로그인 ]마켓에 등록된 리뷰 가져오기 ( 51 )")
     public ResponseEntity findReviewByMarketId(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
                                                @PathVariable long marketId,
-                                               @RequestParam SortType sort) {
-        List<ReviewResponse> result = reviewService.findByMarketId(currentUser, marketId, sort);
+                                               @RequestParam SortType sort,
+                                               Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findByMarketId(currentUser, marketId, sort, pageable);
 
         return ResponseEntity.ok(result);
     }
