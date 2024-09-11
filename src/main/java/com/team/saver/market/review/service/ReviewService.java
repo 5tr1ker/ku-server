@@ -37,8 +37,11 @@ public class ReviewService {
     private final S3Service s3Service;
     private final ReviewRecommenderRepository reviewRecommenderRepository;
 
-    public List<ReviewResponse> findByMarketId(CurrentUser currentUser, long marketId, SortType sortType) {
-        return reviewRepository.findByMarketId(currentUser.getEmail() , marketId, sortType);
+    public List<ReviewResponse> findByMarketId(CurrentUser currentUser,
+                                               long marketId,
+                                               SortType sortType,
+                                               Pageable pageable) {
+        return reviewRepository.findByMarketId(currentUser.getEmail() , marketId, sortType, pageable);
     }
 
     public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {

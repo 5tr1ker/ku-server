@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CustomReviewRepository {
 
-    List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType);
+    List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType, Pageable pageable);
 
     Optional<Review> findByReviewerAndReviewId(String reviewerEmail, long reviewId);
 

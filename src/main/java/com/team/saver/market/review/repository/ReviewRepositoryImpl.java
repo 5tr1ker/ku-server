@@ -1,5 +1,6 @@
 package com.team.saver.market.review.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -19,6 +20,8 @@ import com.team.saver.market.review.entity.ReviewRecommender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,42 +44,57 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType) {
+    public List<ReviewResponse> findByMarketId(String email, long marketId, SortType sortType, Pageable pageable) {
         QReviewRecommender qReviewRecommender = new QReviewRecommender("qReviewRecommender1");
-
-        JPAQuery query = jpaQueryFactory
-                .selectFrom(review)
+        JPAQuery<Long> query = jpaQueryFactory.select(review.reviewId)
+                .from(review)
                 .innerJoin(review.market, market).on(market.marketId.eq(marketId))
+                .where(review.isDelete.eq(false));
+
+        setSortQuery(query, sortType);
+        List<Long> pageableId = query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<String> pageableId_string = pageableId.stream()
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+
+        String pageableIndex = String.join(",", pageableId_string);
+
+        JPAQuery<Review> result_query = jpaQueryFactory.selectFrom(review)
+                .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account)
                 .leftJoin(review.recommender, reviewRecommender).on(reviewRecommender.account.email.eq(email))
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .leftJoin(review.reviewImage, reviewImage).on(reviewImage.isDelete.eq(false))
-                .where(review.isDelete.eq(false));
+                .where(review.reviewId.in(pageableId));
 
-        setSortQuery(query, sortType);
+        if (pageableId.size() != 0) {
+            result_query.orderBy(Expressions.stringTemplate("FIELD({0}," + pageableIndex + ")", review.reviewId).asc());
+        }
 
-        return (List<ReviewResponse>) query
-                .transform(groupBy(review.reviewId)
-                        .list(Projections.constructor(
-                                ReviewResponse.class,
-                                review.reviewId,
-                                account.accountId,
-                                account.email,
-                                account.profileImage,
-                                review.content,
-                                review.writeTime,
-                                market.marketId,
-                                market.marketName,
-                                orderMenu.menuName,
-                                review.score,
-                                jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
-                                reviewRecommender.isNotNull(),
-                                list(Projections.constructor(ReviewImageResponse.class,
-                                        reviewImage.reviewImageId,
-                                        reviewImage.imageUrl).skipNulls())
-                        ))
-                );
+        return result_query.transform(groupBy(review.reviewId)
+                .list(Projections.constructor(
+                        ReviewResponse.class,
+                        review.reviewId,
+                        account.accountId,
+                        account.email,
+                        account.profileImage,
+                        review.content,
+                        review.writeTime,
+                        market.marketId,
+                        market.marketName,
+                        orderMenu.menuName,
+                        review.score,
+                        jpaQueryFactory.select(qReviewRecommender.count()).from(qReviewRecommender).where(qReviewRecommender.review.eq(review)),
+                        reviewRecommender.isNotNull(),
+                        list(Projections.constructor(ReviewImageResponse.class,
+                                reviewImage.reviewImageId,
+                                reviewImage.imageUrl).skipNulls())
+                ))
+        );
     }
 
     private void setSortQuery(JPAQuery query, SortType sortType) {
@@ -219,7 +237,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewResponse> findRandomBestReview(String email, long minimum , Pageable pageable) {
+    public List<ReviewResponse> findRandomBestReview(String email, long minimum, Pageable pageable) {
         QReview qReview2 = new QReview("qReview2");
 
         JPAQueryBase query = jpaQueryFactory.selectFrom(review)
