@@ -6,6 +6,7 @@ import com.team.saver.market.favorite.entity.Favorite;
 
 import com.team.saver.market.store.dto.MarketResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import static com.team.saver.account.entity.QAccount.account;
 import static com.team.saver.market.favorite.entity.QFavorite.favorite;
@@ -33,7 +34,7 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
     }
 
     @Override
-    public List<MarketResponse> findFavoriteMarketByUserEmail(String email) {
+    public List<MarketResponse> findFavoriteMarketByUserEmail(String email, Pageable pageable) {
         return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
@@ -57,6 +58,8 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 

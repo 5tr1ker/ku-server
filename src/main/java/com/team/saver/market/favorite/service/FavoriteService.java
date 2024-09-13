@@ -12,6 +12,7 @@ import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.util.MarketSortTool;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +49,8 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY) {
-        List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail());
+    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY, Pageable pageable) {
+        List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail(), pageable);
 
         return DistanceCalculator.calculateMarketDistance(result, locationX, locationY);
     }
