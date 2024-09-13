@@ -44,8 +44,8 @@ public class ReviewService {
         return reviewRepository.findByMarketId(currentUser.getEmail() , marketId, sortType, pageable);
     }
 
-    public List<ReviewResponse> findByUserEmail(CurrentUser currentUser) {
-        return reviewRepository.findByUserEmail(currentUser.getEmail());
+    public List<ReviewResponse> findByUserEmail(CurrentUser currentUser, Pageable pageable) {
+        return reviewRepository.findByUserEmail(currentUser.getEmail(), pageable);
     }
 
     public ReviewResponse findDetailByReviewId(CurrentUser currentUser, long reviewId) {

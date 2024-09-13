@@ -14,7 +14,7 @@ public interface CustomReviewRepository {
 
     Optional<Review> findByReviewerAndReviewId(String reviewerEmail, long reviewId);
 
-    List<ReviewResponse> findByUserEmail(String email);
+    List<ReviewResponse> findByUserEmail(String email, Pageable pageable);
 
     Long findRecommenderCountByEmailAndReviewId(String email, long reviewId);
 
