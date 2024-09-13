@@ -11,6 +11,7 @@ import com.team.saver.partner.comment.repository.PartnerCommentRepository;
 import com.team.saver.partner.request.entity.PartnerRequest;
 import com.team.saver.partner.request.repository.PartnerRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +47,8 @@ public class PartnerCommentService {
         partnerCommentRepository.delete(result);
     }
 
-    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId) {
-        return partnerCommentRepository.findByPartnerRequestId(partnerRequestId);
+    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, Pageable pageable) {
+        return partnerCommentRepository.findByPartnerRequestId(partnerRequestId, pageable);
     }
 
 }

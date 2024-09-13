@@ -138,7 +138,16 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<ReviewResponse> findByUserEmail(String email) {
+    public List<ReviewResponse> findByUserEmail(String email, Pageable pageable) {
+        List<Long> reviewLists = jpaQueryFactory.select(review.reviewId)
+                .from(review)
+                .innerJoin(review.reviewer, account).on(account.email.eq(email))
+                .where(review.isDelete.eq(false))
+                .orderBy(review.reviewId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         return jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.market, market)
                 .innerJoin(review.reviewer, account).on(account.email.eq(email))
@@ -147,7 +156,7 @@ public class ReviewRepositoryImpl implements CustomReviewRepository {
                 .innerJoin(review.order, order)
                 .leftJoin(order.orderMenus, orderMenu)
                 .orderBy(review.reviewId.desc())
-                .where(review.isDelete.eq(false))
+                .where(review.reviewId.in(reviewLists))
                 .transform(groupBy(review.reviewId)
                         .list(Projections.constructor(
                                 ReviewResponse.class,

@@ -7,6 +7,7 @@ import com.team.saver.market.store.dto.MarketResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,9 @@ public class FavoriteController {
     @Operation(summary = "[ 로그인 ] 내가 추가한 관심 가게 조회 ( 44 )")
     public ResponseEntity findFavoriteMarketByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                         @RequestParam double locationX,
-                                                        @RequestParam double locationY) {
-        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser, locationX, locationY);
+                                                        @RequestParam double locationY,
+                                                        Pageable pageable) {
+        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser, locationX, locationY, pageable);
 
         return ResponseEntity.ok(result);
     }

@@ -20,6 +20,7 @@ import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.MenuOption;
 import com.team.saver.market.store.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,8 +99,8 @@ public class OrderService {
         orderRepository.delete(order);
     }
 
-    public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser, boolean existReview) {
-        return orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview);
+    public List<OrderResponse> findOrderByUserEmail(CurrentUser currentUser, boolean existReview, Pageable pageable) {
+        return orderRepository.findOrderDataByUserEmail(currentUser.getEmail(), existReview, pageable);
     }
 
     public OrderDetailResponse getOrderDetailByOrderIdAndEmail(CurrentUser currentUser, long orderId) {

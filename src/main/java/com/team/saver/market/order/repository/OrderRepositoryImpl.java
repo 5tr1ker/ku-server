@@ -12,6 +12,7 @@ import com.team.saver.market.order.entity.Order;
 import com.team.saver.market.order.entity.OrderMenu;
 import com.team.saver.market.order.entity.QOrderMenu;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
     }
 
     @Override
-    public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview) {
+    public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview, Pageable pageable) {
         JPAQuery<OrderResponse> result = jpaQueryFactory.select(
                         Projections.constructor(
                                 OrderResponse.class,
@@ -61,7 +62,9 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.orderDetail, orderDetail)
                 .innerJoin(order.market, market)
                 .innerJoin(order.orderMenus, orderMenu)
-                .groupBy(order.orderId);
+                .groupBy(order.orderId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
 
         if (existReview) {
             result.innerJoin(order.review);

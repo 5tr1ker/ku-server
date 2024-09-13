@@ -96,8 +96,8 @@ public class ReviewController {
 
     @GetMapping("/v1/markets/reviews/me")
     @Operation(summary = "[ 로그인 ] 내가 등록한 리뷰 가져오기 ( 57 )")
-    public ResponseEntity findByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        List<ReviewResponse> result = reviewService.findByUserEmail(currentUser);
+    public ResponseEntity findByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser, Pageable pageable) {
+        List<ReviewResponse> result = reviewService.findByUserEmail(currentUser, pageable);
 
         return ResponseEntity.ok(result);
     }
