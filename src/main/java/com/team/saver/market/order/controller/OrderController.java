@@ -9,6 +9,7 @@ import com.team.saver.market.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +43,9 @@ public class OrderController {
     @GetMapping("/v1/markets/orders/me")
     @Operation(summary = "[ 로그인 ] 나의 주문 목록 모두 가져오기 ( 49 )")
     public ResponseEntity findOrderByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
-                                               @RequestParam boolean existReview) {
-        List<OrderResponse> result = orderService.findOrderByUserEmail(currentUser, existReview);
+                                               @RequestParam boolean existReview,
+                                               Pageable pageable) {
+        List<OrderResponse> result = orderService.findOrderByUserEmail(currentUser, existReview, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
