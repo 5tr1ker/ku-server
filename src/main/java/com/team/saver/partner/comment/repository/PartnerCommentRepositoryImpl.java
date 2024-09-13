@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import static com.team.saver.partner.request.entity.QPartnerRequest.partnerRequest;
 import static com.team.saver.partner.comment.entity.QPartnerComment.partnerComment;
@@ -30,7 +31,7 @@ public class PartnerCommentRepositoryImpl implements CustomPartnerCommentReposit
     }
 
     @Override
-    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId) {
+    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, Pageable pageable) {
 
         return jpaQueryFactory.select(
                         Projections.constructor(
@@ -44,6 +45,8 @@ public class PartnerCommentRepositoryImpl implements CustomPartnerCommentReposit
                 ).from(partnerComment)
                 .innerJoin(partnerComment.writer, account)
                 .innerJoin(partnerComment.partnerRequest, partnerRequest).on(partnerRequest.partnerRequestId.eq(partnerRequestId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 }
