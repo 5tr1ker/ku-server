@@ -438,7 +438,7 @@ public class InitData implements CommandLineRunner {
                 .mainCategory(MainCategory.RESTAURANT)
                 .locationX(35.121658)
                 .locationY(127.2165987)
-                .closedDays("월요일, 수요일")
+                .closedDays("매주 월,수 휴무")
                 .eventMessage(storeData_detail.eventMessage)
                 .marketImage(uploadFile(new File("src/main/resources/images/" + storeData_detail.imageName)))
                 .partner(account)
@@ -624,6 +624,9 @@ public class InitData implements CommandLineRunner {
             double randomY = random.nextDouble(5);
             File image = new File("src/main/resources/images/" + data.imageName);
 
+            int random2 = random.nextInt(6);
+            String today_data[] = new String[] {"월", "화" , "수" , "목" , "금" , "토" , "일"};
+
             // Market
             Market market = Market.builder()
                     .marketName(data.storeName)
@@ -636,7 +639,7 @@ public class InitData implements CommandLineRunner {
                     .eventMessage(data.eventMessage)
                     .marketImage(uploadFile(image))
                     .partner(account)
-                    .closedDays("토요일, 일요일")
+                    .closedDays("매주 " + today_data[random2] + "," + today_data[random2 + 1] + " 휴무")
                     .openTime(LocalTime.of(10,0,0))
                     .closeTime(LocalTime.of(22,0,0))
                     .marketPhone("010-1234-1234")
