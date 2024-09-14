@@ -23,13 +23,15 @@ public class MarketRecommendContainer {
         List<MarketResponse> result = new ArrayList<>();
         List<Node> temp = new ArrayList<>();
 
-        for(int i = 0; i < count && !queue.isEmpty() ; i++) {
-            temp.add(queue.peek());
-            result.add(queue.poll().marketResponse);
+        PriorityQueue<Node> copy = new PriorityQueue<>(queue);
+
+        for(int i = 0; i < count && !copy.isEmpty() ; i++) {
+            temp.add(copy.peek());
+            result.add(copy.poll().marketResponse);
         }
 
         for(Node node : temp) {
-            queue.add(node);
+            copy.add(node);
         }
 
         return result;

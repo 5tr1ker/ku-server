@@ -33,13 +33,9 @@ public class PartnerRequestService {
     private final S3Service s3Service;
 
     @Transactional
-    public void requestNewPartner(PartnerRequestCreateRequest request, MultipartFile image, CurrentUser currentUser) {
+    public void requestNewPartner(PartnerRequestCreateRequest request, CurrentUser currentUser) {
         Account account = accountService.getProfile(currentUser);
         String imageUrl = "";
-
-        if(image != null) {
-            imageUrl = s3Service.uploadImage(image);
-        }
 
         PartnerRequest partnerRequest = PartnerRequest.createEntity(account, imageUrl, request);
         partnerRequestRepository.save(partnerRequest);
