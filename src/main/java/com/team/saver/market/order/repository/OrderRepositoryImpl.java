@@ -46,7 +46,21 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
 
     @Override
     public List<OrderResponse> findOrderDataByUserEmail(String email, boolean existReview, Pageable pageable) {
-        JPAQuery<OrderResponse> result = jpaQueryFactory.select(
+        JPAQuery<Long> query = jpaQueryFactory.select(order.orderId)
+                .from(order)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        if (existReview) {
+            query.innerJoin(order.review);
+        } else {
+            query.leftJoin(order.review, review);
+            query.where(review.isNull());
+        }
+
+        List<Long> indexKey = query.fetch();
+
+        return jpaQueryFactory.select(
                         Projections.constructor(
                                 OrderResponse.class,
                                 order.orderId,
@@ -63,17 +77,9 @@ public class OrderRepositoryImpl implements CustomOrderRepository {
                 .innerJoin(order.market, market)
                 .innerJoin(order.orderMenus, orderMenu)
                 .groupBy(order.orderId)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
-
-        if (existReview) {
-            result.innerJoin(order.review);
-        } else {
-            result.leftJoin(order.review, review);
-            result.where(review.isNull());
-        }
-
-        return result.fetch();
+                .orderBy(order.orderId.desc())
+                .where(order.orderId.in(indexKey))
+                .fetch();
     }
 
     @Override
