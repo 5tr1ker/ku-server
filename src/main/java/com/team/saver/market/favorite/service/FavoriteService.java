@@ -3,6 +3,7 @@ package com.team.saver.market.favorite.service;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.repository.AccountRepository;
 import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.common.util.DistanceCalculator;
 import com.team.saver.market.favorite.entity.Favorite;
@@ -49,8 +50,8 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY, Pageable pageable) {
-        List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail(), pageable);
+    public List<MarketResponse> findFavoriteMarketByUserEmail(CurrentUser currentUser, double locationX, double locationY, NoOffset noOffset) {
+        List<MarketResponse> result = favoriteRepository.findFavoriteMarketByUserEmail(currentUser.getEmail(), noOffset);
 
         return DistanceCalculator.calculateMarketDistance(result, locationX, locationY);
     }
