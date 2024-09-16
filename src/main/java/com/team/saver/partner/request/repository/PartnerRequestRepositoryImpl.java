@@ -29,6 +29,13 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
 
     @Override
     public List<PartnerRequestResponse> findAllEntity(String email, Pageable pageable) {
+        List<Long> idList = jpaQueryFactory.select(partnerRequest.partnerRequestId)
+                .from(partnerRequest)
+                .orderBy(partnerRequest.writeTime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         return jpaQueryFactory
                 .select(Projections.constructor(
                         PartnerRequestResponse.class,
@@ -46,8 +53,7 @@ public class PartnerRequestRepositoryImpl implements CustomPartnerRequestReposit
                 .leftJoin(partnerRequest.partnerRecommenders, partnerRecommender).on(partnerRecommender.account.email.eq(email))
                 .groupBy(partnerRequest.partnerRequestId)
                 .orderBy(partnerRequest.writeTime.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(partnerRequest.partnerRequestId.in(idList))
                 .fetch();
     }
 

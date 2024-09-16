@@ -2,6 +2,7 @@ package com.team.saver.partner.comment.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PartnerCommentRepositoryImpl implements CustomPartnerCommentReposit
     }
 
     @Override
-    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, Pageable pageable) {
+    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, NoOffset noOffset) {
 
         return jpaQueryFactory.select(
                         Projections.constructor(
@@ -45,8 +46,8 @@ public class PartnerCommentRepositoryImpl implements CustomPartnerCommentReposit
                 ).from(partnerComment)
                 .innerJoin(partnerComment.writer, account)
                 .innerJoin(partnerComment.partnerRequest, partnerRequest).on(partnerRequest.partnerRequestId.eq(partnerRequestId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(partnerComment.partnerCommentId.gt(noOffset.getLastIndex()))
+                .limit(noOffset.getSize())
                 .fetch();
     }
 }

@@ -3,6 +3,7 @@ package com.team.saver.partner.comment.service;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
@@ -47,8 +48,8 @@ public class PartnerCommentService {
         partnerCommentRepository.delete(result);
     }
 
-    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, Pageable pageable) {
-        return partnerCommentRepository.findByPartnerRequestId(partnerRequestId, pageable);
+    public List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, NoOffset noOffset) {
+        return partnerCommentRepository.findByPartnerRequestId(partnerRequestId, noOffset);
     }
 
 }
