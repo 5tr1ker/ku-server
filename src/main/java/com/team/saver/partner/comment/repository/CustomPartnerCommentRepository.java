@@ -1,5 +1,6 @@
 package com.team.saver.partner.comment.repository;
 
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.entity.PartnerComment;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,6 @@ public interface CustomPartnerCommentRepository {
 
     Optional<PartnerComment> findByEmailAndCommentId(String email, long commentId);
 
-    List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, Pageable pageable);
+    List<PartnerCommentResponse> findByPartnerRequestId(long partnerRequestId, NoOffset noOffset);
 
 }

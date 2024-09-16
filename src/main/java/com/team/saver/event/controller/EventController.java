@@ -3,6 +3,7 @@ package com.team.saver.event.controller;
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
 import com.team.saver.common.dto.LogInNotEssential;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.event.dto.EventDetailResponse;
 import com.team.saver.event.dto.EventCreateRequest;
 import com.team.saver.event.dto.EventResponse;
@@ -29,8 +30,8 @@ public class EventController {
     @Operation(summary = "[ 비 - 로그인 ] 이벤트 데이터 가져오기 ( 20 )")
     public ResponseEntity findEvent(@Parameter(hidden = true) @LogInNotEssential CurrentUser currentUser,
                                     @RequestParam boolean isParticipant,
-                                    Pageable pageable) {
-        List<EventResponse> result = eventService.findEvent(currentUser, isParticipant, pageable);
+                                    NoOffset noOffset) {
+        List<EventResponse> result = eventService.findEvent(currentUser, isParticipant, noOffset);
 
         return ResponseEntity.ok(result);
     }
@@ -70,7 +71,7 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/v1/events/{eventId}/participation")
+    @PostMapping("/v1/events/{eventId}/participation")
     @Operation(summary = "[ 로그인 ] 이벤트 참여 ( 122 )")
     public ResponseEntity participateEvent(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                            @PathVariable long eventId) {

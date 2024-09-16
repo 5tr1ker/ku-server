@@ -3,6 +3,7 @@ package com.team.saver.event.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.event.dto.EventDetailResponse;
 import com.team.saver.event.dto.EventResponse;
 import com.team.saver.event.entity.EventParticipation;
@@ -22,9 +23,8 @@ public class EventRepositoryImpl implements CustomEventRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
-    public List<EventResponse> findEvent(String email, boolean isParticipant, Pageable pageable) {
+    public List<EventResponse> findEvent(String email, boolean isParticipant, NoOffset noOffset) {
         JPAQueryBase query = jpaQueryFactory.select(
                         Projections.constructor(EventResponse.class,
                                 event.eventId,
@@ -34,9 +34,8 @@ public class EventRepositoryImpl implements CustomEventRepository {
                                 event.eventEndDate
                         )
                 ).from(event)
-                .where(event.isDelete.eq(false))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+                .where(event.isDelete.eq(false).and(event.eventId.gt(noOffset.getLastIndex())))
+                .limit(noOffset.getSize());
 
         if (isParticipant) {
             query.leftJoin(event.eventParticipants, eventParticipation)
@@ -54,7 +53,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
     }
 
     @Override
-    public List<EventResponse> findEvent(Pageable pageable) {
+    public List<EventResponse> findEvent(NoOffset noOffset) {
         return jpaQueryFactory.select(
                         Projections.constructor(EventResponse.class,
                                 event.eventId,
@@ -64,9 +63,8 @@ public class EventRepositoryImpl implements CustomEventRepository {
                                 event.eventEndDate
                         )
                 ).from(event)
-                .where(event.isDelete.eq(false))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(event.isDelete.eq(false).and(event.eventId.gt(noOffset.getLastIndex())))
+                .limit(noOffset.getSize())
                 .fetch();
     }
 

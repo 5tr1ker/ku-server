@@ -3,6 +3,7 @@ package com.team.saver.event.service;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.event.dto.EventDetailResponse;
 import com.team.saver.event.dto.EventCreateRequest;
@@ -31,12 +32,12 @@ public class EventService {
     private final S3Service s3Service;
     private final AccountService accountService;
 
-    public List<EventResponse> findEvent(CurrentUser currentUser, boolean isParticipant , Pageable pageable) {
+    public List<EventResponse> findEvent(CurrentUser currentUser, boolean isParticipant , NoOffset noOffset) {
         if(currentUser.getEmail().equals("empty")) {
-            return eventRepository.findEvent(pageable);
+            return eventRepository.findEvent(noOffset);
         }
 
-        return eventRepository.findEvent(currentUser.getEmail(), isParticipant, pageable);
+        return eventRepository.findEvent(currentUser.getEmail(), isParticipant, noOffset);
     }
 
     public EventDetailResponse findEventDetail(long eventId) {

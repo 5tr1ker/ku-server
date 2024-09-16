@@ -2,6 +2,7 @@ package com.team.saver.market.favorite.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.market.favorite.entity.Favorite;
 
 import com.team.saver.market.store.dto.MarketResponse;
@@ -34,7 +35,7 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
     }
 
     @Override
-    public List<MarketResponse> findFavoriteMarketByUserEmail(String email, Pageable pageable) {
+    public List<MarketResponse> findFavoriteMarketByUserEmail(String email, NoOffset noOffset) {
         return jpaQueryFactory.select(Projections.constructor(MarketResponse.class,
                         market.marketId,
                         market.mainCategory,
@@ -58,8 +59,8 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(favorite.favoriteId.gt(noOffset.getLastIndex()))
+                .limit(noOffset.getSize())
                 .fetch();
     }
 

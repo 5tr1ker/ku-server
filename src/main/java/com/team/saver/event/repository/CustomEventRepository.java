@@ -1,5 +1,6 @@
 package com.team.saver.event.repository;
 
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.event.dto.EventDetailResponse;
 import com.team.saver.event.dto.EventResponse;
 import com.team.saver.event.entity.EventParticipation;
@@ -10,9 +11,9 @@ import java.util.Optional;
 
 public interface CustomEventRepository {
 
-    List<EventResponse> findEvent(String email, boolean isParticipant, Pageable pageable);
+    List<EventResponse> findEvent(String email, boolean isParticipant, NoOffset noOffset);
 
-    List<EventResponse> findEvent(Pageable pageable);
+    List<EventResponse> findEvent(NoOffset noOffset);
 
     Optional<EventDetailResponse> findEventDetail(long eventId);
 

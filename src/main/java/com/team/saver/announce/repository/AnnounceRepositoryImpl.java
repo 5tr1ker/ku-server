@@ -24,6 +24,14 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
 
     @Override
     public List<AnnounceResponse> findAllAnnounce(Pageable pageable, boolean isImportant) {
+        List<Long> idList = jpaQueryFactory.select(announce.announceId)
+                .from(announce)
+                .where(announce.isImportant.eq(isImportant).and(announce.isDelete.eq(false)))
+                .orderBy(announce.announceId.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
         return jpaQueryFactory.select(
                         Projections.constructor(
                                 AnnounceResponse.class,
@@ -35,9 +43,7 @@ public class AnnounceRepositoryImpl implements CustomAnnounceRepository {
                         )
                 ).from(announce)
                 .orderBy(announce.announceId.desc())
-                .where(announce.isImportant.eq(isImportant).and(announce.isDelete.eq(false)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(announce.announceId.in(idList))
                 .fetch();
     }
 

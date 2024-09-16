@@ -2,6 +2,7 @@ package com.team.saver.partner.comment.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.partner.comment.dto.PartnerCommentCreateRequest;
 import com.team.saver.partner.comment.dto.PartnerCommentResponse;
 import com.team.saver.partner.comment.service.PartnerCommentService;
@@ -42,8 +43,8 @@ public class PartnerCommentController {
 
     @GetMapping("/v1/partners/requests/{partnerRequestId}/comments")
     @Operation(summary = "해당 파트너쉽에 관련된 데이터 가져오기 ( 79 )")
-    public ResponseEntity findByPartnerRequestId(@PathVariable long partnerRequestId, Pageable pageable) {
-        List<PartnerCommentResponse> result = partnerCommentService.findByPartnerRequestId(partnerRequestId, pageable);
+    public ResponseEntity findByPartnerRequestId(@PathVariable long partnerRequestId, NoOffset noOffset) {
+        List<PartnerCommentResponse> result = partnerCommentService.findByPartnerRequestId(partnerRequestId, noOffset);
 
         return ResponseEntity.ok(result);
     }

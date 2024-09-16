@@ -9,6 +9,7 @@ import com.team.saver.history.dto.HistoryResponse;
 import com.team.saver.history.entity.History;
 import com.team.saver.history.repository.HistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +25,8 @@ public class HistoryService {
     private final HistoryRepository historyRepository;
     private final AccountRepository accountRepository;
 
-    public List<HistoryResponse> findAllByAccount(CurrentUser currentUser) {
-        return historyRepository.findAllByEmail(currentUser.getEmail());
+    public List<HistoryResponse> findAllByAccount(CurrentUser currentUser, Pageable pageable) {
+        return historyRepository.findAllByEmail(currentUser.getEmail(), pageable);
     }
 
     @Transactional

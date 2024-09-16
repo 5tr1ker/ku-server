@@ -2,6 +2,7 @@ package com.team.saver.market.favorite.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.market.favorite.service.FavoriteService;
 import com.team.saver.market.store.dto.MarketResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +35,8 @@ public class FavoriteController {
     public ResponseEntity findFavoriteMarketByUserEmail(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
                                                         @RequestParam double locationX,
                                                         @RequestParam double locationY,
-                                                        Pageable pageable) {
-        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser, locationX, locationY, pageable);
+                                                        NoOffset noOffset) {
+        List<MarketResponse> result = favoriteService.findFavoriteMarketByUserEmail(currentUser, locationX, locationY, noOffset);
 
         return ResponseEntity.ok(result);
     }
