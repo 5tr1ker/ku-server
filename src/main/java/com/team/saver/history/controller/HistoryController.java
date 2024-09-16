@@ -8,6 +8,7 @@ import com.team.saver.history.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public class HistoryController {
 
     @GetMapping("/v1/histories")
     @Operation(summary = "[ 로그인 ] History 정보 가져오기 ( 25 )")
-    public ResponseEntity findAllByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser) {
-        List<HistoryResponse> result = historyService.findAllByAccount(currentUser);
+    public ResponseEntity findAllByAccount(@Parameter(hidden = true) @LogIn CurrentUser currentUser,
+                                           Pageable pageable) {
+        List<HistoryResponse> result = historyService.findAllByAccount(currentUser, pageable);
 
         return ResponseEntity.ok(result);
     }

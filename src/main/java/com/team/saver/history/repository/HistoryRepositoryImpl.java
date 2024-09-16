@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.history.dto.HistoryResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class HistoryRepositoryImpl implements CustomHistoryRepository {
     }
 
     @Override
-    public List<HistoryResponse> findAllByEmail(String email) {
+    public List<HistoryResponse> findAllByEmail(String email, Pageable pageable) {
         return jpaQueryFactory.select(
                         Projections.constructor(HistoryResponse.class,
                                 history.historyId,
@@ -41,6 +42,7 @@ public class HistoryRepositoryImpl implements CustomHistoryRepository {
                         )).from(history)
                 .innerJoin(history.account, account).on(account.email.eq(email))
                 .orderBy(history.localDateTime.desc())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 }
