@@ -154,4 +154,12 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
         return result;
     }
 
+    @Override
+    public Long findBasketCountByAccountEmail(String email) {
+        return jpaQueryFactory.select(basket.count())
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .fetchOne();
+    }
+
 }
