@@ -30,8 +30,13 @@ public class BasketMenuResponse {
         this.optionTotalPrice = Long.valueOf(optionTotalPrice.toString());
     }
 
+    private long totalPrice = 0;
+
     @Setter
     private List<BasketOptionResponse> options;
 
+    public void calculateTotalPrice() {
+        this.totalPrice = ( this.optionTotalPrice + menuPrice ) * this.amount;
+    }
 
 }
