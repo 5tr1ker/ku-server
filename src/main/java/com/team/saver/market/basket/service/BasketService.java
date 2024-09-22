@@ -13,6 +13,7 @@ import com.team.saver.market.basket.entity.BasketMenu;
 import com.team.saver.market.basket.entity.BasketMenuOption;
 import com.team.saver.market.basket.repository.BasketMenuRepository;
 import com.team.saver.market.basket.repository.BasketRepository;
+import com.team.saver.market.coupon.repository.CouponRepository;
 import com.team.saver.market.store.entity.Market;
 import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.entity.MenuOption;
@@ -37,6 +38,7 @@ public class BasketService {
     private final MarketRepository marketRepository;
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
+    private final CouponRepository couponRepository;
 
     @Transactional
     public void addBasket(CurrentUser currentUser, long marketId, BasketCreateRequest request) {
@@ -73,11 +75,27 @@ public class BasketService {
     }
 
     public List<BasketResponse> findByIdAndAccountEmail(CurrentUser currentUser, List<Long> ids) {
-        return basketRepository.findByIdAndAccountEmail(currentUser.getEmail(), ids);
+        List<BasketResponse> result = basketRepository.findByIdAndAccountEmail(currentUser.getEmail(), ids);
+
+        calculateHighestSaleRateFromDownloadCoupon(currentUser.getEmail(), result);
+
+        return result;
     }
 
     public List<BasketResponse> findAllByAccountEmail(CurrentUser currentUser, NoOffset noOffset) {
-        return basketRepository.findAllByAccountEmail(currentUser.getEmail(), noOffset);
+        List<BasketResponse> result = basketRepository.findAllByAccountEmail(currentUser.getEmail(), noOffset);
+
+        calculateHighestSaleRateFromDownloadCoupon(currentUser.getEmail(), result);
+
+        return result;
+    }
+
+    private void calculateHighestSaleRateFromDownloadCoupon(String email, List<BasketResponse> responses) {
+        for(BasketResponse basketResponse : responses) {
+            long saleRate = couponRepository.findHighestSaleRateFromDownloadCoupon(email, basketResponse.getMarketId(), basketResponse.getTotalPrice());
+
+            basketResponse.setDiscount(saleRate);
+        }
     }
 
     @Transactional
