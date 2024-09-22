@@ -93,14 +93,14 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private boolean isDelete = false;
 
-    public static Account createEntity(AccountInfo accountInfo, OAuthType type) {
+    public static Account createEntity(AccountInfo accountInfo, OAuthType type, String publicUrl) {
         return Account.builder()
                 .email(accountInfo.getEmail())
                 .phone(accountInfo.getPhone())
                 .age(accountInfo.getAge())
                 .name(accountInfo.getName())
                 .school(School.EMPTY)
-                .profileImage("http://localhost:8080/images/default.png")
+                .profileImage(publicUrl + "/images/default.png")
                 .loginCount(1)
                 .lastedLoginDate(LocalDate.now())
                 .oAuthType(type)

@@ -16,6 +16,7 @@ import com.team.saver.security.jwt.dto.Token;
 import com.team.saver.security.jwt.support.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,9 @@ public class OAuthService {
     private final NaverAttribute naverAttribute;
     private final GoogleAttribute googleAttribute;
     private final KakaoAttribute kakaoAttribute;
+
+    @Value("${public-server.url}")
+    private String publicUrl;
 
     @Transactional
     public Token SignInOAuthAccount(HttpServletResponse response, OAuthAccountCreateRequest request) {
@@ -58,7 +62,7 @@ public class OAuthService {
         OAuthAttribute attribute = findAttribute(request.getType());
 
         AccountInfo info = getUserInfo(attribute, request.getAccessToken());
-        return Account.createEntity(info, request.getType());
+        return Account.createEntity(info, request.getType(), publicUrl);
     }
 
     private OAuthAttribute findAttribute(OAuthType type) {

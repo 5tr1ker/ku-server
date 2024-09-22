@@ -45,3 +45,6 @@ cloud:
     credentials:
       accessKey: AKIAZI2LEA4VMLJS3AER
       secretKey: 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
+
+public-server:
+  url: http://121.157.73.204:8080
