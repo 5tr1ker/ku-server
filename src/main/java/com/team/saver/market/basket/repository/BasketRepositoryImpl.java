@@ -2,6 +2,7 @@ package com.team.saver.market.basket.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.market.basket.dto.BasketMenuResponse;
 import com.team.saver.market.basket.dto.BasketOptionResponse;
 import com.team.saver.market.basket.dto.BasketResponse;
@@ -40,15 +41,23 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
     }
 
     @Override
-    public List<BasketResponse> findAllByAccountEmail(String email) {
+    public List<BasketResponse> findAllByAccountEmail(String email, NoOffset noOffset) {
         QBasketMenu qBasketMenu = new QBasketMenu("qBasketMenu");
 
-        List<BasketResponse> result = jpaQueryFactory.selectFrom(basket)
+        List<Long> ids = jpaQueryFactory.select(basket.basketId)
+                .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
+                .orderBy(basket.updateTime.desc())
+                .where(basket.basketId.lt(noOffset.getLastIndex()))
+                .limit(noOffset.getSize())
+                .fetch();
+
+        List<BasketResponse> result = jpaQueryFactory.selectFrom(basket)
                 .innerJoin(basket.market, market)
                 .innerJoin(basket.basketMenus, basketMenu)
                 .innerJoin(basketMenu.menu, menu)
                 .orderBy(basket.updateTime.desc())
+                .where(basket.basketId.in(ids))
                 .transform(groupBy(basket.basketId).list(
                         Projections.constructor(
                                 BasketResponse.class,
@@ -82,7 +91,11 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                                 .innerJoin(basketMenuOption.basketMenu, basketMenu).on(basketMenu.basketMenuId.eq(basketMenuResponse.getBasketMenuId()))
                                 .fetch()
                 );
+
+                basketMenuResponse.calculateTotalPrice();
             }
+
+            basketResponse.calculateTotalPrice();
         }
 
         return result;
@@ -131,10 +144,22 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                                 .innerJoin(basketMenuOption.basketMenu, basketMenu).on(basketMenu.basketMenuId.eq(basketMenuResponse.getBasketMenuId()))
                                 .fetch()
                 );
+
+                basketMenuResponse.calculateTotalPrice();
             }
+
+            basketResponse.calculateTotalPrice();
         }
 
         return result;
+    }
+
+    @Override
+    public Long findBasketCountByAccountEmail(String email) {
+        return jpaQueryFactory.select(basket.count())
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .fetchOne();
     }
 
 }

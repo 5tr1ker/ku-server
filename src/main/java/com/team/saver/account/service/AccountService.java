@@ -8,6 +8,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.mail.dto.MailSendRequest;
 import com.team.saver.mail.service.MailService;
+import com.team.saver.market.basket.repository.BasketRepository;
 import com.team.saver.quest.dto.MissionLevelResponse;
 import com.team.saver.quest.service.MissionService;
 import com.team.saver.s3.service.S3Service;
@@ -26,6 +27,8 @@ public class AccountService {
     private final MailService mailService;
     private final S3Service s3Service;
     private final MissionService missionService;
+    private final BasketRepository basketRepository;
+
 
     public Account getProfile(CurrentUser currentUser) {
         Account account = accountRepository.findByEmail(currentUser.getEmail())
@@ -37,7 +40,9 @@ public class AccountService {
     public AccountResponse findAccountDetail(CurrentUser currentUser) {
         Account account = getProfile(currentUser);
 
-        return AccountResponse.of(account);
+        Long basketCount = basketRepository.findBasketCountByAccountEmail(account.getEmail());
+
+        return AccountResponse.of(account, basketCount);
     }
 
     @Transactional

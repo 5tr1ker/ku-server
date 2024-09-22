@@ -33,12 +33,12 @@ public class BasketMenuRepositoryImpl implements CustomBasketMenuRepository {
     }
 
     @Override
-    public long deleteByBasketMenuIds(String email, List<Long> ids) {
+    public long deleteByBasketMenuIds(String email, List<Long> basketMenuIds) {
         List<Long> basketMenuId = jpaQueryFactory
                 .select(basketMenu.basketMenuId)
                 .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
-                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(ids))
+                .innerJoin(basket.basketMenus, basketMenu).on(basketMenu.basketMenuId.in(basketMenuIds))
                 .fetch();
 
         return jpaQueryFactory.delete(basketMenu)

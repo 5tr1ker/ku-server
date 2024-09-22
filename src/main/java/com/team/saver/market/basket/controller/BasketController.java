@@ -2,6 +2,7 @@ package com.team.saver.market.basket.controller;
 
 import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.LogIn;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.market.basket.dto.BasketCreateRequest;
 import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
@@ -52,17 +53,18 @@ public class BasketController {
 
     @GetMapping("/v1/markets/baskets/all")
     @Operation(summary = "[ 로그인 ] 내가 등록한 장바구니 모두 가져오기 ( 32 )")
-    public ResponseEntity findAllByAccountEmail(@LogIn @Parameter(hidden = true) CurrentUser currentUser) {
-        List<BasketResponse> result = basketService.findAllByAccountEmail(currentUser);
+    public ResponseEntity findAllByAccountEmail(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
+                                                NoOffset noOffset) {
+        List<BasketResponse> result = basketService.findAllByAccountEmail(currentUser, noOffset);
 
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/v1/markets/baskets")
-    @Operation(summary = "[ 로그인 ] 다중 장바구니 삭제 ( 33 )")
+    @DeleteMapping("/v1/markets/baskets/menus")
+    @Operation(summary = "[ 로그인 ] 다중 장바구니 내 메뉴 삭제 ( 33 )")
     public ResponseEntity deleteBasketMenu(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
-                                           @RequestParam List<Long> id) {
-        basketService.deleteByBasketMenuIds(currentUser, id);
+                                           @RequestParam List<Long> basketMenuId) {
+        basketService.deleteByBasketMenuIds(currentUser, basketMenuId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

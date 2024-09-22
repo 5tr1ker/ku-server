@@ -3,6 +3,7 @@ package com.team.saver.market.basket.service;
 import com.team.saver.account.entity.Account;
 import com.team.saver.account.service.AccountService;
 import com.team.saver.common.dto.CurrentUser;
+import com.team.saver.common.dto.NoOffset;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.dto.BasketCreateRequest;
 import com.team.saver.market.basket.dto.BasketResponse;
@@ -75,13 +76,15 @@ public class BasketService {
         return basketRepository.findByIdAndAccountEmail(currentUser.getEmail(), ids);
     }
 
-    public List<BasketResponse> findAllByAccountEmail(CurrentUser currentUser) {
-        return basketRepository.findAllByAccountEmail(currentUser.getEmail());
+    public List<BasketResponse> findAllByAccountEmail(CurrentUser currentUser, NoOffset noOffset) {
+        return basketRepository.findAllByAccountEmail(currentUser.getEmail(), noOffset);
     }
 
     @Transactional
-    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> ids) {
-        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), ids);
+    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> basketMenuId) {
+        List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), basketMenuId);
+
+        basketMenuRepository.deleteAll(basketMenus);
     }
 
 }

@@ -59,7 +59,7 @@ public class FavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .leftJoin(market.coupons, coupon)
                 .leftJoin(market.reviews, review)
                 .groupBy(market)
-                .where(favorite.favoriteId.gt(noOffset.getLastIndex()))
+                .where(market.marketId.gt(noOffset.getLastIndex()))
                 .limit(noOffset.getSize())
                 .fetch();
     }
