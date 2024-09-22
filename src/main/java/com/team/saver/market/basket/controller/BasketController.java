@@ -60,11 +60,11 @@ public class BasketController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/v1/markets/baskets")
-    @Operation(summary = "[ 로그인 ] 다중 장바구니 삭제 ( 33 )")
+    @DeleteMapping("/v1/markets/baskets/menus")
+    @Operation(summary = "[ 로그인 ] 다중 장바구니 내 메뉴 삭제 ( 33 )")
     public ResponseEntity deleteBasketMenu(@LogIn @Parameter(hidden = true) CurrentUser currentUser,
-                                           @RequestParam List<Long> id) {
-        basketService.deleteByBasketMenuIds(currentUser, id);
+                                           @RequestParam List<Long> basketMenuId) {
+        basketService.deleteByBasketMenuIds(currentUser, basketMenuId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

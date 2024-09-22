@@ -12,7 +12,7 @@ public interface CustomBasketMenuRepository {
 
     Optional<BasketMenu> findByAccountEmailAndId(String email, long basketMenuId);
 
-    long deleteByBasketMenuIds(String email, List<Long> ids);
+    long deleteByBasketMenuIds(String email, List<Long> basketMenuId);
 
     List<BasketMenu> findAllByAccountEmailAndId(String email, List<Long> basketMenuId);
 

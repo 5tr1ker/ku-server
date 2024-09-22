@@ -81,8 +81,8 @@ public class BasketService {
     }
 
     @Transactional
-    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> ids) {
-        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), ids);
+    public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> basketMenuId) {
+        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), basketMenuId);
     }
 
 }
