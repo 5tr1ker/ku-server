@@ -82,7 +82,9 @@ public class BasketService {
 
     @Transactional
     public void deleteByBasketMenuIds(CurrentUser currentUser, List<Long> basketMenuId) {
-        basketMenuRepository.deleteByBasketMenuIds(currentUser.getEmail(), basketMenuId);
+        List<BasketMenu> basketMenus = basketMenuRepository.findAllByAccountEmailAndId(currentUser.getEmail(), basketMenuId);
+
+        basketMenuRepository.deleteAll(basketMenus);
     }
 
 }
