@@ -27,7 +27,11 @@ public class BasketMenuResponse {
         this.menuImageUrl = menuImageUrl;
         this.menuPrice = menuPrice;
         this.amount = amount;
-        this.optionTotalPrice = Long.valueOf(optionTotalPrice.toString());
+        if(optionTotalPrice == null) {
+            this.optionTotalPrice = 0L;
+        } else {
+            this.optionTotalPrice = Long.valueOf(optionTotalPrice.toString());
+        }
     }
 
     private long totalPrice = 0;
