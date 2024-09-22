@@ -31,4 +31,21 @@ public class BasketResponse {
             totalPrice += response.getTotalPrice();
         }
     }
+
+    private boolean isDiscountAvailability = false;
+
+    private long discountAmount = 0;
+
+    private int discountRate = 0;
+
+    public void setDiscount(long value) {
+        if(value != 0) {
+            this.isDiscountAvailability = true;
+
+            this.discountAmount = value;
+
+            double discountRateTemp = (double) (totalPrice - value) / (double) totalPrice;
+            this.discountRate = (int) (100 - ( discountRateTemp * 100 ));
+        }
+    }
 }

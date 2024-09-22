@@ -30,5 +30,7 @@ public interface CustomCouponRepository {
 
     List<CouponResponse> findCouponThatCanBeUsedFromDownloadCoupon(String email, long marketId, long orderPrice);
 
+    long findHighestSaleRateFromDownloadCoupon(String email, long marketId, long orderPrice);
+
     long findDownloadCouponCountByUserEmail(String email);
 }

@@ -175,6 +175,24 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
     }
 
     @Override
+    public long findHighestSaleRateFromDownloadCoupon(String email, long marketId, long orderPrice) {
+        Integer result = jpaQueryFactory.select(coupon.saleRate.max())
+                .from(downloadCoupon)
+                .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
+                .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice).and(coupon.expireDate.gt(LocalDateTime.now())))
+                .innerJoin(coupon.market, market).on(market.marketId.eq(marketId).or(market.eventCouponMarket.eq(true)))
+                .groupBy(downloadCoupon.downloadCouponId)
+                .where(downloadCoupon.isUsage.eq(false))
+                .fetchOne();
+
+        if(result == null) {
+            return 0L;
+        }
+
+        return result;
+    }
+
+    @Override
     public long findDownloadCouponCountByUserEmail(String email) {
         return jpaQueryFactory.select(downloadCoupon.count())
                 .from(downloadCoupon)
