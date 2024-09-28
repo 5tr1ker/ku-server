@@ -32,6 +32,8 @@ public interface CustomMarketRepository {
 
     long findMarketCount();
 
+    List<Long> findAllId();
+
     List<MarketCreateDateResponse> findMarketCreateDateByMarketName(String marketName, Pageable pageable);
 
 }

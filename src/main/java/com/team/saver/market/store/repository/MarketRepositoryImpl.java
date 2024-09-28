@@ -276,6 +276,14 @@ public class MarketRepositoryImpl implements CustomMarketRepository {
     }
 
     @Override
+    public List<Long> findAllId() {
+        return jpaQueryFactory.select(market.marketId)
+                .from(market)
+                .where(market.isDelete.eq(false))
+                .fetch();
+    }
+
+    @Override
     public List<MarketCreateDateResponse> findMarketCreateDateByMarketName(String marketName, Pageable pageable) {
         return jpaQueryFactory.select(
                         Projections.constructor(MarketCreateDateResponse.class,

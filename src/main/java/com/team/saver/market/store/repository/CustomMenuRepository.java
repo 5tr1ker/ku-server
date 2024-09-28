@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CustomMenuRepository {
 
-    List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size);
+    List<Long> findManyMenuOrderCountByMarketId(long marketId, long size);
 
-    long setIsBestMenuByMenu(List<Menu> menuList);
+    long setIsBestMenuByMenu(List<Long> menuList);
 
     long resetIsBestMenu();
 }

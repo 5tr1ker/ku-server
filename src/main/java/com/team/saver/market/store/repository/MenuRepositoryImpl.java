@@ -16,8 +16,8 @@ public class MenuRepositoryImpl implements CustomMenuRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size) {
-        return jpaQueryFactory.select(menu)
+    public List<Long> findManyMenuOrderCountByMarketId(long marketId, long size) {
+        return jpaQueryFactory.select(menu.menuId)
                 .from(market)
                 .innerJoin(market.menuContainers, menuContainer)
                 .innerJoin(menuContainer.menus, menu)
@@ -35,10 +35,10 @@ public class MenuRepositoryImpl implements CustomMenuRepository {
 
 
     @Override
-    public long setIsBestMenuByMenu(List<Menu> menuList) {
+    public long setIsBestMenuByMenu(List<Long> menuList) {
         return jpaQueryFactory.update(menu)
                 .set(menu.isBestMenu, true)
-                .where(menu.in(menuList))
+                .where(menu.menuId.in(menuList))
                 .execute();
     }
 
