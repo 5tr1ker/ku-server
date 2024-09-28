@@ -3,6 +3,7 @@ package com.team.saver.market.store.util;
 import com.team.saver.market.store.entity.Menu;
 import com.team.saver.market.store.repository.MarketRepository;
 import com.team.saver.market.store.repository.MenuRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,12 +27,11 @@ public class BestMenuScheduler {
     public void updateBestMenu() {
         long marketNumber = marketRepository.findMarketCount();
 
-        for(int i = 1; i <= marketNumber; i++) {
-            menuRepository.resetIsBestMenuByMarketId(i);
+        menuRepository.resetIsBestMenu();
+        for(int i = 1; i <= 1; i++) {
+            List<Long> menuList = menuRepository.findIdByMarketIdAndOrderByManyOrderCount(i, bestMenuCount);
 
-            List<Menu> menuList = menuRepository.findManyMenuOrderCountByMarketId(i, bestMenuCount);
-            menuRepository.setIsBestMenuByMenu(menuList);
+            menuRepository.setIsBestMenuByMenuId(menuList);
         }
     }
-
 }

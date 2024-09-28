@@ -8,8 +8,9 @@ public interface CustomMenuRepository {
 
     long resetIsBestMenuByMarketId(long marketId);
 
-    List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size);
+    List<Long> findIdByMarketIdAndOrderByManyOrderCount(long marketId, long size);
 
-    long setIsBestMenuByMenu(List<Menu> menuList);
+    long setIsBestMenuByMenuId(List<Long> menuId);
 
+    long resetIsBestMenu();
 }
