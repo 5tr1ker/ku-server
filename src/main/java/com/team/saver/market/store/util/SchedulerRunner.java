@@ -12,7 +12,7 @@ public class SchedulerRunner {
 
     @PostConstruct
     public void init() {
-        // bestMenuScheduler.updateBestMenu();
+        bestMenuScheduler.updateBestMenu();
     }
 
 }
