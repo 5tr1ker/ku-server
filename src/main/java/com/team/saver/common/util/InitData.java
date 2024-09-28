@@ -236,7 +236,6 @@ public class InitData implements CommandLineRunner {
         recommendAlgorithm.updateMarketRecommend();
         searchWordScheduler.updateSearchWordScore();
         searchWordScheduler.calculateRankingChangeValue();
-        bestMenuScheduler.updateBestMenu();
         trie.initTrie();
         // init Data-End
     }
@@ -278,10 +277,8 @@ public class InitData implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         if(accountRepository.findAll().size() != 0) {
-
             recommendAlgorithm.updateMarketRecommend();
             searchWordScheduler.updateSearchWordScore();
-            bestMenuScheduler.updateBestMenu();
             trie.initTrie();
             return;
         }

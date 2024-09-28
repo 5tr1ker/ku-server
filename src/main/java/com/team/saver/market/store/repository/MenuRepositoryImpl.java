@@ -16,34 +16,30 @@ public class MenuRepositoryImpl implements CustomMenuRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public long resetIsBestMenuByMarketId(long marketId) {
-        List<Menu> result = jpaQueryFactory.select(menu)
-                .from(menuContainer)
-                .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))
+    public List<Long> findManyMenuOrderCountByMarketId(long marketId, long size) {
+        return jpaQueryFactory.select(menu.menuId)
+                .from(market)
+                .innerJoin(market.menuContainers, menuContainer)
                 .innerJoin(menuContainer.menus, menu)
-                .fetch();
-
-        return jpaQueryFactory.update(menu).set(menu.isBestMenu, false)
-                .where(menu.in(result))
-                .execute();
-    }
-
-    @Override
-    public List<Menu> findManyMenuOrderCountByMarketId(long marketId, long size) {
-        return jpaQueryFactory.select(menu)
-                .from(menuContainer)
-                .innerJoin(menuContainer.market, market).on(market.marketId.eq(marketId))
-                .innerJoin(menuContainer.menus, menu)
+                .where(market.marketId.eq(marketId))
                 .orderBy(menu.orderCount.desc())
                 .limit(size)
                 .fetch();
     }
 
     @Override
-    public long setIsBestMenuByMenu(List<Menu> menuList) {
-        return jpaQueryFactory.update(menu)
-                .set(menu.isBestMenu, true)
-                .where(menu.in(menuList))
+    public long resetIsBestMenu() {
+        return jpaQueryFactory.update(menu).set(menu.isBestMenu, false)
                 .execute();
     }
+
+
+    @Override
+    public long setIsBestMenuByMenu(List<Long> menuList) {
+        return jpaQueryFactory.update(menu)
+                .set(menu.isBestMenu, true)
+                .where(menu.menuId.in(menuList))
+                .execute();
+    }
+
 }
