@@ -1,6 +1,7 @@
 package com.team.saver.market.basket.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.saver.common.dto.NoOffset;
 import com.team.saver.market.basket.dto.BasketMenuResponse;
@@ -44,13 +45,22 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
     public List<BasketResponse> findAllByAccountEmail(String email, NoOffset noOffset) {
         QBasketMenu qBasketMenu = new QBasketMenu("qBasketMenu");
 
-        List<Long> ids = jpaQueryFactory.select(basket.basketId)
+        JPAQuery<Long> query = jpaQueryFactory.select(basket.basketId)
                 .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
                 .orderBy(basket.updateTime.desc())
-                .where(basket.basketId.lt(noOffset.getLastIndex()))
-                .limit(noOffset.getSize())
-                .fetch();
+                .limit(noOffset.getSize());
+
+        if(noOffset.getLastIndex() != 0) {
+            query.where(basket.updateTime.before(
+                    select(basket.updateTime)
+                            .from(basket)
+                            .where(basket.basketId.eq(noOffset.getLastIndex()))
+            ));
+        }
+
+        List<Long> ids = query.fetch();
+
 
         List<BasketResponse> result = jpaQueryFactory.selectFrom(basket)
                 .innerJoin(basket.market, market)
