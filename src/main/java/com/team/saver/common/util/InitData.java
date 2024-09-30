@@ -894,11 +894,11 @@ public class InitData implements CommandLineRunner {
                     .description("안녕하세요, 고객 여러분.\n" +
                             "항상 저희 서비스를 이용해 주셔서 감사드립니다.\n" +
                             "저희 시스템이 2024년 9월 15일(금) 오전 2시부터 6시까지 정기 점검을 실시할 예정입니다. 점검 시간 동안 일부 서비스 이용이 제한될 수 있으니 양해 부탁드립니다.\n" +
-                            "\n" +
+                            "\n[이미지]" +
                             image_url_account_5 +
-                            "\n" +
+                            "\n[이미지]" +
                             "서비스 이용에 불편을 끼쳐드려 죄송하며, 더욱 나은 서비스를 제공하기 위해 노력하겠습니다.\n" +
-                            "감사합니다.")
+                            "감사합니다. 더 많은 정보는 해당 링크를 통해 확인할 수 있습니다. [링크]www.naver.com[링크]")
                     .build();
 
             announceRepository.save(announce);
