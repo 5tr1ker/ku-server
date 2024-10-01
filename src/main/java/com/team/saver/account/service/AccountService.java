@@ -40,9 +40,9 @@ public class AccountService {
     public AccountResponse findAccountDetail(CurrentUser currentUser) {
         Account account = getProfile(currentUser);
 
-        Long basketCount = basketRepository.findBasketCountByAccountEmail(account.getEmail());
+        Long basketMenuCount = basketRepository.findBasketMenuCountByAccountEmail(account.getEmail());
 
-        return AccountResponse.of(account, basketCount);
+        return AccountResponse.of(account, basketMenuCount);
     }
 
     @Transactional
