@@ -6,6 +6,7 @@ import com.team.saver.common.dto.CurrentUser;
 import com.team.saver.common.dto.NoOffset;
 import com.team.saver.common.exception.CustomRuntimeException;
 import com.team.saver.market.basket.dto.BasketCreateRequest;
+import com.team.saver.market.basket.dto.BasketMenuResponse;
 import com.team.saver.market.basket.dto.BasketResponse;
 import com.team.saver.market.basket.dto.MenuOptionUpdateRequest;
 import com.team.saver.market.basket.entity.Basket;
@@ -92,9 +93,11 @@ public class BasketService {
 
     private void calculateHighestSaleRateFromDownloadCoupon(String email, List<BasketResponse> responses) {
         for(BasketResponse basketResponse : responses) {
-            long saleRate = couponRepository.findHighestSaleRateFromDownloadCoupon(email, basketResponse.getMarketId(), basketResponse.getTotalPrice());
+            for(BasketMenuResponse basketMenuResponse : basketResponse.getMenu()) {
+                long saleRate = couponRepository.findHighestSaleRateFromDownloadCoupon(email, basketResponse.getMarketId(), basketMenuResponse.getTotalPrice());
 
-            basketResponse.setDiscount(saleRate);
+                basketMenuResponse.setDiscount(saleRate);
+            }
         }
     }
 

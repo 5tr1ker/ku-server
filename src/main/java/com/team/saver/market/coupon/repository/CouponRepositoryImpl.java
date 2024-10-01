@@ -181,7 +181,6 @@ public class CouponRepositoryImpl implements CustomCouponRepository {
                 .innerJoin(downloadCoupon.account, account).on(account.email.eq(email))
                 .innerJoin(downloadCoupon.coupon, coupon).on(coupon.conditionToUseAmount.loe(orderPrice).and(coupon.expireDate.gt(LocalDateTime.now())))
                 .innerJoin(coupon.market, market).on(market.marketId.eq(marketId).or(market.eventCouponMarket.eq(true)))
-                .groupBy(downloadCoupon.downloadCouponId)
                 .where(downloadCoupon.isUsage.eq(false))
                 .fetchOne();
 
