@@ -44,9 +44,9 @@ public class AccountResponse {
 
     private String role;
 
-    private long basketCount;
+    private long basketMenuCount;
 
-    public static AccountResponse of(Account account, Long basketCount) {
+    public static AccountResponse of(Account account, Long basketMenuCount) {
         return AccountResponse.builder()
                 .accountId(account.getAccountId())
                 .email(account.getEmail())
@@ -64,7 +64,7 @@ public class AccountResponse {
                 .pushAlert(account.isPushAlert())
                 .autoUpdate(account.isAutoUpdate())
                 .autoLogin(account.isAutoLogin())
-                .basketCount(basketCount)
+                .basketMenuCount(basketMenuCount)
                 .build();
     }
 

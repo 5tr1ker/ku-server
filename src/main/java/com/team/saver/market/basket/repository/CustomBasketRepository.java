@@ -16,6 +16,6 @@ public interface CustomBasketRepository {
 
     List<BasketResponse> findByIdAndAccountEmail(String email, List<Long> ids);
 
-    Long findBasketCountByAccountEmail(String email);
+    Long findBasketMenuCountByAccountEmail(String email);
 
 }
