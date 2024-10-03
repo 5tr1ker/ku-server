@@ -69,4 +69,12 @@ public class BasketController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @DeleteMapping("/v1/markets/baskets")
+    @Operation(summary = "[ 로그인 ] 모든 장바구니 삭제 ( 123 )")
+    public ResponseEntity deleteAllBasket(@LogIn @Parameter(hidden = true) CurrentUser currentUser) {
+        basketService.deleteAllBasket(currentUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

@@ -173,4 +173,22 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .fetchOne();
     }
 
+    @Override
+    public List<Basket> findByEmailAndMarketIdNot(long marketId, String email) {
+        return jpaQueryFactory.select(basket)
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .innerJoin(basket.basketMenus)
+                .where(basket.basketId.ne(marketId))
+                .fetch();
+    }
+
+    @Override
+    public List<Basket> findAllByEmail(String email) {
+        return jpaQueryFactory.select(basket)
+                .from(basket)
+                .innerJoin(basket.account, account).on(account.email.eq(email))
+                .fetch();
+    }
+
 }
