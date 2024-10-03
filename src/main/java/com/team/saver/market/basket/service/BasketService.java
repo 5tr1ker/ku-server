@@ -43,6 +43,9 @@ public class BasketService {
 
     @Transactional
     public void addBasket(CurrentUser currentUser, long marketId, BasketCreateRequest request) {
+        if(basketRepository.findByEmailAndMarketIdNot(marketId, currentUser.getEmail()).size() != 0) {
+            throw new CustomRuntimeException(EXIST_ANOTHER_BASKET);
+        }
         Account account = accountService.getProfile(currentUser);
         Basket basket = basketRepository.findByMarketIdAndAccountEmail(marketId, currentUser.getEmail())
                 .orElseGet(() -> basketRepository.save(createBasket(marketId, account)));
@@ -108,4 +111,10 @@ public class BasketService {
         basketMenuRepository.deleteAll(basketMenus);
     }
 
+    @Transactional
+    public void deleteAllBasket(CurrentUser currentUser) {
+        List<Basket> baskets = basketRepository.findAllByEmail(currentUser.getEmail());
+
+        basketRepository.deleteAll(baskets);
+    }
 }

@@ -18,4 +18,8 @@ public interface CustomBasketRepository {
 
     Long findBasketMenuCountByAccountEmail(String email);
 
+    List<Basket> findByEmailAndMarketIdNot(long marketId, String email);
+
+    List<Basket> findAllByEmail(String email);
+
 }
