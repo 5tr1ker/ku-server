@@ -946,24 +946,6 @@ public class InitData implements CommandLineRunner {
                 .menuOptionIds(Arrays.asList(4L,5L))
                 .build();
         basketService.addBasket(currentUser1, 2, basketCreateRequest3);
-        BasketCreateRequest basketCreateRequest4 = BasketCreateRequest.builder()
-                .menuId(4)
-                .amount(3)
-                .menuOptionIds(Arrays.asList(1L))
-                .build();
-        basketService.addBasket(currentUser1, 3, basketCreateRequest4);
-        BasketCreateRequest basketCreateRequest5 = BasketCreateRequest.builder()
-                .menuId(3)
-                .amount(2)
-                .menuOptionIds(Arrays.asList(4L,5L))
-                .build();
-        basketService.addBasket(currentUser1, 3, basketCreateRequest5);
-        BasketCreateRequest basketCreateRequest6 = BasketCreateRequest.builder()
-                .menuId(5)
-                .amount(8)
-                .menuOptionIds(Arrays.asList(4L,5L))
-                .build();
-        basketService.addBasket(currentUser1, 3, basketCreateRequest6);
 
         entityManager.flush();
 
