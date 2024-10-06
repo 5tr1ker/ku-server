@@ -179,7 +179,7 @@ public class BasketRepositoryImpl implements CustomBasketRepository {
                 .from(basket)
                 .innerJoin(basket.account, account).on(account.email.eq(email))
                 .innerJoin(basket.basketMenus)
-                .where(basket.basketId.ne(marketId))
+                .innerJoin(basket.market, market).on(market.marketId.ne(marketId))
                 .fetch();
     }
 
